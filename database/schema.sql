@@ -1,7 +1,7 @@
--- 1. Ativar o suporte a dados geográficos
+-- Ativa o suporte geoespacial (coordenadas/mapas)
 CREATE EXTENSION IF NOT EXISTS postgis;
 
--- 2. Tabela de Agricultores
+-- Tabela de Agricultores
 CREATE TABLE IF NOT EXISTS agricultores (
     id SERIAL PRIMARY KEY,
     nome VARCHAR(100) NOT NULL,
@@ -9,12 +9,12 @@ CREATE TABLE IF NOT EXISTS agricultores (
     criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- 3. Tabela de Propriedades (com polígonos/coordenadas do mapa)
+-- Tabela de Propriedades (guarda polígonos/coordenadas GPS da NASA e do mapa)
 CREATE TABLE IF NOT EXISTS propriedades (
     id SERIAL PRIMARY KEY,
     agricultor_id INT REFERENCES agricultores(id) ON DELETE CASCADE,
     nome_propriedade VARCHAR(100),
-    limites_geo GEOMETRY(Polygon, 4326), 
+    limites_geo GEOMETRY(Polygon, 4326),
     tamanho_hectares NUMERIC,
     criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
