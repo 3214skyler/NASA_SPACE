@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="theme-color" content="#020807">
+    <meta name="description" content="AcreView — Explore o planeta. Compreenda a agricultura.">
+
+    <title>AcreView | Inicializando</title>
+
+    <!-- Three.js será utilizado para o globo 3D -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js"
+            }
+        }
+    </script>
+
+    <!-- Estilos do Intro -->
+    <link rel="stylesheet" href="assets/css/intro.css">
+</head>
+
+<body>
+
+    <!-- Tela de inicialização -->
+    <main id="intro-screen">
+
+        <!-- Globo terrestre 3D -->
+        <div id="globe-container"></div>
+
+        <!-- Informações de carregamento -->
+        <section class="intro-content">
+
+            <h1 class="intro-title">ACREVIEW</h1>
+
+            <p id="loading-text">
+                INICIALIZANDO...
+            </p>
+
+            <!-- Barra de progresso -->
+            <div class="loading-bar">
+                <div id="loading-progress"></div>
+            </div>
+
+            <span id="loading-percentage">0%</span>
+
+        </section>
+
+        <!-- Identificação da aplicação -->
+        <footer class="intro-footer">
+            EARTH OBSERVATION SYSTEM
+        </footer>
+
+    </main>
+    <!-- Página de boas-vindas -->
+    <main id="welcome-screen">
+
+    <div class="welcome-content">
+
+        <span class="welcome-label">EARTH OBSERVATION SYSTEM</span>
+
+        <h1>
+            Bem-vindo ao
+            <span>AcreView</span>
+        </h1>
+
+        <p>
+            Explore o planeta. Compreenda a agricultura.
+            Descubra novas possibilidades para um futuro mais sustentável.
+        </p>
+
+        <button id="start-button">
+            Cadastrar-se
+            <span>→</span>
+        </button>
+
+    </div>
+
+    </main>
+
+    <!-- JavaScript do Intro -->
+    <script type="module" src="assets/js/intro.js"></script>
+
+</body>
+</html>

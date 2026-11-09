@@ -1,0 +1,335 @@
+/* =================================
+   ACREVIEW — INTRO SCREEN
+================================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #020807;
+    color: #ffffff;
+}
+
+/* Tela principal */
+
+#intro-screen {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100vh;
+    height: 100dvh;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+
+    background:
+        radial-gradient(
+            circle at 50% 42%,
+            rgba(20, 83, 45, 0.22),
+            transparent 45%
+        ),
+        radial-gradient(
+            circle at center,
+            #0b1914 0%,
+            #020807 75%
+        );
+
+    z-index: 9999;
+
+    opacity: 1;
+    visibility: visible;
+
+    transition:
+        opacity 1.5s ease,
+        visibility 1.5s ease;
+}
+
+/* Container do globo 3D */
+
+#globe-container {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    z-index: 1;
+}
+
+#globe-container canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+/* Conteúdo de carregamento */
+
+.intro-content {
+    position: absolute;
+    bottom: 12%;
+
+    width: min(340px, 85%);
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    text-align: center;
+
+    z-index: 2;
+}
+
+/* Nome da aplicação */
+
+.intro-title {
+    font-size: clamp(1.8rem, 5vw, 2.5rem);
+    font-weight: 800;
+
+    letter-spacing: 0.35em;
+
+    color: #ffffff;
+
+    text-shadow:
+        0 0 15px rgba(34, 197, 94, 0.25);
+
+    margin-bottom: 22px;
+}
+
+/* Texto de inicialização */
+
+#loading-text {
+    font-size: 0.72rem;
+    font-weight: 600;
+
+    letter-spacing: 0.22em;
+
+    color: #86efac;
+
+    margin-bottom: 14px;
+}
+
+/* Barra de carregamento */
+
+.loading-bar {
+    width: 100%;
+    height: 4px;
+
+    background: rgba(255, 255, 255, 0.12);
+
+    border-radius: 50px;
+    overflow: hidden;
+
+    box-shadow:
+        0 0 10px rgba(0, 0, 0, 0.4);
+}
+
+/* Progresso */
+
+#loading-progress {
+    width: 0%;
+    height: 100%;
+
+    background: linear-gradient(
+        90deg,
+        #15803d,
+        #4ade80,
+        #bbf7d0
+    );
+
+    border-radius: inherit;
+
+    box-shadow:
+        0 0 12px rgba(74, 222, 128, 0.8);
+
+    transition: width 0.25s ease;
+}
+
+/* Percentagem */
+
+#loading-percentage {
+    margin-top: 12px;
+
+    font-size: 0.75rem;
+    font-weight: 500;
+
+    letter-spacing: 0.12em;
+
+    color: #9ca3af;
+}
+
+/* Identificação inferior */
+
+.intro-footer {
+    position: absolute;
+    bottom: 3%;
+
+    width: 100%;
+
+    text-align: center;
+
+    font-size: 0.58rem;
+    font-weight: 500;
+
+    letter-spacing: 0.3em;
+
+    color: rgba(156, 163, 175, 0.55);
+
+    z-index: 2;
+}
+
+/* Transição de saída */
+
+#intro-screen.finished {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+/* Responsividade */
+
+@media (max-width: 600px) {
+
+    .intro-content {
+        bottom: 15%;
+        width: 78%;
+    }
+
+    .intro-title {
+        letter-spacing: 0.25em;
+    }
+
+    .intro-footer {
+        font-size: 0.48rem;
+        letter-spacing: 0.2em;
+    }
+}
+
+/* Acessibilidade: reduzir movimentos */
+
+@media (prefers-reduced-motion: reduce) {
+
+    #intro-screen,
+    #loading-progress {
+        transition: none;
+    }
+}
+/* =================================
+   PÁGINA DE BOAS-VINDAS
+================================= */
+
+#welcome-screen {
+    position: fixed;
+    inset: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 30px;
+
+    background:
+        radial-gradient(
+            circle at 50% 40%,
+            rgba(20, 83, 45, 0.25),
+            transparent 50%
+        ),
+        #020807;
+
+    opacity: 0;
+    visibility: hidden;
+
+    transition:
+        opacity 1.5s ease,
+        visibility 1.5s ease;
+
+    z-index: 1;
+}
+
+#welcome-screen.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.welcome-content {
+    max-width: 750px;
+    text-align: center;
+
+    transform: translateY(25px);
+    transition: transform 1.2s ease;
+}
+
+#welcome-screen.active .welcome-content {
+    transform: translateY(0);
+}
+
+.welcome-label {
+    color: #4ade80;
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    font-weight: 600;
+}
+
+.welcome-content h1 {
+    font-size: clamp(2.5rem, 7vw, 5rem);
+    font-weight: 800;
+    line-height: 1.15;
+
+    margin-top: 25px;
+}
+
+.welcome-content h1 span {
+    display: block;
+    color: #4ade80;
+}
+
+.welcome-content p {
+    max-width: 580px;
+    margin: 25px auto;
+
+    color: #9ca3af;
+    font-size: 1.05rem;
+    line-height: 1.8;
+}
+
+#start-button {
+    margin-top: 20px;
+    padding: 15px 28px;
+
+    border: none;
+    border-radius: 8px;
+
+    background: #16a34a;
+    color: white;
+
+    font-size: 0.95rem;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background 0.3s ease,
+        transform 0.3s ease;
+}
+
+#start-button:hover {
+    background: #22c55e;
+    transform: translateY(-3px);
+}
+
+#start-button span {
+    margin-left: 12px;
+}
