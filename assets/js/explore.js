@@ -34,6 +34,18 @@ const satelliteLayer = L.tileLayer(
     }
 );
 
+const vegetationOverlay = L.tileLayer.wms(
+    "https://gibs.earthdata.nasa.gov/wms/epsg3857/best/wms.cgi",
+    {
+        layers: "MODIS_Terra_NDVI_8Day",
+        format: "image/png",
+        transparent: true,
+        version: "1.1.1",
+        opacity: 0.65,
+        attribution: "NASA GIBS / MODIS Terra"
+    }
+);
+
 standardLayer.addTo(map);
 
 let currentLayer = standardLayer;
@@ -72,6 +84,23 @@ const coordinatesButton = document.getElementById("coordinates-button");
 
 const messageElement = document.getElementById("explore-message");
 
+
+// =====================================
+// PROPERTY DRAWING
+// =====================================
+
+let isDrawingProperty = false;
+let propertyPoints = [];
+let propertyPreview = null;
+let propertyMarkers = [];
+let savedProperty = null;
+
+const startDrawingButton = document.getElementById("start-drawing");
+const finishDrawingButton = document.getElementById("finish-drawing");
+const cancelDrawingButton = document.getElementById("cancel-drawing");
+
+const propertyNameInput = document.getElementById("property-name");
+const propertyAreaDisplay = document.getElementById("property-area");
 
 // =====================================
 // MAP MARKER
@@ -274,10 +303,17 @@ function selectLocation(latitude, longitude, zoom = 10) {
 
 map.on("click", function (event) {
 
-    const latitude = event.latlng.lat;
-    const longitude = event.latlng.lng;
+    // Se estiver a desenhar uma propriedade
+    if (isDrawingProperty) {
+        addPropertyPoint(event.latlng);
+        return;
+    }
 
-    selectLocation(latitude, longitude);
+    // Funcionamento normal do mapa
+    selectLocation(
+        event.latlng.lat,
+        event.latlng.lng
+    );
 
 });
 
@@ -394,29 +430,53 @@ coordinatesButton.addEventListener("click", searchCoordinates);
 
 const layerButtons = document.querySelectorAll(".layer-option");
 
+const baseLayers = {
+    standard: standardLayer,
+    satellite: satelliteLayer
+};
+
 layerButtons.forEach(button => {
 
     button.addEventListener("click", function () {
 
         const selectedLayer = this.dataset.layer;
+        const ndviControls = document.getElementById("ndvi-controls");
 
-        if (selectedLayer === "satellite") {
+        // NASA: ativar ou desativar a sobreposição
+        if (selectedLayer === "nasa") {
 
-            map.removeLayer(currentLayer);
+            if (map.hasLayer(vegetationOverlay)) {
+                map.removeLayer(vegetationOverlay);
+                this.classList.remove("active");
+                this.querySelector(".layer-check").textContent = "○";
+                ndviControls?.classList.remove("visible");
+            } else {
+                vegetationOverlay.addTo(map);
+                this.classList.add("active");
+                this.querySelector(".layer-check").textContent = "●";
+                ndviControls?.classList.add("visible");
+            }
 
-            currentLayer = satelliteLayer;
-            satelliteLayer.addTo(map);
-
-        } else {
-
-            map.removeLayer(currentLayer);
-
-            currentLayer = standardLayer;
-            standardLayer.addTo(map);
-
+            return;
         }
 
+        // Mudar o mapa de fundo
+        const newLayer = baseLayers[selectedLayer];
+
+        if (!newLayer) return;
+
+        if (map.hasLayer(currentLayer)) {
+            map.removeLayer(currentLayer);
+        }
+
+        currentLayer = newLayer;
+        currentLayer.addTo(map);
+
+        // Atualizar seleção dos mapas de fundo
         layerButtons.forEach(item => {
+
+            if (item.dataset.layer === "nasa") return;
+
             item.classList.remove("active");
 
             const check = item.querySelector(".layer-check");
@@ -427,12 +487,7 @@ layerButtons.forEach(button => {
         });
 
         this.classList.add("active");
-
-        const selectedCheck = this.querySelector(".layer-check");
-
-        if (selectedCheck) {
-            selectedCheck.textContent = "●";
-        }
+        this.querySelector(".layer-check").textContent = "●";
 
     });
 
@@ -442,6 +497,9 @@ layerButtons.forEach(button => {
 // =====================================
 // CURRENT USER LOCATION
 // =====================================
+
+let userLocationMarker = null;
+let userLocationCircle = null;
 
 function locateUser() {
 
@@ -459,7 +517,37 @@ function locateUser() {
             const latitude = position.coords.latitude;
             const longitude = position.coords.longitude;
 
-            selectLocation(latitude, longitude, 12);
+            const userPosition = [latitude, longitude];
+
+            // Atualizar a posição no mapa
+            selectLocation(latitude, longitude, 15);
+
+            // Remover marcador anterior
+            if (userLocationMarker) {
+                map.removeLayer(userLocationMarker);
+            }
+
+            if (userLocationCircle) {
+                map.removeLayer(userLocationCircle);
+            }
+
+            // Criar marcador da localização atual
+            userLocationMarker = L.marker(userPosition)
+                .addTo(map)
+                .bindPopup("A tua localização atual");
+
+            // Criar círculo de precisão
+            userLocationCircle = L.circle(userPosition, {
+                radius: position.coords.accuracy,
+                color: "#27d27e",
+                fillColor: "#27d27e",
+                fillOpacity: 0.15,
+                weight: 2
+            }).addTo(map);
+
+            userLocationMarker.openPopup();
+
+            showMessage("A tua localização foi encontrada.");
 
         },
 
@@ -475,13 +563,16 @@ function locateUser() {
 
         {
             enableHighAccuracy: true,
-            timeout: 10000,
+            timeout: 15000,
             maximumAge: 60000
         }
 
     );
 
 }
+document
+    .getElementById("locate-me-button")
+    .addEventListener("click", locateUser);
 
 
 // =====================================
@@ -492,3 +583,408 @@ function locateUser() {
 // pedir explicitamente a sua localização.
 
 map.invalidateSize();
+
+// =====================================
+// PROPERTY DRAWING FUNCTIONS
+// =====================================
+
+function addPropertyPoint(latlng) {
+
+    propertyPoints.push(latlng);
+
+    const marker = L.circleMarker(latlng, {
+        radius: 5,
+        color: "#ffffff",
+        fillColor: "#27d27e",
+        fillOpacity: 1,
+        weight: 2
+    }).addTo(map);
+
+    propertyMarkers.push(marker);
+
+    if (propertyPreview) {
+        map.removeLayer(propertyPreview);
+    }
+
+    propertyPreview = L.polyline(propertyPoints, {
+        color: "#27d27e",
+        weight: 3,
+        dashArray: "6, 8"
+    }).addTo(map);
+
+    showMessage(
+        `${propertyPoints.length} pontos adicionados.`
+    );
+}
+
+
+function startPropertyDrawing() {
+
+    if (isDrawingProperty) return;
+
+    const name = propertyNameInput.value.trim();
+
+    if (!name) {
+        showMessage("Introduz o nome da propriedade.");
+        propertyNameInput.focus();
+        return;
+    }
+
+    clearPropertyDrawing();
+
+    isDrawingProperty = true;
+
+    startDrawingButton.disabled = true;
+    finishDrawingButton.disabled = false;
+    cancelDrawingButton.disabled = false;
+
+    map.getContainer().style.cursor = "crosshair";
+
+    showMessage("Clica no mapa para marcar os limites da propriedade.");
+}
+
+
+function calculatePropertyArea(points) {
+
+    const earthRadius = 6378137;
+    let area = 0;
+
+    for (let i = 0; i < points.length; i++) {
+
+        const current = points[i];
+        const next = points[(i + 1) % points.length];
+
+        const lat1 = current.lat * Math.PI / 180;
+        const lat2 = next.lat * Math.PI / 180;
+
+        const lon1 = current.lng * Math.PI / 180;
+        const lon2 = next.lng * Math.PI / 180;
+
+        area += (lon2 - lon1) *
+            (2 + Math.sin(lat1) + Math.sin(lat2));
+    }
+
+    area = Math.abs(area * earthRadius * earthRadius / 2);
+
+    return area / 10000;
+}
+
+
+function finishPropertyDrawing() {
+
+    if (propertyPoints.length < 3) {
+        showMessage("Precisas de pelo menos 3 pontos para concluir.");
+        return;
+    }
+
+    const area = calculatePropertyArea(propertyPoints);
+
+    if (savedProperty) {
+        map.removeLayer(savedProperty);
+    }
+
+    savedProperty = L.polygon(propertyPoints, {
+        color: "#27d27e",
+        fillColor: "#27d27e",
+        fillOpacity: 0.2,
+        weight: 3
+    }).addTo(map);
+
+    propertyAreaDisplay.textContent =
+        `${area.toLocaleString("pt-PT", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        })} ha`;
+
+    savedProperty.bindPopup(
+        `<strong>${escapeHTML(propertyNameInput.value.trim())}</strong><br>` +
+        `Área: ${area.toFixed(2)} hectares`
+    );
+
+    stopPropertyDrawing();
+
+    showMessage("Propriedade delimitada com sucesso!");
+}
+
+
+function stopPropertyDrawing() {
+
+    isDrawingProperty = false;
+
+    startDrawingButton.disabled = false;
+    finishDrawingButton.disabled = true;
+    cancelDrawingButton.disabled = true;
+
+    map.getContainer().style.cursor = "";
+
+    if (propertyPreview) {
+        map.removeLayer(propertyPreview);
+        propertyPreview = null;
+    }
+
+    propertyMarkers.forEach(marker => map.removeLayer(marker));
+    propertyMarkers = [];
+}
+
+
+function clearPropertyDrawing() {
+
+    propertyPoints = [];
+
+    if (propertyPreview) {
+        map.removeLayer(propertyPreview);
+        propertyPreview = null;
+    }
+
+    propertyMarkers.forEach(marker => map.removeLayer(marker));
+    propertyMarkers = [];
+
+    if (savedProperty) {
+        map.removeLayer(savedProperty);
+        savedProperty = null;
+    }
+
+    propertyAreaDisplay.textContent = "0,00 ha";
+}
+
+
+function cancelPropertyDrawing() {
+
+    clearPropertyDrawing();
+
+    isDrawingProperty = false;
+
+    startDrawingButton.disabled = false;
+    finishDrawingButton.disabled = true;
+    cancelDrawingButton.disabled = true;
+
+    map.getContainer().style.cursor = "";
+
+    showMessage("Desenho cancelado.");
+}
+
+startDrawingButton.addEventListener(
+    "click",
+    startPropertyDrawing
+);
+
+finishDrawingButton.addEventListener(
+    "click",
+    finishPropertyDrawing
+);
+
+cancelDrawingButton.addEventListener(
+    "click",
+    cancelPropertyDrawing
+);
+
+// Controlo de transparência NDVI
+
+const ndviOpacity = document.getElementById("ndvi-opacity");
+const opacityValue = document.getElementById("opacity-value");
+
+if (ndviOpacity && opacityValue) {
+
+    ndviOpacity.addEventListener("input", function () {
+
+        const opacity = Number(this.value) / 100;
+
+        vegetationOverlay.setOpacity(opacity);
+
+        opacityValue.textContent = `${this.value}%`;
+
+    });
+
+}
+
+// =====================================
+// TOOL MODALS — ABRIR E FECHAR
+// =====================================
+
+const modalButtons = document.querySelectorAll(".sidebar-menu-button");
+const toolModals = document.querySelectorAll(".tool-modal");
+
+// Abrir o modal correspondente
+modalButtons.forEach(button => {
+    button.addEventListener("click", function () {
+        const modalId = this.dataset.modal;
+        const modal = document.getElementById(modalId);
+
+        if (!modal) return;
+
+        // Fecha qualquer outro modal aberto
+        toolModals.forEach(item => {
+            item.classList.remove("active");
+        });
+
+        modal.classList.add("active");
+    });
+});
+
+// Fechar ao clicar no botão X ou no fundo
+document.querySelectorAll("[data-close-modal]").forEach(element => {
+    element.addEventListener("click", function () {
+        const modal = this.closest(".tool-modal");
+
+        if (modal) {
+            modal.classList.remove("active");
+        }
+    });
+});
+
+// Fechar com a tecla ESC
+document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape") {
+        toolModals.forEach(modal => {
+            modal.classList.remove("active");
+        });
+    }
+});
+// =====================================
+// TUTORIAL INTERATIVO DO ACREVIEW
+// =====================================
+
+const tutorialSteps = [
+    {
+        icon: "🌍",
+        title: "Explora o planeta",
+        description: "Conhece o mapa global do AcreView.",
+        text: "Podes navegar pelo mapa utilizando o rato ou os dedos. Aproxima para observar uma região e afasta para teres uma visão mais ampla do planeta."
+    },
+    {
+        icon: "🔎",
+        title: "Pesquisa localizações",
+        description: "Encontra qualquer lugar do mundo.",
+        text: "Abre a ferramenta Exploração. Pesquisa pelo nome de um país, cidade ou região. Também podes introduzir diretamente as coordenadas geográficas."
+    },
+    {
+        icon: "📍",
+        title: "Encontra a tua localização",
+        description: "Descobre onde estás no mapa.",
+        text: "Utiliza a opção de localização atual para posicionar o mapa onde te encontras. O navegador poderá pedir autorização para aceder à tua localização."
+    },
+    {
+        icon: "🌱",
+        title: "Delimita uma propriedade",
+        description: "Desenha os limites da tua propriedade agrícola.",
+        text: "Abre Propriedade agrícola, introduz um nome e inicia o desenho. Clica em vários pontos do mapa para definir os limites. Precisas de pelo menos três pontos para concluir e calcular uma área aproximada."
+    },
+    {
+        icon: "🛰️",
+        title: "Explora as camadas do mapa",
+        description: "Observa diferentes tipos de informação.",
+        text: "Na Visualização do mapa podes alternar entre o mapa normal, imagens de satélite e a camada NDVI. O NDVI indica a atividade da vegetação, mas não mede diretamente a fertilidade do solo."
+    },
+    {
+        icon: "🌾",
+        title: "Estás pronto para começar!",
+        description: "Utiliza o AcreView para explorar territórios.",
+        text: "Já conheces as ferramentas principais. Podes pesquisar regiões, delimitar propriedades e consultar as camadas disponíveis. Os relatórios agrícolas e as recomendações serão desenvolvidos nas próximas etapas do projeto."
+    }
+];
+
+const tutorialModal = document.getElementById("tutorial-modal");
+const tutorialTrigger = document.getElementById("start-tutorial");
+
+const tutorialTitle = document.getElementById("tutorial-title");
+const tutorialDescription = document.getElementById("tutorial-description");
+const tutorialIcon = document.getElementById("tutorial-icon");
+const tutorialHeading = document.getElementById("tutorial-heading");
+const tutorialText = document.getElementById("tutorial-text");
+
+const tutorialProgress = document.getElementById("tutorial-progress-fill");
+const tutorialStepNumber = document.getElementById("tutorial-step-number");
+
+const tutorialPrev = document.getElementById("tutorial-prev");
+const tutorialNext = document.getElementById("tutorial-next");
+const tutorialSkip = document.getElementById("tutorial-skip");
+
+let currentTutorialStep = 0;
+
+function showTutorialStep() {
+    const step = tutorialSteps[currentTutorialStep];
+    // Remover destaques anteriores
+document.querySelectorAll(".tutorial-highlight")
+    .forEach(element => {
+        element.classList.remove("tutorial-highlight");
+    });
+
+// Identificar o elemento a destacar
+const targets = {
+    0: '[data-tutorial-target="map"]',
+    1: '[data-tutorial-target="exploration"]',
+    2: '[data-tutorial-target="location"]',
+    3: '[data-tutorial-target="property"]',
+    4: '[data-tutorial-target="layers"]'
+};
+
+const targetSelector = targets[currentTutorialStep];
+
+if (targetSelector) {
+    const target = document.querySelector(targetSelector);
+
+    if (target) {
+        target.classList.add("tutorial-highlight");
+        target.scrollIntoView({
+            behavior: "smooth",
+            block: "nearest"
+        });
+    }
+}
+
+    tutorialTitle.textContent = step.title;
+    tutorialDescription.textContent = step.description;
+    tutorialIcon.textContent = step.icon;
+    tutorialHeading.textContent = step.title;
+    tutorialText.textContent = step.text;
+
+    tutorialStepNumber.textContent =
+        `Etapa ${currentTutorialStep + 1} de ${tutorialSteps.length}`;
+
+    const progress =
+        ((currentTutorialStep + 1) / tutorialSteps.length) * 100;
+
+    tutorialProgress.style.width = `${progress}%`;
+
+    tutorialPrev.disabled = currentTutorialStep === 0;
+
+    tutorialNext.textContent =
+        currentTutorialStep === tutorialSteps.length - 1
+            ? "Concluir ✓"
+            : "Seguinte →";
+}
+
+function startTutorial() {
+    currentTutorialStep = 0;
+    showTutorialStep();
+    tutorialModal.classList.add("active");
+}
+
+function closeTutorial() {
+    tutorialModal.classList.remove("active");
+
+    document.querySelectorAll(".tutorial-highlight")
+        .forEach(element => {
+            element.classList.remove("tutorial-highlight");
+        });
+}
+
+tutorialTrigger.addEventListener("click", startTutorial);
+
+tutorialNext.addEventListener("click", function () {
+    if (currentTutorialStep < tutorialSteps.length - 1) {
+        currentTutorialStep++;
+        showTutorialStep();
+    } else {
+        closeTutorial();
+    }
+});
+
+tutorialPrev.addEventListener("click", function () {
+    if (currentTutorialStep > 0) {
+        currentTutorialStep--;
+        showTutorialStep();
+    }
+});
+
+tutorialSkip.addEventListener("click", closeTutorial);

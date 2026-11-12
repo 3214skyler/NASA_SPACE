@@ -297,7 +297,6 @@ a {
 ===================================== */
 
 .map-layers {
-    margin-top: 40px;
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -774,10 +773,18 @@ a {
     }
 
     .explore-sidebar {
-        padding: 25px 20px;
-        border-right: none;
-        border-bottom: 1px solid var(--border);
-    }
+    padding: 35px 25px 25px;
+    display: flex;
+    flex-direction: column;
+    background: rgba(6, 17, 11, 0.96);
+    border-right: 1px solid var(--border);
+    z-index: 400;
+
+    overflow-y: auto;
+    max-height: calc(100vh - 76px);
+    scrollbar-width: thin;
+    scrollbar-color: rgba(74, 222, 128, 0.25) transparent;
+}
 
     .sidebar-heading h1 {
         font-size: 25px;
@@ -821,4 +828,776 @@ a {
         scroll-behavior: auto !important;
     }
 
+}
+.location-button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    border: 1px solid rgba(39, 210, 126, 0.3);
+    border-radius: 8px;
+    background: rgba(39, 210, 126, 0.08);
+    color: #27d27e;
+    font-size: 13px;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.location-button:hover {
+    background: rgba(39, 210, 126, 0.18);
+    border-color: #27d27e;
+}
+/* PROPERTY SECTION */
+
+.property-section {
+    margin-top: 28px;
+    padding-top: 22px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.property-section h2 {
+    margin-top: 12px;
+    font-size: 17px;
+    color: #ffffff;
+}
+
+.property-description {
+    margin: 8px 0 18px;
+    color: #94a3a0;
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+.property-section label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 12px;
+    color: #cbd5d1;
+}
+
+#property-name {
+    width: 100%;
+    padding: 12px;
+    color: white;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    outline: none;
+}
+
+#property-name:focus {
+    border-color: #27d27e;
+}
+
+.property-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 14px;
+}
+
+.property-actions button {
+    padding: 11px;
+    border-radius: 8px;
+    border: 1px solid rgba(39, 210, 126, 0.25);
+    background: rgba(39, 210, 126, 0.08);
+    color: #27d27e;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.property-actions button:hover:not(:disabled) {
+    background: rgba(39, 210, 126, 0.18);
+}
+
+.property-actions button:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+}
+
+.property-result {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 18px;
+    padding: 14px;
+    background: rgba(39, 210, 126, 0.06);
+    border-radius: 8px;
+    color: #a7b8b0;
+    font-size: 12px;
+}
+
+.property-result strong {
+    color: #27d27e;
+    font-size: 16px;
+}
+/* NDVI Controls */
+
+.ndvi-controls {
+    margin-top: 20px;
+    padding: 16px;
+    background: rgba(20, 45, 35, 0.65);
+    border: 1px solid rgba(39, 210, 126, 0.18);
+    border-radius: 12px;
+    transition: opacity 0.3s ease;
+}
+
+.ndvi-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.ndvi-header h3 {
+    margin: 0;
+    color: #e7f5ed;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.ndvi-status {
+    padding: 4px 8px;
+    border-radius: 20px;
+    background: rgba(39, 210, 126, 0.12);
+    color: #27d27e;
+    font-size: 10px;
+}
+
+.ndvi-controls p {
+    margin: 10px 0 16px;
+    color: #91a99b;
+    font-size: 11px;
+    line-height: 1.5;
+}
+
+.ndvi-gradient {
+    height: 9px;
+    border-radius: 10px;
+    background: linear-gradient(
+        to right,
+        #d8c98b,
+        #e6e65b,
+        #a8d94e,
+        #45b649,
+        #087830
+    );
+}
+
+.ndvi-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 7px;
+    color: #91a99b;
+    font-size: 10px;
+}
+
+.ndvi-controls label {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 18px;
+    margin-bottom: 9px;
+    color: #dcebe1;
+    font-size: 11px;
+}
+
+.ndvi-controls label span {
+    color: #27d27e;
+}
+
+#ndvi-opacity {
+    width: 100%;
+    accent-color: #27d27e;
+    cursor: pointer;
+}
+
+.ndvi-controls {
+    display: none;
+}
+
+.ndvi-controls.visible {
+    display: block;
+}
+
+/* ORGANIZAÇÃO DA BARRA LATERAL */
+
+.sidebar-group {
+    margin-top: 28px;
+    padding-top: 22px;
+    border-top: 1px solid var(--border);
+}
+
+.sidebar-group-title {
+    display: block;
+    margin-bottom: 16px;
+    color: var(--muted);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 1.6px;
+    text-transform: uppercase;
+}
+
+.sidebar-group .location-search,
+.sidebar-group .coordinates-search {
+    margin-top: 18px;
+}
+
+.sidebar-group.property-section {
+    margin-top: 28px;
+    padding-top: 22px;
+}
+
+/* =====================================
+   TOOL MODALS
+===================================== */
+
+.tool-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 1500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+
+    transition:
+        opacity 0.3s ease,
+        visibility 0.3s ease;
+}
+
+.tool-modal.active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+.tool-modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 5, 3, 0.72);
+    backdrop-filter: blur(8px);
+}
+
+.tool-modal-card {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 480px;
+    max-height: 85vh;
+    overflow-y: auto;
+
+    padding: 28px;
+
+    border: 1px solid rgba(74, 222, 128, 0.25);
+    border-radius: 18px;
+
+    background: linear-gradient(
+        145deg,
+        rgba(16, 42, 27, 0.97),
+        rgba(4, 15, 10, 0.97)
+    );
+
+    backdrop-filter: blur(25px);
+
+    box-shadow: 0 25px 90px rgba(0, 0, 0, 0.55);
+
+    transform: translateY(20px) scale(0.97);
+    transition: transform 0.3s ease;
+}
+
+.tool-modal.active .tool-modal-card {
+    transform: translateY(0) scale(1);
+}
+
+/* CABEÇALHO */
+
+.tool-modal-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 15px;
+
+    padding-bottom: 22px;
+    border-bottom: 1px solid var(--border);
+}
+
+.tool-modal-header h2 {
+    margin-top: 12px;
+    color: var(--text);
+    font-size: 23px;
+}
+
+.tool-modal-header p {
+    margin-top: 8px;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+.tool-modal-close {
+    flex-shrink: 0;
+    width: 35px;
+    height: 35px;
+
+    border: 1px solid var(--border);
+    border-radius: 8px;
+
+    background: rgba(255, 255, 255, 0.03);
+    color: var(--muted);
+    font-size: 23px;
+
+    transition: 0.3s ease;
+}
+
+.tool-modal-close:hover {
+    color: white;
+    border-color: var(--primary);
+    background: rgba(34, 197, 94, 0.12);
+}
+
+/* CONTEÚDO */
+
+.tool-modal-content {
+    padding-top: 22px;
+}
+
+.tool-modal-content > label {
+    display: block;
+    margin-bottom: 9px;
+    color: #cbd5d1;
+    font-size: 12px;
+}
+
+/* BOTÕES DO MENU */
+
+.sidebar-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 13px;
+    margin-top: 35px;
+}
+
+.sidebar-menu-button {
+    width: 100%;
+    min-height: 76px;
+
+    display: flex;
+    align-items: center;
+    gap: 14px;
+
+    padding: 14px;
+
+    border: 1px solid var(--border);
+    border-radius: 11px;
+
+    background: rgba(255, 255, 255, 0.025);
+    color: var(--text);
+    text-align: left;
+
+    transition: 0.3s ease;
+}
+
+.sidebar-menu-button:hover {
+    transform: translateX(4px);
+    border-color: var(--primary);
+    background: rgba(34, 197, 94, 0.09);
+}
+
+.menu-icon {
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+
+    display: grid;
+    place-items: center;
+
+    border: 1px solid var(--border);
+    border-radius: 9px;
+
+    background: rgba(34, 197, 94, 0.08);
+    color: var(--primary-light);
+    font-size: 20px;
+}
+
+.sidebar-menu-button strong,
+.sidebar-menu-button small {
+    display: block;
+}
+
+.sidebar-menu-button strong {
+    font-size: 12px;
+}
+
+.sidebar-menu-button small {
+    margin-top: 6px;
+    color: var(--muted);
+    font-size: 10px;
+}
+
+.menu-arrow {
+    margin-left: auto;
+    color: var(--primary-light);
+    font-size: 18px;
+}
+
+/* CAMADAS DO MAPA */
+
+.tool-modal-content.map-layers {
+    margin-top: 0;
+    gap: 10px;
+}
+
+.tool-modal-content.map-layers .ndvi-controls {
+    margin-top: 12px;
+}
+
+/* MOBILE */
+
+@media (max-width: 500px) {
+    .tool-modal {
+        padding: 14px;
+    }
+
+    .tool-modal-card {
+        padding: 22px 18px;
+    }
+
+    .tool-modal-header h2 {
+        font-size: 20px;
+    }
+}
+
+/* =====================================
+   ACREVIEW — SLIDE PANELS
+===================================== */
+
+.tool-modal {
+    justify-content: flex-end;
+    padding: 0;
+}
+
+.tool-modal-backdrop {
+    background: rgba(0, 5, 3, 0.45);
+    backdrop-filter: blur(3px);
+}
+
+.tool-modal-card {
+    width: 100%;
+    max-width: 440px;
+    height: 100%;
+    max-height: 100vh;
+    overflow-y: auto;
+
+    padding: 35px 28px;
+
+    border-radius: 18px 0 0 18px;
+    border-top: none;
+    border-right: none;
+    border-bottom: none;
+
+    transform: translateX(100%);
+    transition: transform 0.35s ease;
+}
+
+.tool-modal.active .tool-modal-card {
+    transform: translateX(0);
+}
+
+/* Cabeçalho do painel */
+
+.tool-modal-header {
+    position: sticky;
+    top: -35px;
+    z-index: 5;
+    padding: 15px 0 22px;
+    background: rgba(7, 23, 14, 0.97);
+}
+
+/* Telemóveis */
+
+@media (max-width: 650px) {
+
+    .tool-modal {
+        align-items: flex-end;
+    }
+
+    .tool-modal-card {
+        width: 100%;
+        max-width: none;
+        height: auto;
+        max-height: 85vh;
+
+        padding: 25px 20px;
+
+        border-radius: 20px 20px 0 0;
+        border: 1px solid var(--border);
+
+        transform: translateY(100%);
+    }
+
+    .tool-modal.active .tool-modal-card {
+        transform: translateY(0);
+    }
+
+    .tool-modal-header {
+        top: -25px;
+    }
+}
+
+/* BOTÃO DE AJUDA */
+.tutorial-trigger {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    padding: 16px;
+    margin-top: 25px;
+    text-align: left;
+    color: var(--text);
+    background: rgba(34, 197, 94, 0.07);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: 0.25s ease;
+}
+
+.tutorial-trigger:hover {
+    background: rgba(34, 197, 94, 0.14);
+    border-color: var(--primary);
+}
+
+.tutorial-trigger > span:first-child {
+    width: 32px;
+    height: 32px;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    color: var(--primary-light);
+    border: 1px solid var(--primary);
+    border-radius: 50%;
+    font-size: 18px;
+}
+
+.tutorial-trigger > span:nth-child(2) {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.tutorial-trigger strong {
+    font-size: 13px;
+}
+
+.tutorial-trigger small {
+    color: var(--muted);
+    font-size: 11px;
+}
+
+.tutorial-trigger > span:last-child {
+    margin-left: auto;
+    color: var(--primary-light);
+}
+
+/* JANELA DO TUTORIAL */
+.tutorial-modal {
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.tutorial-card {
+    width: 100%;
+    max-width: 560px;
+    height: auto;
+    max-height: 90vh;
+    padding: 30px;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    transform: translateY(20px) scale(0.97);
+}
+
+.tutorial-modal.active .tutorial-card {
+    transform: translateY(0) scale(1);
+}
+
+.tutorial-progress {
+    margin: 25px 0;
+}
+
+.tutorial-progress-bar {
+    width: 100%;
+    height: 5px;
+    overflow: hidden;
+    background: var(--surface-light);
+    border-radius: 10px;
+}
+
+#tutorial-progress-fill {
+    width: 16.66%;
+    height: 100%;
+    background: var(--primary);
+    border-radius: 10px;
+    transition: width 0.3s ease;
+}
+
+#tutorial-step-number {
+    display: block;
+    margin-top: 10px;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.tutorial-content {
+    padding: 15px 0 25px;
+}
+
+.tutorial-icon {
+    width: 65px;
+    height: 65px;
+    display: grid;
+    place-items: center;
+    margin-bottom: 22px;
+    background: rgba(34, 197, 94, 0.1);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    font-size: 30px;
+}
+
+.tutorial-content h3 {
+    margin-bottom: 12px;
+    color: var(--text);
+    font-size: 23px;
+}
+
+.tutorial-content p {
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.8;
+}
+
+.tutorial-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+}
+
+.tutorial-actions > div {
+    display: flex;
+    gap: 10px;
+}
+
+.tutorial-actions button {
+    padding: 11px 16px;
+    color: var(--text);
+    background: var(--surface-light);
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.tutorial-actions button:hover:not(:disabled) {
+    border-color: var(--primary);
+}
+
+.tutorial-actions #tutorial-next {
+    color: #041109;
+    background: var(--primary);
+    border-color: var(--primary);
+    font-weight: 600;
+}
+
+.tutorial-actions button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+@media (max-width: 650px) {
+    .tutorial-card {
+        padding: 23px 18px;
+    }
+
+    .tutorial-content h3 {
+        font-size: 20px;
+    }
+
+    .tutorial-actions button {
+        padding: 10px 12px;
+        font-size: 12px;
+    }
+}
+
+/* DESTAQUE DOS ELEMENTOS DO TUTORIAL */
+
+.tutorial-highlight {
+    position: relative !important;
+    z-index: 2001 !important;
+    outline: 2px solid var(--primary-light) !important;
+    outline-offset: 5px;
+    box-shadow:
+        0 0 0 6px rgba(34, 197, 94, 0.15),
+        0 0 25px rgba(34, 197, 94, 0.55) !important;
+    border-radius: 10px;
+    animation: tutorial-pulse 1.8s infinite;
+}
+
+@keyframes tutorial-pulse {
+    0%, 100% {
+        box-shadow:
+            0 0 0 6px rgba(34, 197, 94, 0.15),
+            0 0 20px rgba(34, 197, 94, 0.4);
+    }
+
+    50% {
+        box-shadow:
+            0 0 0 10px rgba(34, 197, 94, 0.08),
+            0 0 30px rgba(34, 197, 94, 0.7);
+    }
+}
+
+/* Indicação de interação */
+.tutorial-target-message {
+    display: none;
+    margin-top: 15px;
+    padding: 12px;
+    color: var(--primary-light);
+    background: rgba(34, 197, 94, 0.08);
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+.tutorial-target-message.visible {
+    display: block;
+}
+
+/* CORREÇÃO: O MAPA NÃO DEVE FICAR À FRENTE DO TUTORIAL */
+
+.tutorial-highlight[data-tutorial-target="map"] {
+    z-index: auto !important;
+}
+
+/* Garantir que o tutorial fica acima do mapa */
+.tutorial-modal {
+    z-index: 3000 !important;
+}
+
+/* Permitir visualizar os elementos durante o tutorial */
+.tutorial-modal .tool-modal-backdrop {
+    background: rgba(0, 5, 3, 0.12);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+}
+
+/* Manter a janela do tutorial em primeiro plano */
+.tutorial-modal .tutorial-card {
+    position: relative;
+    z-index: 2;
 }
