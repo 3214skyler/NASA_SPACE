@@ -1,35 +1,67 @@
+from datetime import date, datetime, timedelta
 import requests
 
 class NasaService:
     @staticmethod
-    def fetch_nasa_power_data(lat: float, lon: float):
+    def fetch_nasa_power_data(
+        lat: float,
+        lon: float,
+        start_date: str | None = None,
+        end_date: str | None = None
+    ):
         """
-        Consulta a API pública da NASA POWER para obter parâmetros meteorológicos
-        diários (como temperatura do ar e precipitação) para a localização enviada.
+        Obtém dados climáticos diários da NASA POWER.
+        Por padrão, consulta os últimos 12 meses completos.
         """
-        url = (
-            f"https://power.larc.nasa.gov/api/temporal/daily/point?"
-            f"parameters=T2M,PRECTOTCORR&community=AG&longitude={lon}&latitude={lat}&"
-            f"start=20240101&end=20241231&format=JSON"
-        )
+        today = date.today()
+        if not end_date:
+            end = today.replace(day=1) - timedelta(days=1)
+            end_date = end.strftime("%Y%m%d")
+        if not start_date:
+            end = datetime.strptime(end_date, "%Y%m%d").date()
+            start = end.replace(day=1)
+            for _ in range(11):
+                start = (start - timedelta(days=1)).replace(day=1)
+            start_date = start.strftime("%Y%m%d")
+
+        params = {
+            "parameters": "T2M,PRECTOTCORR",
+            "community": "AG",
+            "longitude": lon,
+            "latitude": lat,
+            "start": start_date,
+            "end": end_date,
+            "format": "JSON"
+        }
+        url = "https://power.larc.nasa.gov/api/temporal/daily/point"
         
         try:
-            response = requests.get(url, timeout=10)
-            if response.status_code == 200:
-                data = response.json()
-                return data.get("properties", {}).get("parameter", {})
-            else:
-                return {"error": "Erro ao comunicar com a API da NASA POWER"}
-        except requests.exceptions.RequestException as e:
-            return {"error": f"Falha na ligação: {str(e)}"}
+            response = requests.get(url, params=params, timeout=30)
+            response.raise_for_status()
+            data = response.json()
+            weather = data.get("properties", {}).get("parameter", {})
+            
+            if not weather:
+                raise ValueError("A NASA não devolveu dados meteorológicos.")
+                
+            for parameter in weather.values():
+                for day, value in parameter.items():
+                    if value == -999:
+                        parameter[day] = None
+                        
+            return weather
+            
+        except requests.exceptions.RequestException as error:
+            raise RuntimeError(
+                f"Erro ao comunicar com a NASA POWER: {error}"
+            ) from error
 
     @staticmethod
     def calculate_rotation_strategies(priority: str, weather_data: dict):
         """
         Compara pelo menos três estratégias de rotação de culturas com base 
-        na prioridade escolhida pelo agricultor e nos dados recolhidos[cite: 1, 2].
+        na prioridade escolhida pelo agricultor e nos dados recolhidos.
         """
-        
         strategies = [
             {
                 "id": 1,
