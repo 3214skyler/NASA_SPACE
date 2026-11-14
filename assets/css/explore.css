@@ -1601,3 +1601,191 @@ a {
     position: relative;
     z-index: 2;
 }
+
+/* =====================================
+   PROPERTY DRAWING MODE
+===================================== */
+
+/* Durante o desenho, o fundo deixa de bloquear o mapa */
+#property-modal.is-drawing {
+    pointer-events: none;
+}
+
+#property-modal.is-drawing .tool-modal-backdrop {
+    pointer-events: none;
+    background: transparent;
+    backdrop-filter: none;
+}
+
+/* Painel compacto durante o desenho */
+#property-modal.is-drawing .tool-modal-card {
+    pointer-events: auto;
+
+    width: 320px;
+    height: auto;
+    max-height: calc(100vh - 40px);
+
+    margin: 20px;
+
+    border: 1px solid var(--primary);
+    border-radius: 15px;
+
+    transform: translateX(0);
+}
+
+/* Telemóveis */
+@media (max-width: 650px) {
+
+    #property-modal.is-drawing {
+        align-items: flex-end;
+    }
+
+    #property-modal.is-drawing .tool-modal-card {
+        width: 100%;
+        max-width: 100%;
+        max-height: 65vh;
+
+        margin: 0;
+
+        border-radius: 18px 18px 0 0;
+
+        transform: translateY(0);
+    }
+
+}
+
+/* =====================================
+   ACREVIEW — FLOATING PROPERTY TOOLBAR
+===================================== */
+
+#property-modal.is-drawing {
+    pointer-events: none;
+}
+
+#property-modal.is-drawing .tool-modal-backdrop {
+    pointer-events: none;
+    background: transparent;
+    backdrop-filter: none;
+}
+
+#property-modal.is-drawing .tool-modal-card {
+    position: fixed;
+
+    top: 20px;
+    right: 20px;
+
+    width: 280px;
+    height: auto;
+    max-height: calc(100vh - 40px);
+
+    margin: 0;
+    padding: 16px;
+
+    border: 1px solid var(--primary);
+    border-radius: 14px;
+
+    transform: none;
+
+    pointer-events: auto;
+
+    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.4);
+}
+
+/* Esconder informações desnecessárias durante o desenho */
+
+#property-modal.is-drawing .tool-modal-header p,
+#property-modal.is-drawing .tool-modal-content label,
+#property-modal.is-drawing #property-name {
+    display: none;
+}
+
+/* Cabeçalho */
+
+#property-modal.is-drawing .tool-modal-header {
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.property-drag-handle {
+    display: none;
+}
+
+#property-modal.is-drawing .property-drag-handle {
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    width: 30px;
+    height: 35px;
+
+    font-size: 23px;
+    cursor: grab;
+
+    color: var(--primary);
+
+    user-select: none;
+    touch-action: none;
+}
+
+#property-modal.is-drawing .property-drag-handle:active {
+    cursor: grabbing;
+}
+
+/* Informação do desenho */
+
+.property-drawing-info {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+
+    margin-bottom: 16px;
+}
+
+.property-drawing-info > div {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.property-drawing-info span {
+    font-size: 12px;
+    opacity: 0.7;
+}
+
+.property-drawing-info strong {
+    font-size: 17px;
+}
+
+/* Botões */
+
+#property-modal.is-drawing .property-actions {
+    display: flex;
+    gap: 8px;
+}
+
+#property-modal.is-drawing .property-actions button {
+    flex: 1;
+    padding: 9px 5px;
+    font-size: 12px;
+}
+
+/* Telemóveis */
+
+@media (max-width: 650px) {
+
+    #property-modal.is-drawing .tool-modal-card {
+        width: 260px;
+        max-width: calc(100vw - 20px);
+
+        max-height: calc(100vh - 20px);
+
+        top: 10px;
+        right: 10px;
+        bottom: auto;
+
+        border-radius: 14px;
+    }
+
+}

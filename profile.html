@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AcreView | Meu Perfil</title>
+
+    <link rel="stylesheet" href="assets/css/profile.css">
+</head>
+
+<body>
+
+    <div class="profile-layout">
+
+        <!-- Menu lateral -->
+        <aside class="profile-sidebar">
+
+            <a href="index.html" class="logo">
+                <span>Acre</span>View
+            </a>
+
+            <nav class="profile-navigation">
+
+                <button class="profile-nav-item active" data-section="personal">
+                    <span data-i18n>Meu perfil</span>
+                </button>
+
+                <button class="profile-nav-item" data-section="properties">
+                    <span data-i18n>Minhas propriedades</span>
+                </button>
+
+                <button class="profile-nav-item" data-section="preferences">
+                    <span data-i18n>Preferências</span>
+                </button>
+
+                <button class="profile-nav-item" data-section="security">
+                    <span data-i18n>Segurança</span>
+                </button>
+
+                <button class="profile-nav-item" data-section="settings">
+                    <span data-i18n>Definições</span>
+                </button>
+
+            </nav>
+
+            <div class="sidebar-footer">
+                <a href="explore.html" data-i18n>Voltar ao mapa</a>
+                <a href="index.html" data-i18n>Sair</a>
+            </div>
+
+        </aside>
+
+
+        <!-- Conteúdo principal -->
+        <main class="profile-main">
+
+            <header class="profile-header">
+                <div>
+                    <h1 data-i18n>Meu perfil</h1>
+                    <p data-i18n>Gere as tuas informações e a tua atividade agrícola.</p>
+                </div>
+            </header>
+
+
+            <!-- Secção: Dados pessoais -->
+            <section class="profile-section active" id="personal">
+
+                <h2 data-i18n>Informações pessoais</h2>
+                <p data-i18n>Os teus dados e informações como agricultor.</p>
+
+                <div class="profile-dashboard">
+
+                    <!-- Cartão principal do agricultor -->
+                    <div class="profile-hero">
+
+                        <div class="hero-content">
+
+                            <div class="avatar-container">
+                                <img
+                                    src="https://ui-avatars.com/api/?name=A&background=14532d&color=ffffff&size=160"
+                                    alt="Fotografia do agricultor"
+                                    id="profile-avatar"
+                                >
+
+                                <label for="avatar-upload" class="avatar-edit">
+                                    ✎
+                                </label>
+
+                                <input
+                                    type="file"
+                                    id="avatar-upload"
+                                    accept="image/*"
+                                    hidden
+                                >
+                            </div>
+
+                            <div class="profile-identity">
+                                <span class="profile-badge" data-i18n>AGRICULTOR</span>
+
+                                <h2 id="profile-name">O teu nome</h2>
+
+                                <p id="profile-email">teuemail@exemplo.com</p>
+
+                                <span class="profile-location">
+                                    🌍 <span data-i18n>Localização não definida</span>
+                                </span>
+                            </div>
+
+                        </div>
+
+                        <div class="hero-decoration">
+                            <div class="orbit orbit-one"></div>
+                            <div class="orbit orbit-two"></div>
+                            <div class="orbit-center">🌱</div>
+                        </div>
+
+                    </div>
+
+
+                    <!-- Estatísticas -->
+                    <div class="statistics-grid">
+
+                        <article class="stat-card" data-tilt>
+                            <div class="stat-icon">🌾</div>
+                            <span data-i18n>Propriedades</span>
+                            <h3 class="stat-number" data-value="0">0</h3>
+                            <small data-i18n>Áreas registadas</small>
+                        </article>
+
+                        <article class="stat-card" data-tilt>
+                            <div class="stat-icon">🌱</div>
+                            <span data-i18n>Culturas</span>
+                            <h3 class="stat-number" data-value="0">0</h3>
+                            <small data-i18n>Culturas acompanhadas</small>
+                        </article>
+
+                        <article class="stat-card" data-tilt>
+                            <div class="stat-icon">📊</div>
+                            <span data-i18n>Análises</span>
+                            <h3 class="stat-number" data-value="0">0</h3>
+                            <small data-i18n>Análises realizadas</small>
+                        </article>
+
+                    </div>
+
+
+                    <!-- Informações pessoais -->
+                    <div class="profile-information">
+
+                        <div class="information-heading">
+                            <div>
+                                <h3 data-i18n>Os teus dados</h3>
+                                <p data-i18n>Informações básicas da tua conta.</p>
+                            </div>
+
+                            <button id="edit-profile" class="edit-button">
+                                ✎ <span data-i18n>Editar perfil</span>
+                            </button>
+                        </div>
+
+                        <div class="information-grid">
+
+                            <div class="information-item">
+                                <span data-i18n>Nome completo</span>
+                                <strong id="info-name">Não definido</strong>
+                            </div>
+
+                            <div class="information-item">
+                                <span data-i18n>Email</span>
+                                <strong id="info-email">Não definido</strong>
+                            </div>
+
+                            <div class="information-item">
+                                <span data-i18n>País</span>
+                                <strong id="info-country">Não definido</strong>
+                            </div>
+
+                            <div class="information-item">
+                                <span data-i18n>Experiência agrícola</span>
+                                <strong id="info-experience">Não definida</strong>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Modal de edição do perfil -->
+                <div class="edit-modal" id="edit-modal">
+
+                    <div class="edit-modal-backdrop"></div>
+
+                    <div class="edit-modal-card">
+
+                        <div class="modal-heading">
+                            <div>
+                                <span class="profile-badge" data-i18n>PERSONALIZAÇÃO</span>
+                                <h2 data-i18n>Editar perfil</h2>
+                                <p data-i18n>Atualiza as tuas informações pessoais.</p>
+                            </div>
+
+                            <button id="close-edit-modal" class="close-modal">
+                                &times;
+                            </button>
+                        </div>
+
+                        <form id="profile-form">
+
+                            <div class="form-group">
+                                <label for="edit-name" data-i18n>Nome completo</label>
+                                <input
+                                    type="text"
+                                    id="edit-name"
+                                    placeholder="O teu nome"
+                                    data-i18n-placeholder
+                                    required
+                                >
+                            </div>
+
+                            <div class="form-group">
+                                <label for="edit-email" data-i18n>Email</label>
+                                <input
+                                    type="email"
+                                    id="edit-email"
+                                    placeholder="teuemail@exemplo.com"
+                                    data-i18n-placeholder
+                                    required
+                                >
+                            </div>
+
+                            <div class="form-group">
+                                <label for="edit-country" data-i18n>País</label>
+                                <input
+                                    type="text"
+                                    id="edit-country"
+                                    placeholder="O teu país"
+                                    data-i18n-placeholder
+                                >
+                            </div>
+
+                            <div class="form-group">
+                                <label for="edit-experience" data-i18n>Experiência agrícola</label>
+
+                                <select id="edit-experience">
+                                    <option value="" data-i18n>Selecionar experiência</option>
+                                    <option value="Iniciante" data-i18n>Iniciante</option>
+                                    <option value="1 a 5 anos" data-i18n>1 a 5 anos</option>
+                                    <option value="5 a 10 anos" data-i18n>5 a 10 anos</option>
+                                    <option value="Mais de 10 anos" data-i18n>Mais de 10 anos</option>
+                                </select>
+                            </div>
+
+                            <div class="modal-actions">
+                                <button type="button" id="cancel-edit" class="cancel-button" data-i18n>
+                                    Cancelar
+                                </button>
+
+                                <button type="submit" class="save-button" data-i18n>
+                                    Guardar alterações
+                                </button>
+                            </div>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- Secção: Propriedades -->
+            <section class="profile-section" id="properties">
+
+                <div class="section-heading">
+                    <div>
+                        <h2 data-i18n>Minhas propriedades</h2>
+                        <p data-i18n>Consulta e gere as tuas propriedades agrícolas.</p>
+                    </div>
+
+                    <button type="button" id="add-property" data-i18n>
+                        + Adicionar propriedade
+                    </button>
+                </div>
+
+
+                <!-- Estatísticas das propriedades -->
+                <div class="property-statistics">
+
+                    <div class="property-stat-card">
+                        <span data-i18n>Total de propriedades</span>
+                        <strong id="total-properties">0</strong>
+                    </div>
+
+                    <div class="property-stat-card">
+                        <span data-i18n>Área total</span>
+                        <strong id="total-area">0 ha</strong>
+                    </div>
+
+                </div>
+
+
+                <!-- Lista de propriedades -->
+                <div id="properties-list">
+
+                    <div class="empty-properties" id="empty-properties">
+                        <div class="empty-icon">🌱</div>
+
+                        <h3 data-i18n>Ainda não tens propriedades registadas</h3>
+
+                        <p data-i18n>
+                            Adiciona a tua primeira propriedade para começares
+                            a organizar as informações da tua atividade agrícola.
+                        </p>
+
+                        <button type="button" id="first-property" data-i18n>
+                            Registar primeira propriedade
+                        </button>
+                    </div>
+
+                </div>
+
+
+                <!-- Formulário de registo -->
+                <div class="property-modal" id="property-modal">
+
+                    <div class="property-modal-content">
+
+                        <div class="property-modal-header">
+                            <div>
+                                <h2 data-i18n>Nova propriedade</h2>
+                                <p data-i18n>Preenche as informações da tua propriedade agrícola.</p>
+                            </div>
+
+                            <button type="button" id="close-property-modal">
+                                &times;
+                            </button>
+                        </div>
+
+                        <form id="property-form">
+
+                            <div class="form-group">
+                                <label for="property-name" data-i18n>
+                                    Nome da propriedade
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="property-name"
+                                    placeholder="Ex: Fazenda Esperança"
+                                    data-i18n-placeholder
+                                    required
+                                >
+                            </div>
+
+                            <div class="form-group">
+                                <label for="property-location" data-i18n>
+                                    Localização
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="property-location"
+                                    placeholder="Província, município ou localidade"
+                                    data-i18n-placeholder
+                                    required
+                                >
+                            </div>
+
+                            <div class="form-row">
+
+                                <div class="form-group">
+                                    <label for="property-latitude" data-i18n>
+                                        Latitude
+                                    </label>
+
+                                    <input
+                                        type="number"
+                                        id="property-latitude"
+                                        step="any"
+                                        placeholder="-8.8383"
+                                    >
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="property-longitude" data-i18n>
+                                        Longitude
+                                    </label>
+
+                                    <input
+                                        type="number"
+                                        id="property-longitude"
+                                        step="any"
+                                        placeholder="13.2344"
+                                    >
+                                </div>
+
+                            </div>
+
+                            <div class="form-row">
+
+                                <div class="form-group">
+                                    <label for="property-area" data-i18n>
+                                        Área da propriedade (hectares)
+                                    </label>
+
+                                    <input
+                                        type="number"
+                                        id="property-area"
+                                        min="0.01"
+                                        step="any"
+                                        placeholder="Ex: 5"
+                                        data-i18n-placeholder
+                                        required
+                                    >
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="property-soil" data-i18n>
+                                        Tipo de solo
+                                    </label>
+
+                                    <select id="property-soil" required>
+                                        <option value="" data-i18n>Selecionar solo</option>
+                                        <option value="Argiloso" data-i18n>Argiloso</option>
+                                        <option value="Arenoso" data-i18n>Arenoso</option>
+                                        <option value="Franco" data-i18n>Franco</option>
+                                        <option value="Siltoso" data-i18n>Siltoso</option>
+                                        <option value="Desconhecido" data-i18n>Não sei identificar</option>
+                                    </select>
+                                </div>
+
+                            </div>
+
+                            <div class="form-group">
+                                <label for="property-irrigation" data-i18n>
+                                    Sistema de irrigação
+                                </label>
+
+                                <select id="property-irrigation" required>
+                                    <option value="" data-i18n>Selecionar sistema</option>
+                                    <option value="Chuva" data-i18n>Dependente da chuva</option>
+                                    <option value="Manual" data-i18n>Irrigação manual</option>
+                                    <option value="Gotejamento" data-i18n>Gotejamento</option>
+                                    <option value="Aspersão" data-i18n>Aspersão</option>
+                                    <option value="Outro" data-i18n>Outro</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="property-crops" data-i18n>
+                                    Culturas atualmente cultivadas
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="property-crops"
+                                    placeholder="Ex: Milho, feijão, mandioca"
+                                    data-i18n-placeholder
+                                >
+                            </div>
+
+                            <div class="property-form-actions">
+
+                                <button type="button" id="cancel-property" data-i18n>
+                                    Cancelar
+                                </button>
+
+                                <button type="submit" data-i18n>
+                                    Guardar propriedade
+                                </button>
+
+                            </div>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- Secção: Preferências -->
+            <section class="profile-section" id="preferences">
+
+                <h2 data-i18n>Preferências agrícolas</h2>
+                <p data-i18n>Define as tuas culturas, prioridades e objetivos.</p>
+
+                <!-- Culturas de interesse -->
+                <div class="preference-card">
+                    <h3 data-i18n>Culturas de interesse</h3>
+                    <p data-i18n>Seleciona as culturas que pretendes produzir.</p>
+
+                    <div id="preferred-crops">
+                        <label><input type="checkbox" name="crops" value="Milho"> <span data-i18n>Milho</span></label>
+                        <label><input type="checkbox" name="crops" value="Feijão"> <span data-i18n>Feijão</span></label>
+                        <label><input type="checkbox" name="crops" value="Mandioca"> <span data-i18n>Mandioca</span></label>
+                        <label><input type="checkbox" name="crops" value="Arroz"> <span data-i18n>Arroz</span></label>
+                        <label><input type="checkbox" name="crops" value="Soja"> <span data-i18n>Soja</span></label>
+                        <label><input type="checkbox" name="crops" value="Batata"> <span data-i18n>Batata</span></label>
+                        <label><input type="checkbox" name="crops" value="Tomate"> <span data-i18n>Tomate</span></label>
+                        <label><input type="checkbox" name="crops" value="Outras"> <span data-i18n>Outras</span></label>
+                    </div>
+                </div>
+
+
+                <!-- Prioridades -->
+                <div class="preference-card">
+                    <h3 data-i18n>Prioridades agrícolas</h3>
+                    <p data-i18n>O que é mais importante para a tua atividade agrícola?</p>
+
+                    <div id="agricultural-priorities">
+                        <label><input type="checkbox" name="priorities" value="Conservação do solo"> <span data-i18n>Conservação do solo</span></label>
+                        <label><input type="checkbox" name="priorities" value="Economia de água"> <span data-i18n>Economia de água</span></label>
+                        <label><input type="checkbox" name="priorities" value="Produtividade"> <span data-i18n>Aumentar a produtividade</span></label>
+                        <label><input type="checkbox" name="priorities" value="Adaptação climática"> <span data-i18n>Adaptação às alterações climáticas</span></label>
+                        <label><input type="checkbox" name="priorities" value="Redução da erosão"> <span data-i18n>Redução da erosão</span></label>
+                    </div>
+                </div>
+
+
+                <!-- Objetivos -->
+                <div class="preference-card">
+                    <h3 data-i18n>Objetivos agrícolas</h3>
+                    <p data-i18n>O que pretendes alcançar com a tua produção?</p>
+
+                    <div id="agricultural-goals">
+                        <label><input type="checkbox" name="goals" value="Melhorar fertilidade"> <span data-i18n>Melhorar a fertilidade do solo</span></label>
+                        <label><input type="checkbox" name="goals" value="Diversificar culturas"> <span data-i18n>Diversificar as culturas</span></label>
+                        <label><input type="checkbox" name="goals" value="Aumentar produção"> <span data-i18n>Aumentar a produção</span></label>
+                        <label><input type="checkbox" name="goals" value="Reduzir custos"> <span data-i18n>Reduzir custos de produção</span></label>
+                        <label><input type="checkbox" name="goals" value="Produção sustentável"> <span data-i18n>Produzir de forma sustentável</span></label>
+                    </div>
+                </div>
+
+                <button id="save-preferences" data-i18n>
+                    Guardar preferências
+                </button>
+
+            </section>
+
+
+            <!-- Secção: Segurança -->
+            <section class="profile-section" id="security">
+
+                <h2 data-i18n>Segurança da conta</h2>
+                <p data-i18n>Gere a palavra-passe e a segurança da tua conta.</p>
+
+                <!-- Alterar palavra-passe -->
+                <div class="security-card">
+
+                    <h3 data-i18n>Alterar palavra-passe</h3>
+
+                    <p data-i18n>
+                        Atualiza a tua palavra-passe para manter
+                        a tua conta protegida.
+                    </p>
+
+                    <form id="password-form">
+
+                        <div class="form-group">
+                            <label for="current-password" data-i18n>
+                                Palavra-passe atual
+                            </label>
+
+                            <input
+                                type="password"
+                                id="current-password"
+                                name="currentPassword"
+                                placeholder="Introduz a palavra-passe atual"
+                                data-i18n-placeholder
+                                required
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="new-password" data-i18n>
+                                Nova palavra-passe
+                            </label>
+
+                            <input
+                                type="password"
+                                id="new-password"
+                                name="newPassword"
+                                placeholder="Introduz a nova palavra-passe"
+                                data-i18n-placeholder
+                                required
+                                minlength="8"
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="confirm-password" data-i18n>
+                                Confirmar nova palavra-passe
+                            </label>
+
+                            <input
+                                type="password"
+                                id="confirm-password"
+                                name="confirmPassword"
+                                placeholder="Confirma a nova palavra-passe"
+                                data-i18n-placeholder
+                                required
+                                minlength="8"
+                            >
+                        </div>
+
+                        <button type="submit" id="change-password" data-i18n>
+                            Alterar palavra-passe
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </section>
+
+
+            <!-- Secção: Definições -->
+            <section class="profile-section" id="settings">
+
+                <h2 data-i18n>Definições</h2>
+                <p data-i18n>Personaliza a tua experiência no AcreView.</p>
+
+                <!-- Aparência -->
+                <div class="settings-card">
+
+                    <h3 data-i18n>Aparência</h3>
+                    <p data-i18n>Personaliza o aspeto da aplicação.</p>
+
+                    <div class="form-group">
+                        <label for="theme-setting" data-i18n>Tema da aplicação</label>
+
+                        <select id="theme-setting">
+                            <option value="light" data-i18n>Claro</option>
+                            <option value="dark" data-i18n>Escuro</option>
+                            <option value="system" data-i18n>Seguir o sistema</option>
+                        </select>
+                    </div>
+
+                </div>
+
+
+                <!-- Idioma -->
+                <div class="settings-card">
+
+                    <h3 data-i18n>Idioma</h3>
+                    <p data-i18n>Escolhe o idioma da aplicação.</p>
+
+                    <div class="form-group">
+                        <label for="language-setting" data-i18n>Idioma</label>
+
+                        <select id="language-setting">
+                            <option value="pt">Português</option>
+                            <option value="en">English</option>
+                            <option value="fr">Français</option>
+                            <option value="es">Español</option>
+                        </select>
+                    </div>
+
+                </div>
+
+
+                <!-- Unidades de medida -->
+                <div class="settings-card">
+
+                    <h3 data-i18n>Unidades de medida</h3>
+                    <p data-i18n>Escolhe como pretendes visualizar as áreas agrícolas.</p>
+
+                    <div class="form-group">
+                        <label for="unit-setting" data-i18n>Unidade de área</label>
+
+                        <select id="unit-setting">
+                            <option value="ha">Hectares (ha)</option>
+                            <option value="m2">Metros quadrados (m²)</option>
+                            <option value="acre">Acres</option>
+                        </select>
+                    </div>
+
+                </div>
+
+
+                <!-- Privacidade -->
+                <div class="settings-card">
+
+                    <h3 data-i18n>Privacidade</h3>
+                    <p data-i18n>Controla a utilização das tuas informações.</p>
+
+                    <label>
+                        <input type="checkbox" id="data-sharing-setting">
+                        <span data-i18n>
+                            Permitir utilização dos meus dados para melhorar
+                            as recomendações agrícolas.
+                        </span>
+                    </label>
+
+                </div>
+
+
+                <!-- Gestão da conta -->
+                <div class="settings-card">
+
+                    <h3 data-i18n>Gestão da conta</h3>
+                    <p data-i18n>Gere o estado e a permanência da tua conta.</p>
+
+                    <div class="account-actions">
+
+                        <button type="button" id="deactivate-account" data-i18n>
+                            Desativar conta
+                        </button>
+
+                        <button type="button" id="delete-account" data-i18n>
+                            Eliminar conta permanentemente
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Guardar definições -->
+                <button type="button" id="save-settings" data-i18n>
+                    Guardar definições
+                </button>
+
+            </section>
+
+        </main>
+
+    </div>
+
+    <script src="assets/js/profile.js"></script>
+
+</body>
+</html>

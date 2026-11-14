@@ -180,39 +180,60 @@
     <div class="tool-modal-backdrop" data-close-modal></div>
 
     <section class="tool-modal-card">
+
         <header class="tool-modal-header">
+
+            <div class="property-drag-handle" id="property-drag-handle"
+                 title="Arrastar barra">
+                ⠿
+            </div>
+
             <div>
                 <span class="section-label">ACREVIEW / GESTÃO AGRÍCOLA</span>
                 <h2>Propriedade agrícola</h2>
                 <p>Delimita a tua propriedade diretamente no mapa.</p>
             </div>
-            <button type="button" class="tool-modal-close" data-close-modal>×</button>
+
+            <button type="button" class="tool-modal-close"
+                    data-close-modal>×</button>
+
         </header>
 
         <div class="tool-modal-content">
+
             <label for="property-name">Nome da propriedade</label>
 
             <input type="text" id="property-name"
                    placeholder="Ex.: Fazenda Verde">
 
+            <div class="property-drawing-info">
+                <div>
+                    <span>Pontos marcados</span>
+                    <strong id="property-points-count">0</strong>
+                </div>
+
+                <div class="property-result">
+                    <span>Área aproximada</span>
+                    <strong id="property-area">0,00 ha</strong>
+                </div>
+            </div>
+
             <div class="property-actions">
+
                 <button type="button" id="start-drawing">
                     + Começar desenho
                 </button>
 
                 <button type="button" id="finish-drawing" disabled>
-                    Concluir desenho
+                    Concluir
                 </button>
 
                 <button type="button" id="cancel-drawing" disabled>
                     Cancelar
                 </button>
+
             </div>
 
-            <div class="property-result">
-                <span>Área delimitada</span>
-                <strong id="property-area">0,00 ha</strong>
-            </div>
         </div>
     </section>
 </div>

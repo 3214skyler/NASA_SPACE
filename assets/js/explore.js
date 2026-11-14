@@ -84,6 +84,94 @@ const coordinatesButton = document.getElementById("coordinates-button");
 
 const messageElement = document.getElementById("explore-message");
 
+const propertyModal = document.getElementById("property-modal");
+
+const propertyPointsCount = document.getElementById(
+    "property-points-count"
+);
+
+function resetToolbarPosition() {
+    propertyCard.style.left = "";
+    propertyCard.style.top = "";
+    propertyCard.style.right = "";
+}
+
+// =====================================
+// FLOATING TOOLBAR — DRAG
+// =====================================
+
+const propertyCard = document.querySelector(
+    "#property-modal .tool-modal-card"
+);
+
+const dragHandle = document.getElementById(
+    "property-drag-handle"
+);
+
+let isDraggingToolbar = false;
+
+let dragOffsetX = 0;
+let dragOffsetY = 0;
+
+dragHandle.addEventListener("pointerdown", function (event) {
+
+    isDraggingToolbar = true;
+
+    const rect = propertyCard.getBoundingClientRect();
+
+    dragOffsetX = event.clientX - rect.left;
+    dragOffsetY = event.clientY - rect.top;
+
+    // Converter a posição inicial para coordenadas fixas
+    propertyCard.style.left = `${rect.left}px`;
+    propertyCard.style.top = `${rect.top}px`;
+
+    propertyCard.style.right = "auto";
+
+    dragHandle.setPointerCapture(event.pointerId);
+
+});
+
+dragHandle.addEventListener("pointermove", function (event) {
+
+    if (!isDraggingToolbar) return;
+
+    const cardWidth = propertyCard.offsetWidth;
+    const cardHeight = propertyCard.offsetHeight;
+
+    let newLeft = event.clientX - dragOffsetX;
+    let newTop = event.clientY - dragOffsetY;
+
+    // Impedir que a barra desapareça fora do ecrã
+    newLeft = Math.max(
+        0,
+        Math.min(newLeft, window.innerWidth - cardWidth)
+    );
+
+    newTop = Math.max(
+        0,
+        Math.min(newTop, window.innerHeight - cardHeight)
+    );
+
+    propertyCard.style.left = `${newLeft}px`;
+    propertyCard.style.top = `${newTop}px`;
+
+});
+
+function stopToolbarDragging() {
+    isDraggingToolbar = false;
+}
+
+dragHandle.addEventListener(
+    "pointerup",
+    stopToolbarDragging
+);
+
+dragHandle.addEventListener(
+    "pointercancel",
+    stopToolbarDragging
+);
+
 
 // =====================================
 // PROPERTY DRAWING
@@ -93,7 +181,11 @@ let isDrawingProperty = false;
 let propertyPoints = [];
 let propertyPreview = null;
 let propertyMarkers = [];
-let savedProperty = null;
+
+// Camada que mantém todas as propriedades guardadas no mapa
+const savedPropertiesLayer = L.layerGroup().addTo(map);
+
+const PROPERTIES_STORAGE_KEY = "acreViewProperties";
 
 const startDrawingButton = document.getElementById("start-drawing");
 const finishDrawingButton = document.getElementById("finish-drawing");
@@ -592,6 +684,15 @@ function addPropertyPoint(latlng) {
 
     propertyPoints.push(latlng);
 
+    propertyPointsCount.textContent = propertyPoints.length;
+
+    if (propertyPoints.length >= 3) {
+    const area = calculatePropertyArea(propertyPoints);
+
+    propertyAreaDisplay.textContent =
+        `${area.toFixed(2)} ha`;
+    }
+
     const marker = L.circleMarker(latlng, {
         radius: 5,
         color: "#ffffff",
@@ -634,6 +735,8 @@ function startPropertyDrawing() {
 
     isDrawingProperty = true;
 
+    propertyModal.classList.add("is-drawing");
+
     startDrawingButton.disabled = true;
     finishDrawingButton.disabled = false;
     cancelDrawingButton.disabled = false;
@@ -669,6 +772,74 @@ function calculatePropertyArea(points) {
     return area / 10000;
 }
 
+function escapeHTML(value) {
+    return String(value).replace(/[&<>"']/g, character => {
+        const entities = {
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': "&quot;",
+            "'": "&#39;"
+        };
+
+        return entities[character];
+    });
+}
+
+function saveDrawnProperty(name, area, points) {
+    let properties = [];
+
+    try {
+        properties = JSON.parse(
+            localStorage.getItem(PROPERTIES_STORAGE_KEY) || "[]"
+        );
+
+        if (!Array.isArray(properties)) {
+            properties = [];
+        }
+    } catch (error) {
+        console.error("Erro ao carregar propriedades:", error);
+    }
+
+    const polygon = L.polygon(points);
+    const center = polygon.getBounds().getCenter();
+
+    const property = {
+        id: crypto.randomUUID
+            ? crypto.randomUUID()
+            : String(Date.now()),
+
+        name: name,
+        location: `${center.lat.toFixed(5)}, ${center.lng.toFixed(5)}`,
+        latitude: center.lat,
+        longitude: center.lng,
+        area: area,
+        soil: "Desconhecido",
+        irrigation: "Outro",
+        crops: "",
+
+        // Coordenadas dos limites desenhados
+        coordinates: points.map(point => [
+            point.lat,
+            point.lng
+        ])
+    };
+
+    properties.push(property);
+
+    try {
+        localStorage.setItem(
+            PROPERTIES_STORAGE_KEY,
+            JSON.stringify(properties)
+        );
+
+        return property;
+    } catch (error) {
+        console.error("Erro ao guardar propriedade:", error);
+        showMessage("Não foi possível guardar a propriedade.");
+        return null;
+    }
+}
 
 function finishPropertyDrawing() {
 
@@ -677,18 +848,42 @@ function finishPropertyDrawing() {
         return;
     }
 
-    const area = calculatePropertyArea(propertyPoints);
+    const name = propertyNameInput.value.trim();
 
-    if (savedProperty) {
-        map.removeLayer(savedProperty);
+    if (!name) {
+        showMessage("Introduz o nome da propriedade.");
+        return;
     }
 
-    savedProperty = L.polygon(propertyPoints, {
+    const area = calculatePropertyArea(propertyPoints);
+
+    const confirmation = confirm(
+        `Guardar a propriedade "${name}" com uma área de aproximadamente ${area.toFixed(2)} hectares?`
+    );
+
+    if (!confirmation) {
+        return;
+    }
+
+    const property = saveDrawnProperty(
+        name,
+        area,
+        propertyPoints
+    );
+
+    if (!property) return;
+
+    const polygon = L.polygon(propertyPoints, {
         color: "#27d27e",
         fillColor: "#27d27e",
         fillOpacity: 0.2,
         weight: 3
-    }).addTo(map);
+    }).addTo(savedPropertiesLayer);
+
+    polygon.bindPopup(
+        `<strong>${escapeHTML(property.name)}</strong><br>` +
+        `Área: ${area.toFixed(2)} hectares`
+    );
 
     propertyAreaDisplay.textContent =
         `${area.toLocaleString("pt-PT", {
@@ -696,20 +891,23 @@ function finishPropertyDrawing() {
             maximumFractionDigits: 2
         })} ha`;
 
-    savedProperty.bindPopup(
-        `<strong>${escapeHTML(propertyNameInput.value.trim())}</strong><br>` +
-        `Área: ${area.toFixed(2)} hectares`
-    );
-
     stopPropertyDrawing();
 
-    showMessage("Propriedade delimitada com sucesso!");
+    propertyPoints = [];
+
+    propertyPointsCount.textContent = "0";
+
+    showMessage("Propriedade guardada com sucesso!");
 }
 
 
 function stopPropertyDrawing() {
 
     isDrawingProperty = false;
+
+    propertyModal.classList.remove("is-drawing");
+
+    resetToolbarPosition();
 
     startDrawingButton.disabled = false;
     finishDrawingButton.disabled = true;
@@ -729,6 +927,8 @@ function stopPropertyDrawing() {
 
 function clearPropertyDrawing() {
 
+    propertyPointsCount.textContent = "0";
+
     propertyPoints = [];
 
     if (propertyPreview) {
@@ -739,11 +939,6 @@ function clearPropertyDrawing() {
     propertyMarkers.forEach(marker => map.removeLayer(marker));
     propertyMarkers = [];
 
-    if (savedProperty) {
-        map.removeLayer(savedProperty);
-        savedProperty = null;
-    }
-
     propertyAreaDisplay.textContent = "0,00 ha";
 }
 
@@ -753,6 +948,9 @@ function cancelPropertyDrawing() {
     clearPropertyDrawing();
 
     isDrawingProperty = false;
+
+    propertyModal.classList.remove("is-drawing");
+    resetToolbarPosition();
 
     startDrawingButton.disabled = false;
     finishDrawingButton.disabled = true;
@@ -812,8 +1010,14 @@ modalButtons.forEach(button => {
 
         if (!modal) return;
 
+        
         // Fecha qualquer outro modal aberto
         toolModals.forEach(item => {
+
+            if (item.id === "property-modal" && isDrawingProperty) {
+                cancelPropertyDrawing();
+            }
+
             item.classList.remove("active");
         });
 
@@ -826,19 +1030,31 @@ document.querySelectorAll("[data-close-modal]").forEach(element => {
     element.addEventListener("click", function () {
         const modal = this.closest(".tool-modal");
 
-        if (modal) {
-            modal.classList.remove("active");
+        if (!modal) return;
+
+        if (modal.id === "property-modal" && isDrawingProperty) {
+            cancelPropertyDrawing();
         }
+
+        modal.classList.remove("active");
     });
 });
 
 // Fechar com a tecla ESC
 document.addEventListener("keydown", function (event) {
-    if (event.key === "Escape") {
-        toolModals.forEach(modal => {
-            modal.classList.remove("active");
-        });
-    }
+
+    if (event.key !== "Escape") return;
+
+    toolModals.forEach(modal => {
+
+        if (modal.id === "property-modal" && isDrawingProperty) {
+            cancelPropertyDrawing();
+        }
+
+        modal.classList.remove("active");
+
+    });
+
 });
 // =====================================
 // TUTORIAL INTERATIVO DO ACREVIEW
@@ -988,3 +1204,63 @@ tutorialPrev.addEventListener("click", function () {
 });
 
 tutorialSkip.addEventListener("click", closeTutorial);
+
+function loadSavedProperties() {
+
+    savedPropertiesLayer.clearLayers();
+
+    let properties = [];
+
+    try {
+        properties = JSON.parse(
+            localStorage.getItem(PROPERTIES_STORAGE_KEY) || "[]"
+        );
+    } catch (error) {
+        console.error("Erro ao recuperar propriedades:", error);
+        return;
+    }
+
+    if (!Array.isArray(properties)) return;
+
+    properties.forEach(property => {
+
+        if (
+            !Array.isArray(property.coordinates) ||
+            property.coordinates.length < 3
+        ) {
+            return;
+        }
+
+        const polygon = L.polygon(property.coordinates, {
+            color: "#27d27e",
+            fillColor: "#27d27e",
+            fillOpacity: 0.2,
+            weight: 3
+        }).addTo(savedPropertiesLayer);
+
+        polygon.bindPopup(
+            `<strong>${escapeHTML(property.name)}</strong><br>` +
+            `Área: ${Number(property.area).toFixed(2)} hectares`
+        );
+    });
+}
+
+loadSavedProperties();
+
+// =====================================
+// SINCRONIZAÇÃO DE PROPRIEDADES
+// =====================================
+
+window.addEventListener("storage", function (event) {
+
+    if (
+        event.key !== PROPERTIES_STORAGE_KEY &&
+        event.key !== null
+    ) {
+        return;
+    }
+
+    // Atualizar os polígonos no mapa
+    loadSavedProperties();
+
+});
