@@ -12,6 +12,52 @@
 const translationCacheKey = "acreViewTranslationCache";
 const settingsStorageKey = "acreViewSettings";
 
+// =====================================================
+// HISTÓRICO — REGISTAR ATIVIDADES
+// =====================================================
+
+const historyStorageKey = "acreViewHistory";
+
+function registerHistoryEvent({
+    type,
+    title,
+    description,
+    propertyId = null,
+    metadata = []
+}) {
+    try {
+        const history = JSON.parse(
+            localStorage.getItem(historyStorageKey) || "[]"
+        );
+
+        const records = Array.isArray(history) ? history : [];
+
+        records.unshift({
+            id: crypto.randomUUID
+                ? crypto.randomUUID()
+                : String(Date.now()),
+
+            date: new Date().toISOString(),
+            type,
+            title,
+            description,
+            propertyId,
+            metadata
+        });
+
+        localStorage.setItem(
+            historyStorageKey,
+            JSON.stringify(records)
+        );
+
+    } catch (error) {
+        console.error(
+            "Erro ao registar atividade no histórico:",
+            error
+        );
+    }
+}
+
 const languageCodes = {
     pt: "pt",
     en: "en",
@@ -885,12 +931,23 @@ if (propertyModal) {
 // =====================================================
 
 function saveProperties() {
+    try {
+        localStorage.setItem(
+            "acreViewProperties",
+            JSON.stringify(properties)
+        );
 
-    localStorage.setItem(
-        "acreViewProperties",
-        JSON.stringify(properties)
-    );
+        return true;
 
+    } catch (error) {
+        console.error("Erro ao guardar propriedades:", error);
+
+        translatedAlert(
+            "Não foi possível guardar as propriedades."
+        );
+
+        return false;
+    }
 }
 
 
@@ -1029,6 +1086,11 @@ if (propertyForm) {
         };
 
 
+       // Guardar o estado anterior para permitir recuperar
+        // os dados caso a gravação falhe.
+
+        const previousProperties = [...properties];
+
         if (editingPropertyId) {
 
             properties = properties.map(property =>
@@ -1044,7 +1106,72 @@ if (propertyForm) {
         }
 
 
-        saveProperties();
+        // Só continuar se a gravação for bem-sucedida.
+
+        if (!saveProperties()) {
+            properties = previousProperties;
+            return;
+        }
+
+
+        // Registar a atividade no histórico.
+
+        if (editingPropertyId) {
+
+            registerHistoryEvent({
+                type: "agriculture",
+                title: "Propriedade agrícola atualizada",
+
+                description:
+                    `Os dados da propriedade "${propertyData.name}" foram atualizados.`,
+
+                propertyId: propertyData.id,
+
+                metadata: [
+                    {
+                        icon: "fa-map",
+                        label: `Área: ${propertyData.area} ha`
+                    },
+                    {
+                        icon: "fa-location-dot",
+                        label: propertyData.location || "Localização não definida"
+                    },
+                    {
+                        icon: "fa-seedling",
+                        label: propertyData.crops || "Culturas não informadas"
+                    }
+                ]
+            });
+
+        } else {
+
+            registerHistoryEvent({
+                type: "agriculture",
+                title: "Nova propriedade agrícola criada",
+
+                description:
+                 `A propriedade "${propertyData.name}" foi registada através do Perfil.`,
+
+                propertyId: propertyData.id,
+
+                metadata: [
+                 {
+                        icon: "fa-map",
+                label: `Área: ${propertyData.area} ha`
+                    },
+                    {
+                        icon: "fa-location-dot",
+                        label: propertyData.location || "Localização não definida"
+                 },
+                    {
+                     icon: "fa-seedling",
+                label: propertyData.crops || "Culturas não informadas"
+                 }
+             ]
+            });
+
+        }
+
 
         renderProperties();
 
@@ -1361,16 +1488,41 @@ async function deleteProperty(id) {
 
     if (!confirmation) return;
 
+    const propertyToDelete = properties.find(
+        property => property.id === id
+    );
+
+    if (!propertyToDelete) return;
+
+    const previousProperties = [...properties];
 
     properties = properties.filter(
         property => property.id !== id
     );
 
+    if (!saveProperties()) {
+        properties = previousProperties;
+        return;
+    }
 
-    saveProperties();
+    registerHistoryEvent({
+        type: "system",
+        title: "Propriedade agrícola eliminada",
+
+        description:
+            `A propriedade "${propertyToDelete.name}" foi eliminada do Perfil.`,
+
+        propertyId: propertyToDelete.id,
+
+        metadata: [
+            {
+                icon: "fa-map",
+                label: `Área anterior: ${propertyToDelete.area} ha`
+            }
+        ]
+    });
 
     renderProperties();
-
 }
 
 
@@ -1449,11 +1601,51 @@ function saveAgriculturalPreferences() {
 
     };
 
+    try {
 
-    localStorage.setItem(
-        preferencesStorageKey,
-        JSON.stringify(preferences)
-    );
+        localStorage.setItem(
+            preferencesStorageKey,
+            JSON.stringify(preferences)
+        );
+
+    } catch (error) {
+
+        console.error(
+            "Erro ao guardar preferências:",
+            error
+        );
+
+        translatedAlert(
+            "Não foi possível guardar as preferências agrícolas."
+        );
+
+        return;
+    }
+
+
+    registerHistoryEvent({
+        type: "agriculture",
+
+        title: "Preferências agrícolas atualizadas",
+
+        description:
+            "As culturas, prioridades e objetivos agrícolas foram atualizados.",
+
+        metadata: [
+            {
+                icon: "fa-seedling",
+                label: `${preferences.crops.length} culturas selecionadas`
+            },
+            {
+                icon: "fa-bullseye",
+                label: `${preferences.priorities.length} prioridades selecionadas`
+            },
+            {
+                icon: "fa-leaf",
+                label: `${preferences.goals.length} objetivos selecionados`
+            }
+        ]
+    });
 
 
     translatedAlert(
@@ -1707,11 +1899,57 @@ async function saveSettings() {
 
     };
 
+    try {
 
-    localStorage.setItem(
-        settingsStorageKey,
-        JSON.stringify(settings)
-    );
+        localStorage.setItem(
+            settingsStorageKey,
+            JSON.stringify(settings)
+        );
+
+    } catch (error) {
+
+        console.error(
+            "Erro ao guardar definições:",
+            error
+        );
+
+        await translatedAlert(
+            "Não foi possível guardar as definições."
+        );
+
+        return;
+    }
+
+
+    registerHistoryEvent({
+        type: "system",
+
+        title: "Definições da conta atualizadas",
+
+        description:
+            "As definições de aparência, idioma, unidades e partilha de dados foram atualizadas.",
+
+        metadata: [
+            {
+                icon: "fa-palette",
+                label: `Tema: ${settings.theme}`
+            },
+            {
+                icon: "fa-language",
+                label: `Idioma: ${settings.language}`
+            },
+            {
+                icon: "fa-ruler",
+                label: `Unidade: ${settings.unit}`
+            },
+            {
+                icon: "fa-share-nodes",
+                label: settings.dataSharing
+                    ? "Partilha de dados ativada"
+                    : "Partilha de dados desativada"
+            }
+        ]
+    });
 
 
     applyTheme(settings.theme);

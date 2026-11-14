@@ -187,6 +187,54 @@ const savedPropertiesLayer = L.layerGroup().addTo(map);
 
 const PROPERTIES_STORAGE_KEY = "acreViewProperties";
 
+// =====================================
+// HISTÓRICO — REGISTAR ATIVIDADES
+// =====================================
+
+const HISTORY_STORAGE_KEY = "acreViewHistory";
+
+function registerHistoryEvent({
+    type,
+    title,
+    description,
+    propertyId = null,
+    metadata = []
+}) {
+    try {
+        const history = JSON.parse(
+            localStorage.getItem(HISTORY_STORAGE_KEY) || "[]"
+        );
+
+        const records = Array.isArray(history) ? history : [];
+
+        records.unshift({
+            id: crypto.randomUUID
+                ? crypto.randomUUID()
+                : String(Date.now()),
+
+            date: new Date().toISOString(),
+            type,
+            title,
+            description,
+            propertyId,
+            metadata
+        });
+
+        localStorage.setItem(
+            HISTORY_STORAGE_KEY,
+            JSON.stringify(records)
+        );
+
+    } catch (error) {
+        // Um erro no histórico não deve impedir
+        // que a propriedade seja guardada.
+        console.error(
+            "Não foi possível registar a atividade no histórico:",
+            error
+        );
+    }
+}
+
 const startDrawingButton = document.getElementById("start-drawing");
 const finishDrawingButton = document.getElementById("finish-drawing");
 const cancelDrawingButton = document.getElementById("cancel-drawing");
@@ -872,6 +920,44 @@ function finishPropertyDrawing() {
     );
 
     if (!property) return;
+
+    // =====================================
+    // REGISTAR NO HISTÓRICO
+    // =====================================
+
+    registerHistoryEvent({
+        type: "agriculture",
+
+        title: "Nova propriedade agrícola registada",
+
+        description:
+            `A propriedade "${property.name}" foi delimitada e guardada com sucesso no AcreView.`,
+
+        propertyId: property.id,
+
+        metadata: [
+            {
+                icon: "fa-map",
+                label: "Área: " +
+                    area.toLocaleString("pt-PT", {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    }) + " ha"
+            },
+            {
+                icon: "fa-location-dot",
+                label: property.location
+            },
+            {
+                icon: "fa-draw-polygon",
+                label: `${propertyPoints.length} pontos de delimitação`
+            }
+        ]
+    });
+
+    // =====================================
+    // DESENHAR PROPRIEDADE GUARDADA NO MAPA
+    // =====================================
 
     const polygon = L.polygon(propertyPoints, {
         color: "#27d27e",

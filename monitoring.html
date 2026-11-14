@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="theme-color" content="#020807">
+    <meta name="description" content="AcreView — Monitorização ambiental e agrícola.">
+
+    <title>AcreView | Monitorização Ambiental</title>
+
+    <!-- Leaflet -->
+    <link rel="stylesheet"
+          href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="assets/css/monitoring.css">
+</head>
+
+<body>
+
+    <div class="monitoring-layout">
+
+        <!-- SIDEBAR -->
+        <aside class="monitoring-sidebar" id="monitoring-sidebar">
+
+            <a href="dashboard.html" class="monitoring-brand">
+                <span class="brand-icon">
+                    <i class="fa-solid fa-earth-africa"></i>
+                </span>
+
+                <span>
+                    <strong>AcreView</strong>
+                    <small>Environmental Intelligence</small>
+                </span>
+            </a>
+
+            <div class="sidebar-label">PLATAFORMA</div>
+
+            <nav class="monitoring-navigation">
+
+                <a href="dashboard.html" class="monitoring-nav-item">
+                    <i class="fa-solid fa-grid-2"></i>
+                    <span>Dashboard</span>
+                </a>
+
+                <a href="explore.html" class="monitoring-nav-item">
+                    <i class="fa-solid fa-earth-americas"></i>
+                    <span>Explorar mapa</span>
+                </a>
+
+                <a href="monitoring.html" class="monitoring-nav-item active">
+                    <i class="fa-solid fa-chart-line"></i>
+                    <span>Monitorização</span>
+                </a>
+
+                <a href="planning.html" class="monitoring-nav-item">
+                    <i class="fa-solid fa-seedling"></i>
+                    <span>Planeamento agrícola</span>
+                </a>
+
+                <a href="history.html" class="monitoring-nav-item">
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+                    <span>Histórico</span>
+                </a>
+
+                <a href="assistant.html" class="monitoring-nav-item">
+                    <i class="fa-solid fa-brain"></i>
+                    <span>Assistente IA</span>
+                </a>
+
+            </nav>
+
+            <div class="sidebar-label">CONTA</div>
+
+            <nav class="monitoring-navigation">
+
+                <a href="profile.html" class="monitoring-nav-item">
+                    <i class="fa-solid fa-user"></i>
+                    <span>Meu perfil</span>
+                </a>
+
+                <a href="index.html" class="monitoring-nav-item logout-link">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Sair</span>
+                </a>
+
+            </nav>
+
+            <div class="sidebar-footer">
+                <span class="connection-indicator"></span>
+                <span>Plataforma AcreView</span>
+            </div>
+
+        </aside>
+
+
+        <!-- MAIN CONTENT -->
+        <main class="monitoring-main">
+
+            <!-- HEADER -->
+            <header class="monitoring-header">
+
+                <button id="mobile-menu-button"
+                        class="mobile-menu-button"
+                        aria-label="Abrir menu">
+
+                    <i class="fa-solid fa-bars"></i>
+
+                </button>
+
+                <div class="header-title">
+                    <span>ACREVIEW / AMBIENTE</span>
+                    <h1>Monitorização ambiental</h1>
+                </div>
+
+                <div class="header-actions">
+
+                    <button class="header-icon-button"
+                            id="refresh-monitoring"
+                            aria-label="Atualizar dados">
+
+                        <i class="fa-solid fa-rotate"></i>
+
+                    </button>
+
+                    <a href="profile.html" class="monitoring-user">
+                        <span class="user-avatar" id="monitoring-avatar">
+                            A
+                        </span>
+
+                        <span id="monitoring-user-name">
+                            Agricultor
+                        </span>
+                    </a>
+
+                </div>
+
+            </header>
+
+
+            <!-- CONTENT -->
+            <div class="monitoring-content">
+
+                <!-- INTRODUCTION -->
+                <section class="monitoring-welcome">
+
+                    <div>
+                        <span class="section-eyebrow">
+                            <i class="fa-solid fa-satellite"></i>
+                            OBSERVAÇÃO DA TERRA
+                        </span>
+
+                        <h2>Compreenda o ambiente da sua propriedade.</h2>
+
+                        <p>
+                            Acompanhe indicadores ambientais, observe alterações
+                            na vegetação e consulte informações que podem apoiar
+                            as suas decisões agrícolas.
+                        </p>
+                    </div>
+
+                    <div class="welcome-decoration">
+                        <i class="fa-solid fa-earth-americas"></i>
+                    </div>
+
+                </section>
+
+
+                <!-- PROPERTY SELECTOR -->
+                <section class="monitoring-toolbar">
+
+                    <div class="property-selector-container">
+
+                        <label for="monitoring-property">
+                            Propriedade agrícola
+                        </label>
+
+                        <select id="monitoring-property">
+                            <option value="">
+                                Selecionar propriedade
+                            </option>
+                        </select>
+
+                    </div>
+
+                    <div class="period-selector-container">
+
+                        <label for="monitoring-period">
+                            Período de análise
+                        </label>
+
+                        <select id="monitoring-period">
+                            <option value="7">Últimos 7 dias</option>
+                            <option value="30" selected>Últimos 30 dias</option>
+                            <option value="90">Últimos 90 dias</option>
+                            <option value="365">Último ano</option>
+                        </select>
+
+                    </div>
+
+                </section>
+
+
+                <!-- DATA STATUS -->
+                <section class="monitoring-data-status" id="monitoring-data-status">
+
+                    <div class="status-icon">
+                        <i class="fa-solid fa-satellite-dish"></i>
+                    </div>
+
+                    <div>
+                        <strong>A aguardar dados ambientais</strong>
+
+                        <p>
+                            Selecione uma propriedade para consultar os dados
+                            disponíveis. Os indicadores não serão preenchidos
+                            com valores simulados.
+                        </p>
+                    </div>
+
+                    <span class="status-badge">
+                        <span></span>
+                        Sem dados
+                    </span>
+
+                </section>
+
+
+                <!-- ENVIRONMENTAL INDICATORS -->
+                <section class="monitoring-section">
+
+                    <div class="section-heading">
+
+                        <div>
+                            <span class="section-eyebrow">
+                                INDICADORES AMBIENTAIS
+                            </span>
+
+                            <h2>Condições ambientais</h2>
+                        </div>
+
+                        <span class="section-description">
+                            Dados associados à propriedade selecionada
+                        </span>
+
+                    </div>
+
+
+                    <div class="environment-grid">
+
+                        <article class="environment-card temperature-card">
+
+                            <div class="environment-card-top">
+                                <span class="environment-icon">
+                                    <i class="fa-solid fa-temperature-half"></i>
+                                </span>
+
+                                <span class="environment-category">
+                                    ATMOSFERA
+                                </span>
+                            </div>
+
+                            <h3>Temperatura</h3>
+
+                            <div class="environment-value">
+                                <strong id="monitoring-temperature">--</strong>
+                                <span>°C</span>
+                            </div>
+
+                            <p>Temperatura do ar</p>
+
+                            <div class="environment-card-footer">
+                                <span>Fonte: NASA / dados meteorológicos</span>
+                            </div>
+
+                        </article>
+
+
+                        <article class="environment-card rainfall-card">
+
+                            <div class="environment-card-top">
+                                <span class="environment-icon">
+                                    <i class="fa-solid fa-cloud-rain"></i>
+                                </span>
+
+                                <span class="environment-category">
+                                    CLIMA
+                                </span>
+                            </div>
+
+                            <h3>Precipitação</h3>
+
+                            <div class="environment-value">
+                                <strong id="monitoring-rainfall">--</strong>
+                                <span>mm</span>
+                            </div>
+
+                            <p>Precipitação acumulada</p>
+
+                            <div class="environment-card-footer">
+                                <span>Fonte: NASA / dados meteorológicos</span>
+                            </div>
+
+                        </article>
+
+
+                        <article class="environment-card soil-card">
+
+                            <div class="environment-card-top">
+                                <span class="environment-icon">
+                                    <i class="fa-solid fa-water"></i>
+                                </span>
+
+                                <span class="environment-category">
+                                    SOLO
+                                </span>
+                            </div>
+
+                            <h3>Humidade do solo</h3>
+
+                            <div class="environment-value">
+                                <strong id="monitoring-soil-moisture">--</strong>
+                                <span>%</span>
+                            </div>
+
+                            <p>Humidade estimada do solo</p>
+
+                            <div class="environment-card-footer">
+                                <span>Fonte: NASA SMAP</span>
+                            </div>
+
+                        </article>
+
+
+                        <article class="environment-card ndvi-card">
+
+                            <div class="environment-card-top">
+                                <span class="environment-icon">
+                                    <i class="fa-solid fa-leaf"></i>
+                                </span>
+
+                                <span class="environment-category">
+                                    VEGETAÇÃO
+                                </span>
+                            </div>
+
+                            <h3>Índice NDVI</h3>
+
+                            <div class="environment-value">
+                                <strong id="monitoring-ndvi">--</strong>
+                            </div>
+
+                            <p>Índice de vegetação por diferença normalizada</p>
+
+                            <div class="environment-card-footer">
+                                <span>Fonte: NASA Earth Observation</span>
+                            </div>
+
+                        </article>
+
+                    </div>
+
+                </section>
+
+
+                <!-- MAP -->
+                <section class="monitoring-section">
+
+                    <div class="section-heading">
+
+                        <div>
+                            <span class="section-eyebrow">
+                                OBSERVAÇÃO GEOGRÁFICA
+                            </span>
+
+                            <h2>Mapa ambiental</h2>
+                        </div>
+
+                        <a href="explore.html" class="section-action">
+                            Explorar mapa
+                            <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                        </a>
+
+                    </div>
+
+
+                    <div class="monitoring-map-container">
+
+                        <div id="monitoring-map"></div>
+
+                        <div class="map-overlay-label">
+                            <i class="fa-solid fa-satellite"></i>
+                            Visualização geográfica
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- CHARTS -->
+                <section class="monitoring-section">
+
+                    <div class="section-heading">
+
+                        <div>
+                            <span class="section-eyebrow">
+                                ANÁLISE TEMPORAL
+                            </span>
+
+                            <h2>Evolução ambiental</h2>
+                        </div>
+
+                    </div>
+
+
+                    <div class="monitoring-charts-grid">
+
+                        <article class="chart-panel">
+
+                            <div class="chart-heading">
+                                <div>
+                                    <h3>Temperatura</h3>
+                                    <p>Variação ao longo do tempo</p>
+                                </div>
+
+                                <i class="fa-solid fa-temperature-half"></i>
+                            </div>
+
+                            <div class="chart-placeholder" id="temperature-chart">
+                                <i class="fa-solid fa-chart-line"></i>
+
+                                <p>
+                                    Gráfico disponível após integração
+                                    dos dados ambientais.
+                                </p>
+                            </div>
+
+                        </article>
+
+
+                        <article class="chart-panel">
+
+                            <div class="chart-heading">
+                                <div>
+                                    <h3>Precipitação</h3>
+                                    <p>Distribuição das chuvas</p>
+                                </div>
+
+                                <i class="fa-solid fa-cloud-rain"></i>
+                            </div>
+
+                            <div class="chart-placeholder" id="rainfall-chart">
+                                <i class="fa-solid fa-chart-area"></i>
+
+                                <p>
+                                    Gráfico disponível após integração
+                                    dos dados ambientais.
+                                </p>
+                            </div>
+
+                        </article>
+
+
+                        <article class="chart-panel">
+
+                            <div class="chart-heading">
+                                <div>
+                                    <h3>Vegetação (NDVI)</h3>
+                                    <p>Alterações na cobertura vegetal</p>
+                                </div>
+
+                                <i class="fa-solid fa-leaf"></i>
+                            </div>
+
+                            <div class="chart-placeholder" id="ndvi-chart">
+                                <i class="fa-solid fa-chart-column"></i>
+
+                                <p>
+                                    Gráfico disponível após integração
+                                    dos dados ambientais.
+                                </p>
+                            </div>
+
+                        </article>
+
+
+                        <article class="chart-panel">
+
+                            <div class="chart-heading">
+                                <div>
+                                    <h3>Humidade do solo</h3>
+                                    <p>Variação da água no solo</p>
+                                </div>
+
+                                <i class="fa-solid fa-droplet"></i>
+                            </div>
+
+                            <div class="chart-placeholder" id="soil-chart">
+                                <i class="fa-solid fa-chart-line"></i>
+
+                                <p>
+                                    Gráfico disponível após integração
+                                    dos dados ambientais.
+                                </p>
+                            </div>
+
+                        </article>
+
+                    </div>
+
+                </section>
+
+
+                <!-- AGRICULTURAL RISKS -->
+                <section class="monitoring-section">
+
+                    <div class="section-heading">
+
+                        <div>
+                            <span class="section-eyebrow">
+                                APOIO À DECISÃO
+                            </span>
+
+                            <h2>Riscos ambientais</h2>
+                        </div>
+
+                    </div>
+
+
+                    <div class="risk-panel" id="environmental-risks">
+
+                        <div class="risk-empty-icon">
+                            <i class="fa-solid fa-shield-halved"></i>
+                        </div>
+
+                        <div>
+                            <h3>Avaliação ainda não disponível</h3>
+
+                            <p>
+                                Quando existirem dados ambientais suficientes,
+                                o AcreView poderá ajudar a identificar condições
+                                que merecem atenção, como períodos de seca,
+                                excesso de precipitação e alterações na vegetação.
+                            </p>
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- AI INSIGHT -->
+                <section class="monitoring-ai-panel">
+
+                    <div class="ai-symbol">
+                        <i class="fa-solid fa-brain"></i>
+                    </div>
+
+                    <div class="ai-content">
+
+                        <span>ACREVIEW INTELLIGENCE</span>
+
+                        <h2>Transforme dados ambientais em conhecimento.</h2>
+
+                        <p>
+                            O assistente de IA poderá interpretar os indicadores
+                            ambientais, explicar possíveis impactos agrícolas
+                            e ajudar a explorar estratégias de adaptação.
+                        </p>
+
+                        <a href="assistant.html" class="ai-action">
+                            Conhecer o assistente
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+
+                    </div>
+
+                </section>
+
+
+                <!-- DISCLAIMER -->
+                <footer class="monitoring-footer">
+
+                    <p>
+                        <i class="fa-solid fa-circle-info"></i>
+
+                        As informações ambientais são ferramentas de apoio.
+                        As recomendações dependem da disponibilidade,
+                        resolução e qualidade dos dados. A decisão final
+                        pertence sempre ao agricultor.
+                    </p>
+
+                    <span>© 2026 AcreView — Earth Observation for Agriculture</span>
+
+                </footer>
+
+            </div>
+
+        </main>
+
+    </div>
+
+
+    <!-- LEAFLET -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <!-- JAVASCRIPT -->
+    <script src="assets/js/monitoring.js"></script>
+
+</body>
+</html>

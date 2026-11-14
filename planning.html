@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="theme-color" content="#020807">
+    <meta name="description" content="AcreView — Planeamento agrícola inteligente e sustentável.">
+
+    <title>AcreView | Planeamento Agrícola</title>
+
+    <!-- Leaflet -->
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    >
+
+    <!-- Font Awesome -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    >
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="assets/css/planning.css">
+</head>
+
+<body>
+
+    <div class="planning-layout">
+
+        <!-- SIDEBAR -->
+        <aside class="planning-sidebar" id="planning-sidebar">
+
+            <a href="dashboard.html" class="sidebar-brand">
+                <div class="brand-icon">
+                    <i class="fa-solid fa-earth-africa"></i>
+                </div>
+
+                <div class="brand-text">
+                    <strong>AcreView</strong>
+                    <span>AGRICULTURE INTELLIGENCE</span>
+                </div>
+            </a>
+
+            <div class="sidebar-divider"></div>
+
+            <p class="sidebar-label">ESPAÇO DE TRABALHO</p>
+
+            <nav class="sidebar-navigation">
+
+                <a href="dashboard.html" class="sidebar-link">
+                    <i class="fa-solid fa-chart-pie"></i>
+                    <span>Dashboard</span>
+                </a>
+
+                <a href="explore.html" class="sidebar-link">
+                    <i class="fa-solid fa-globe"></i>
+                    <span>Explorar planeta</span>
+                </a>
+
+                <a href="monitoring.html" class="sidebar-link">
+                    <i class="fa-solid fa-satellite"></i>
+                    <span>Monitorização</span>
+                </a>
+
+                <a href="planning.html" class="sidebar-link active">
+                    <i class="fa-solid fa-seedling"></i>
+                    <span>Planeamento</span>
+                    <span class="active-indicator"></span>
+                </a>
+
+                <a href="history.html" class="sidebar-link">
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+                    <span>Histórico agrícola</span>
+                </a>
+
+            </nav>
+
+            <p class="sidebar-label">INTELIGÊNCIA</p>
+
+            <nav class="sidebar-navigation">
+
+                <a href="assistant.html" class="sidebar-link">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    <span>Assistente IA</span>
+                    <span class="ai-indicator">AI</span>
+                </a>
+
+            </nav>
+
+            <div class="sidebar-bottom">
+
+                <a href="profile.html" class="sidebar-link">
+                    <i class="fa-solid fa-user"></i>
+                    <span>Meu perfil</span>
+                </a>
+
+                <a href="auth.html" class="sidebar-link logout-link">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                    <span>Sair</span>
+                </a>
+
+                <div class="sidebar-version">
+                    <span class="status-dot"></span>
+                    AcreView Platform
+                    <small>v1.0</small>
+                </div>
+
+            </div>
+
+        </aside>
+
+
+        <!-- MAIN CONTENT -->
+        <main class="planning-main">
+
+            <!-- HEADER -->
+            <header class="planning-header">
+
+                <div class="header-left">
+
+                    <button
+                        class="mobile-menu-button"
+                        id="mobile-menu-button"
+                        aria-label="Abrir menu"
+                    >
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+
+                    <div>
+                        <span class="breadcrumb">
+                            Espaço de trabalho / Planeamento
+                        </span>
+
+                        <h1>Planeamento agrícola</h1>
+                    </div>
+
+                </div>
+
+                <div class="header-right">
+
+                    <div class="header-date">
+                        <i class="fa-regular fa-calendar"></i>
+                        <span id="planning-date">--</span>
+                    </div>
+
+                    <button
+                        class="header-icon-button"
+                        id="planning-notifications"
+                        aria-label="Notificações"
+                    >
+                        <i class="fa-regular fa-bell"></i>
+                    </button>
+
+                    <a href="profile.html" class="header-profile">
+                        <div class="profile-avatar" id="planning-avatar">A</div>
+
+                        <div class="profile-details">
+                            <strong id="planning-user-name">Agricultor</strong>
+                            <span>Minha conta</span>
+                        </div>
+
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </a>
+
+                </div>
+
+            </header>
+
+
+            <!-- PAGE CONTENT -->
+            <div class="planning-content">
+
+                <!-- WELCOME -->
+                <section class="planning-welcome">
+
+                    <div class="welcome-content">
+
+                        <span class="section-eyebrow">
+                            <i class="fa-solid fa-leaf"></i>
+                            AGRICULTURA SUSTENTÁVEL
+                        </span>
+
+                        <h2>
+                            Planeie hoje.
+                            <span>Cultive o futuro.</span>
+                        </h2>
+
+                        <p>
+                            Organize as suas culturas, explore estratégias
+                            de rotação e compare diferentes cenários
+                            para construir um sistema agrícola mais
+                            sustentável e resiliente.
+                        </p>
+
+                        <button class="primary-button" id="create-plan-button">
+                            <i class="fa-solid fa-plus"></i>
+                            Criar novo plano
+                        </button>
+
+                    </div>
+
+                    <div class="welcome-visual">
+
+                        <div class="visual-orbit orbit-one"></div>
+                        <div class="visual-orbit orbit-two"></div>
+
+                        <div class="visual-core">
+                            <i class="fa-solid fa-seedling"></i>
+                        </div>
+
+                        <div class="floating-icon icon-one">
+                            <i class="fa-solid fa-droplet"></i>
+                        </div>
+
+                        <div class="floating-icon icon-two">
+                            <i class="fa-solid fa-sun"></i>
+                        </div>
+
+                        <div class="floating-icon icon-three">
+                            <i class="fa-solid fa-leaf"></i>
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- SUMMARY -->
+                <section class="planning-summary">
+
+                    <div class="summary-card">
+                        <div class="summary-icon">
+                            <i class="fa-solid fa-file-lines"></i>
+                        </div>
+
+                        <div>
+                            <span>Planos criados</span>
+                            <strong id="total-plans">0</strong>
+                            <small>Os seus planos agrícolas</small>
+                        </div>
+                    </div>
+
+                    <div class="summary-card">
+                        <div class="summary-icon">
+                            <i class="fa-solid fa-seedling"></i>
+                        </div>
+
+                        <div>
+                            <span>Culturas planeadas</span>
+                            <strong id="total-planned-crops">0</strong>
+                            <small>Culturas nos seus planos</small>
+                        </div>
+                    </div>
+
+                    <div class="summary-card">
+                        <div class="summary-icon">
+                            <i class="fa-solid fa-arrows-rotate"></i>
+                        </div>
+
+                        <div>
+                            <span>Rotações agrícolas</span>
+                            <strong id="total-rotations">0</strong>
+                            <small>Estratégias registadas</small>
+                        </div>
+                    </div>
+
+                    <div class="summary-card">
+                        <div class="summary-icon">
+                            <i class="fa-solid fa-map-location-dot"></i>
+                        </div>
+
+                        <div>
+                            <span>Propriedades</span>
+                            <strong id="planning-property-count">0</strong>
+                            <small>Propriedades disponíveis</small>
+                        </div>
+                    </div>
+
+                </section>
+
+
+                <!-- PROPERTY SELECTOR -->
+                <section class="planning-property-section">
+
+                    <div class="section-heading">
+                        <div>
+                            <span class="section-eyebrow">CONTEXTO AGRÍCOLA</span>
+                            <h2>Escolha a propriedade</h2>
+                            <p>Selecione a propriedade que pretende planear.</p>
+                        </div>
+                    </div>
+
+                    <div class="property-selector-card">
+
+                        <div class="property-selector-icon">
+                            <i class="fa-solid fa-house-chimney"></i>
+                        </div>
+
+                        <div class="property-selector-info">
+                            <label for="planning-property">
+                                Propriedade agrícola
+                            </label>
+
+                            <select id="planning-property">
+                                <option value="">Selecione uma propriedade</option>
+                            </select>
+                        </div>
+
+                        <div class="property-area-info">
+                            <span>Área registada</span>
+                            <strong id="planning-property-area">--</strong>
+                        </div>
+
+                        <a href="explore.html" class="secondary-button">
+                            <i class="fa-solid fa-map"></i>
+                            Explorar propriedades
+                        </a>
+
+                    </div>
+
+                </section>
+
+
+                <!-- PLANNING WORKSPACE -->
+                <section class="planning-workspace">
+
+                    <div class="section-heading">
+                        <div>
+                            <span class="section-eyebrow">GESTÃO DE CULTURAS</span>
+                            <h2>O seu espaço de planeamento</h2>
+                            <p>Organize e acompanhe as suas estratégias agrícolas.</p>
+                        </div>
+                    </div>
+
+
+                    <div class="workspace-grid">
+
+                        <!-- CROP PLANNING -->
+                        <article class="workspace-card crop-card">
+
+                            <div class="workspace-card-header">
+                                <div class="workspace-icon">
+                                    <i class="fa-solid fa-wheat-awn"></i>
+                                </div>
+
+                                <span class="card-tag">CULTURAS</span>
+                            </div>
+
+                            <h3>Planeamento de culturas</h3>
+
+                            <p>
+                                Registe as culturas que pretende produzir,
+                                as épocas de plantação e os períodos de colheita.
+                            </p>
+
+                            <button class="text-action" id="manage-crops-button">
+                                Gerir culturas
+                                <i class="fa-solid fa-arrow-right"></i>
+                            </button>
+
+                        </article>
+
+
+                        <!-- CROP ROTATION -->
+                        <article class="workspace-card rotation-card">
+
+                            <div class="workspace-card-header">
+                                <div class="workspace-icon">
+                                    <i class="fa-solid fa-arrows-rotate"></i>
+                                </div>
+
+                                <span class="card-tag">SOLO</span>
+                            </div>
+
+                            <h3>Rotação de culturas</h3>
+
+                            <p>
+                                Explore sequências de culturas que podem
+                                ajudar a preservar a fertilidade do solo
+                                e reduzir a pressão de pragas.
+                            </p>
+
+                            <button class="text-action" id="rotation-button">
+                                Explorar rotações
+                                <i class="fa-solid fa-arrow-right"></i>
+                            </button>
+
+                        </article>
+
+
+                        <!-- RESOURCE PLANNING -->
+                        <article class="workspace-card resources-card">
+
+                            <div class="workspace-card-header">
+                                <div class="workspace-icon">
+                                    <i class="fa-solid fa-droplet"></i>
+                                </div>
+
+                                <span class="card-tag">RECURSOS</span>
+                            </div>
+
+                            <h3>Gestão de recursos</h3>
+
+                            <p>
+                                Organize as necessidades de água,
+                                fertilização e outros recursos importantes
+                                para a sua produção.
+                            </p>
+
+                            <button class="text-action" id="resources-button">
+                                Gerir recursos
+                                <i class="fa-solid fa-arrow-right"></i>
+                            </button>
+
+                        </article>
+
+
+                        <!-- SCENARIO COMPARISON -->
+                        <article class="workspace-card scenario-card">
+
+                            <div class="workspace-card-header">
+                                <div class="workspace-icon">
+                                    <i class="fa-solid fa-chart-line"></i>
+                                </div>
+
+                                <span class="card-tag">ANÁLISE</span>
+                            </div>
+
+                            <h3>Comparação de cenários</h3>
+
+                            <p>
+                                Compare diferentes estratégias de cultivo
+                                e avalie as suas possíveis vantagens,
+                                limitações e riscos.
+                            </p>
+
+                            <button class="text-action" id="scenarios-button">
+                                Comparar cenários
+                                <i class="fa-solid fa-arrow-right"></i>
+                            </button>
+
+                        </article>
+
+                    </div>
+
+                </section>
+
+
+                <!-- CROP CALENDAR -->
+                <section class="crop-calendar-section">
+
+                    <div class="section-heading">
+                        <div>
+                            <span class="section-eyebrow">ORGANIZAÇÃO TEMPORAL</span>
+                            <h2>Calendário agrícola</h2>
+                            <p>Visualize os períodos de cultivo das suas culturas.</p>
+                        </div>
+
+                        <div class="calendar-controls">
+
+                            <button id="calendar-previous" aria-label="Período anterior">
+                                <i class="fa-solid fa-chevron-left"></i>
+                            </button>
+
+                            <strong id="calendar-period">Ano atual</strong>
+
+                            <button id="calendar-next" aria-label="Próximo período">
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </button>
+
+                        </div>
+                    </div>
+
+                    <div class="calendar-card">
+
+                        <div class="calendar-empty" id="calendar-empty">
+
+                            <div class="empty-icon">
+                                <i class="fa-regular fa-calendar-days"></i>
+                            </div>
+
+                            <h3>O seu calendário está vazio</h3>
+
+                            <p>
+                                Adicione culturas aos seus planos para
+                                organizar as épocas de plantação e colheita.
+                            </p>
+
+                            <button class="secondary-button" id="calendar-add-button">
+                                <i class="fa-solid fa-plus"></i>
+                                Adicionar cultura
+                            </button>
+
+                        </div>
+
+                        <div class="calendar-content" id="calendar-content">
+
+                            <div class="calendar-months">
+                                <span>Jan</span>
+                                <span>Fev</span>
+                                <span>Mar</span>
+                                <span>Abr</span>
+                                <span>Mai</span>
+                                <span>Jun</span>
+                                <span>Jul</span>
+                                <span>Ago</span>
+                                <span>Set</span>
+                                <span>Out</span>
+                                <span>Nov</span>
+                                <span>Dez</span>
+                            </div>
+
+                            <div id="calendar-activities"></div>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- PLANS -->
+                <section class="saved-plans-section">
+
+                    <div class="section-heading">
+
+                        <div>
+                            <span class="section-eyebrow">OS SEUS PROJETOS</span>
+                            <h2>Planos agrícolas</h2>
+                            <p>Consulte e organize os seus planos guardados.</p>
+                        </div>
+
+                        <button class="secondary-button" id="view-all-plans">
+                            Ver todos
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+
+                    </div>
+
+                    <div class="saved-plans-grid" id="saved-plans">
+
+                        <div class="plans-empty">
+
+                            <div class="empty-icon">
+                                <i class="fa-solid fa-folder-open"></i>
+                            </div>
+
+                            <h3>Ainda não existem planos</h3>
+
+                            <p>
+                                Crie o seu primeiro plano agrícola para
+                                começar a organizar as suas estratégias.
+                            </p>
+
+                            <button class="primary-button" id="empty-create-plan">
+                                <i class="fa-solid fa-plus"></i>
+                                Criar primeiro plano
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- AI SUPPORT -->
+                <section class="planning-ai-banner">
+
+                    <div class="ai-banner-icon">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    </div>
+
+                    <div class="ai-banner-content">
+
+                        <span class="section-eyebrow">ACREVIEW INTELLIGENCE</span>
+
+                        <h2>Planeie com apoio da inteligência artificial.</h2>
+
+                        <p>
+                            Explore recomendações contextualizadas sobre
+                            culturas, rotação e adaptação climática.
+                            A inteligência artificial ajuda a analisar
+                            possibilidades, mas a decisão final continua
+                            nas suas mãos.
+                        </p>
+
+                    </div>
+
+                    <a href="assistant.html" class="ai-banner-button">
+                        Conhecer assistente IA
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+
+                </section>
+
+
+                <!-- FOOTER -->
+                <footer class="planning-footer">
+
+                    <div>
+                        <strong>AcreView</strong>
+                        <span>Inteligência para uma agricultura sustentável.</span>
+                    </div>
+
+                    <span>© 2026 AcreView. Todos os direitos reservados.</span>
+
+                </footer>
+
+            </div>
+
+        </main>
+
+    </div>
+        <!-- ================================================= -->
+    <!-- ACREVIEW — PLANNING MODAL SYSTEM -->
+    <!-- ================================================= -->
+
+    <div
+        class="planning-modal-overlay"
+        id="planning-modal"
+        aria-hidden="true"
+    >
+
+        <div
+            class="planning-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="planning-modal-title"
+        >
+
+            <!-- MODAL HEADER -->
+            <div class="planning-modal-header">
+
+                <div class="planning-modal-heading">
+
+                    <div
+                        class="planning-modal-icon"
+                        id="planning-modal-icon"
+                    >
+                        <i class="fa-solid fa-seedling"></i>
+                    </div>
+
+                    <div>
+
+                        <span class="section-eyebrow">
+                            ACREVIEW PLANNING
+                        </span>
+
+                        <h2 id="planning-modal-title">
+                            Planeamento agrícola
+                        </h2>
+
+                        <p id="planning-modal-description">
+                            Organize a sua atividade agrícola.
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <button
+                    type="button"
+                    class="planning-modal-close"
+                    id="planning-modal-close"
+                    aria-label="Fechar janela"
+                >
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+
+            </div>
+
+
+            <!-- MODAL FORM -->
+            <form id="planning-modal-form">
+
+                <div
+                    class="planning-modal-body"
+                    id="planning-modal-body"
+                >
+                    <!-- O JavaScript vai inserir os formulários aqui. -->
+                </div>
+
+
+                <!-- MODAL FOOTER -->
+                <div class="planning-modal-footer">
+
+                    <button
+                        type="button"
+                        class="modal-cancel-button"
+                        id="planning-modal-cancel"
+                    >
+                        Cancelar
+                    </button>
+
+                    <button
+                        type="submit"
+                        class="modal-submit-button"
+                        id="planning-modal-submit"
+                    >
+                        <i class="fa-solid fa-check"></i>
+                        Guardar
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- NOTIFICATION TOAST -->
+    <div
+        class="planning-toast"
+        id="planning-toast"
+        role="status"
+        aria-live="polite"
+    >
+        <i class="fa-solid fa-circle-check"></i>
+        <span id="planning-toast-message"></span>
+    </div>
+
+
+    <!-- LEAFLET -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <!-- JAVASCRIPT -->
+    <script src="assets/js/planning.js"></script>
+
+</body>
+</html>
