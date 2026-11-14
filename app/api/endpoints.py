@@ -8,8 +8,13 @@ router = APIRouter(prefix="/api", tags=["Farm Analysis"])
 async def analyze_farm(data: FarmInput):
     try:
         weather_data = NasaService.fetch_nasa_power_data(data.latitude, data.longitude)
-        
-        strategies = NasaService.calculate_rotation_strategies(data.priority, weather_data)
+
+        strategies = NasaService.calculate_rotation_strategies(
+            data.latitude, 
+            data.longitude, 
+            data.priority, 
+            weather_data
+        )
 
         return {
             "status": "success",
