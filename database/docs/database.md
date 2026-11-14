@@ -1,55 +1,53 @@
-# Modelo de dados
+# Base de dados do AcreView
 
-Base de dados: PostgreSQL + PostGIS. Coordenadas em SRID 4326 (longitude, latitude).
+PostgreSQL + PostGIS. Coordenadas em SRID 4326 (longitude, latitude).
+
+## Como montar a base localmente
+
+Duas formas, com o mesmo resultado:
+
+- **Docker:** `cd database && docker compose up` (usa `docker-compose.yml`, que carrega `schema.sql` e `seed.sql` na primeira vez que o volume é criado).
+- **PostgreSQL instalado (ex.: WSL):**
+
+      sudo -u postgres createdb acreview
+      sudo -u postgres psql -v ON_ERROR_STOP=1 -d acreview < schema.sql
+      sudo -u postgres psql -v ON_ERROR_STOP=1 -d acreview < seed.sql
+
+O `seed.sql` tem dados de **exemplo fictícios** (não são medições reais da NASA).
+O `queries.sql` tem consultas prontas para o backend.
 
 ## Convenção de origem dos dados
 
-As colunas `origem` só aceitam: `confirmado`, `estimado`, `declarado`, `desconhecido`.
+Algumas colunas `origem` só aceitam: `confirmado`, `estimado`, `declarado`, `desconhecido`.
 Servem para distinguir o que veio de uma análise, de uma estimativa por satélite, do agricultor, ou o que não se sabe.
 
 ## Tabelas
 
-### agricultores
-Pessoas que usam a plataforma.
-| Campo | Tipo | Descrição |
-|---|---|---|
-| id | serial | Identificador |
-| nome | texto | Nome do agricultor |
-| email | texto único | Email |
-| pais | texto | País |
-| criado_em | timestamp | Data de registo |
-
-### propriedades
-Terrenos de cada agricultor.
-| Campo | Tipo | Descrição |
-|---|---|---|
-| id | serial | Identificador |
-| agricultor_id | int | Dono (liga a agricultores) |
-| nome | texto | Nome do terreno |
-| localizacao | geography(Point) | Ponto central |
-| area | geography(Polygon) | Limites (opcional) |
-| area_hectares | numérico | Dimensão |
-| sistema_producao | texto | Ex.: sequeiro, regadio |
-| disponibilidade_agua | texto | Ex.: baixa, média, alta |
-| objetivo | texto | Objetivo agrícola |
-
-### caracteristicas_solo
-Tipo de solo, pH e matéria orgânica, com `origem`.
-
-### culturas
-Culturas conhecidas, com necessidade hídrica e se fixam azoto.
-
-### historico_culturas
-O que foi plantado em cada propriedade: cultura, datas e produtividade.
-
-### analises_ambientais
-Indicadores da NASA (NDVI, precipitação, humidade do solo, temperatura) por propriedade e data, com `fonte` e `origem`.
-
-### estrategias_rotacao
-Rotações calculadas: nome, sequência de culturas, pontuação e explicação.
+- **agricultores**: quem usa a plataforma (nome, email único, país).
+- **propriedades**: terrenos de cada agricultor. `localizacao` é um ponto `geography(Point,4326)`. Se o agricultor for apagado, os terrenos dele também (`ON DELETE CASCADE`).
+- **culturas**: lista de culturas, com `necessidade_hidrica` e `fixa_nitrogenio`.
+- **plantacoes**: o que foi plantado em cada terreno (cultura, datas de plantio e colheita, produtividade).
+- **dados_ambientais**: uma medição por linha (`variavel` + `valor` + `unidade`), com `fonte` (ex.: SMAP, MODIS), período (`data_inicio` / `data_fim`), `resolucao` e `origem`. Para acrescentar um indicador novo basta inserir linhas com outro nome em `variavel`, sem alterar a tabela.
+- **estrategias_rotacao**: rotações de um terreno. `tipo` é `atual` ou `proposta`, com `pontuacao` e `descricao`.
+- **itens_rotacao**: as culturas de cada rotação, na ordem (`ordem`, `duracao_meses`). Não há duas culturas na mesma posição da mesma rotação.
+- **analises_agricolas**: resumo por período de um terreno (médias de precipitação, humidade do solo, temperatura e evapotranspiração), opcionalmente ligado a uma estratégia.
 
 ## Relações
 
 agricultores 1 → N propriedades
-propriedades 1 → N caracteristicas_solo, historico_culturas, analises_ambientais, estrategias_rotacao
-culturas 1 → N historico_culturas
+propriedades 1 → N plantacoes, dados_ambientais, estrategias_rotacao, analises_agricolas
+culturas 1 → N plantacoes, itens_rotacao
+estrategias_rotacao 1 → N itens_rotacao, analises_agricolas
+
+## Mudanças em relação à versão anterior
+
+- `historico_culturas` passou a `plantacoes`, e `analises_ambientais` a `dados_ambientais` (com `unidade` e período em vez de uma só data).
+- A sequência de culturas deixou de ser um texto e passou para a tabela `itens_rotacao`.
+- Campos de `propriedades` removidos por agora: `area`, `area_hectares`, `sistema_producao`, `disponibilidade_agua`, `objetivo`.
+- A tabela `caracteristicas_solo` (tipo de solo, pH, matéria orgânica, com `origem`) ainda não existe nesta versão.
+- A versão antiga continua guardada na branch `database-backup` (apenas no computador de quem a criou) e no histórico do git.
+
+## Limitações
+
+- Os dados de exemplo são fictícios.
+- Os dados de solo oficiais dos EUA (SSURGO, Web Soil Survey) não cobrem Angola; o solo deverá vir do agricultor (`origem = 'declarado'`).
