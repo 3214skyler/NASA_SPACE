@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="theme-color" content="#020807">
+    <meta name="description" content="AcreView — Exploração geográfica e ambiental.">
+
+    <title>AcreView | Explorar o planeta</title>
+
+    <!-- Leaflet -->
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    >
+
+    <!-- Estilos da AcreView -->
+    <link rel="stylesheet" href="assets/css/explore.css">
+</head>
+
+<body>
+
+    <main class="explore-container">
+
+        <!-- HEADER -->
+        <header class="explore-header">
+
+            <a href="index.html" class="brand">
+    <img
+        src="assets/images/acreview-logo.png"
+        alt="AcreView — Environmental Intelligence"
+        class="brand-logo"
+    >
+</a>
+
+            <div class="explore-status">
+                <span class="status-indicator"></span>
+                EARTH OBSERVATION SYSTEM
+            </div>
+
+            <button type="button" class="account-button" id="back-button">
+                <span>←</span>
+                Voltar
+            </button>
+
+        </header>
+
+
+        <!-- ÁREA PRINCIPAL -->
+        <section class="explore-workspace">
+
+            <!-- PAINEL LATERAL -->
+           <aside class="explore-sidebar">
+
+    <div class="sidebar-heading">
+        <span class="section-label">GLOBAL EXPLORATION</span>
+
+        <h1>Explora o planeta.</h1>
+
+        <p>
+            Descobre regiões e analisa territórios
+            através de dados geográficos.
+        </p>
+    </div>
+
+    <nav class="sidebar-menu">
+
+        <button class="sidebar-menu-button" data-modal="exploration-modal" data-tutorial-target="exploration">
+            <span class="menu-icon">◎</span>
+            <span>
+                <strong>Exploração</strong>
+                <small>Pesquisar localizações</small>
+            </span>
+            <span class="menu-arrow">→</span>
+        </button>
+
+        <button class="sidebar-menu-button" data-modal="property-modal" data-tutorial-target="property">
+            <span class="menu-icon">◈</span>
+            <span>
+                <strong>Propriedade agrícola</strong>
+                <small>Delimitar uma propriedade</small>
+            </span>
+            <span class="menu-arrow">→</span>
+        </button>
+
+        <button class="sidebar-menu-button" data-modal="layers-modal" data-tutorial-target="layers">
+            <span class="menu-icon">◉</span>
+            <span>
+                <strong>Visualização do mapa</strong>
+                <small>Satélite e dados NASA</small>
+            </span>
+            <span class="menu-arrow">→</span>
+        </button>
+
+    </nav>
+
+    <button class="tutorial-trigger" id="start-tutorial">
+    <span>?</span>
+    <span>
+        <strong>Como utilizar o AcreView?</strong>
+        <small>Aprende a explorar a plataforma</small>
+    </span>
+    <span>→</span>
+</button>
+
+    <div class="sidebar-footer">
+        <span>ACREVIEW © 2026</span>
+        <span>EXPLORE WITHOUT LIMITS</span>
+    </div>
+
+</aside>
+
+
+            <!-- MAPA -->
+            <section class="map-section">
+
+                <div id="map" data-tutorial-target="map"></div>
+
+                <div class="map-overlay-top">
+                    <span class="map-live-indicator"></span>
+                    MAPA MUNDIAL
+                </div>
+
+                <div class="map-instructions">
+                    <span>◎</span>
+                    Seleciona qualquer ponto do mapa para explorar.
+                </div>
+
+            </section>
+
+        </section>
+
+        <!-- MODAL DE EXPLORAÇÃO -->
+<div class="tool-modal" id="exploration-modal">
+    <div class="tool-modal-backdrop" data-close-modal></div>
+
+    <section class="tool-modal-card">
+        <header class="tool-modal-header">
+            <div>
+                <span class="section-label">ACREVIEW / EXPLORAÇÃO</span>
+                <h2>Explorar localização</h2>
+                <p>Pesquisa qualquer região do planeta.</p>
+            </div>
+            <button type="button" class="tool-modal-close" data-close-modal>×</button>
+        </header>
+
+        <div class="tool-modal-content">
+            <div class="location-search">
+                <label for="location-search">Procurar localização</label>
+                <div class="search-input-wrapper">
+                    <span class="search-icon">⌕</span>
+                    <input type="text" id="location-search"
+                           placeholder="País, cidade ou região...">
+                    <button type="button" id="search-button">→</button>
+                </div>
+            </div>
+
+            <div class="coordinates-search">
+                <label>Pesquisar por coordenadas</label>
+                <div class="coordinates-inputs">
+                    <input type="number" id="latitude-input"
+                           placeholder="Latitude" step="any" min="-90" max="90">
+                    <input type="number" id="longitude-input"
+                           placeholder="Longitude" step="any" min="-180" max="180">
+                </div>
+
+                <button type="button" id="coordinates-button">
+                    Localizar coordenadas
+                </button>
+
+                <button type="button" id="locate-me-button"
+                        class="location-button" data-tutorial-target="location">
+                    ◎ Localizar-me
+                </button>
+            </div>
+        </div>
+    </section>
+</div>
+
+
+<!-- MODAL DE PROPRIEDADE AGRÍCOLA -->
+<div class="tool-modal" id="property-modal">
+    <div class="tool-modal-backdrop" data-close-modal></div>
+
+    <section class="tool-modal-card">
+
+        <header class="tool-modal-header">
+
+            <div class="property-drag-handle" id="property-drag-handle"
+                 title="Arrastar barra">
+                ⠿
+            </div>
+
+            <div>
+                <span class="section-label">ACREVIEW / GESTÃO AGRÍCOLA</span>
+                <h2>Propriedade agrícola</h2>
+                <p>Delimita a tua propriedade diretamente no mapa.</p>
+            </div>
+
+            <button type="button" class="tool-modal-close"
+                    data-close-modal>×</button>
+
+        </header>
+
+        <div class="tool-modal-content">
+
+            <label for="property-name">Nome da propriedade</label>
+
+            <input type="text" id="property-name"
+                   placeholder="Ex.: Fazenda Verde">
+
+            <div class="property-drawing-info">
+                <div>
+                    <span>Pontos marcados</span>
+                    <strong id="property-points-count">0</strong>
+                </div>
+
+                <div class="property-result">
+                    <span>Área aproximada</span>
+                    <strong id="property-area">0,00 ha</strong>
+                </div>
+            </div>
+
+            <div class="property-actions">
+
+                <button type="button" id="start-drawing">
+                    + Começar desenho
+                </button>
+
+                <button type="button" id="finish-drawing" disabled>
+                    Concluir
+                </button>
+
+                <button type="button" id="cancel-drawing" disabled>
+                    Cancelar
+                </button>
+
+            </div>
+
+        </div>
+    </section>
+</div>
+
+
+<!-- MODAL DE VISUALIZAÇÃO DO MAPA -->
+<div class="tool-modal" id="layers-modal">
+    <div class="tool-modal-backdrop" data-close-modal></div>
+
+    <section class="tool-modal-card">
+        <header class="tool-modal-header">
+            <div>
+                <span class="section-label">ACREVIEW / VISUALIZAÇÃO</span>
+                <h2>Camadas do mapa</h2>
+                <p>Escolhe como pretendes observar o território.</p>
+            </div>
+            <button type="button" class="tool-modal-close" data-close-modal>×</button>
+        </header>
+
+        <div class="tool-modal-content map-layers">
+            <button class="layer-option active" data-layer="standard">
+                <span class="layer-icon">◎</span>
+                Mapa padrão
+                <span class="layer-check">●</span>
+            </button>
+
+            <button class="layer-option" data-layer="satellite">
+                <span class="layer-icon">◈</span>
+                Satélite
+                <span class="layer-check">○</span>
+            </button>
+
+            <button class="layer-option" data-layer="nasa">
+                <span class="layer-icon">◉</span>
+                NASA Earth
+                <span class="layer-check">○</span>
+            </button>
+
+            <div class="ndvi-controls" id="ndvi-controls">
+                <div class="ndvi-header">
+                    <h3>Índice de vegetação (NDVI)</h3>
+                    <span class="ndvi-status">NASA</span>
+                </div>
+
+                <p>Intensidade da vegetação observada por satélite.</p>
+
+                <div class="ndvi-legend">
+                    <div class="ndvi-gradient"></div>
+                    <div class="ndvi-labels">
+                        <span>Baixa</span>
+                        <span>Média</span>
+                        <span>Alta</span>
+                    </div>
+                </div>
+
+                <label for="ndvi-opacity">
+                    Transparência
+                    <span id="opacity-value">65%</span>
+                </label>
+
+                <input type="range" id="ndvi-opacity"
+                       min="0" max="100" value="65">
+            </div>
+        </div>
+    </section>
+</div>
+
+        <!-- TUTORIAL DO ACREVIEW -->
+<div class="tool-modal tutorial-modal" id="tutorial-modal">
+
+    <div class="tool-modal-backdrop" data-close-modal></div>
+
+    <div class="tool-modal-card tutorial-card">
+
+        <div class="tool-modal-header">
+            <div>
+                <span class="section-label">GUIA DO ACREVIEW</span>
+                <h2 id="tutorial-title">Bem-vindo ao AcreView</h2>
+                <p id="tutorial-description">
+                    Vamos conhecer as principais ferramentas da plataforma.
+                </p>
+            </div>
+
+            <button class="modal-close" data-close-modal
+                aria-label="Fechar tutorial">×</button>
+        </div>
+
+        <div class="tutorial-progress">
+            <div class="tutorial-progress-bar">
+                <div id="tutorial-progress-fill"></div>
+            </div>
+            <span id="tutorial-step-number">Etapa 1 de 6</span>
+        </div>
+
+        <div class="tutorial-content">
+            <div class="tutorial-icon" id="tutorial-icon">🌍</div>
+
+            <h3 id="tutorial-heading">Explora o planeta</h3>
+
+            <p id="tutorial-text">
+                Utiliza o mapa para navegar pelo mundo, aproximar,
+                afastar e selecionar diferentes regiões.
+            </p>
+        </div>
+
+        <div class="tutorial-actions">
+            <button id="tutorial-skip">Saltar tutorial</button>
+
+            <div>
+                <button id="tutorial-prev" disabled>Anterior</button>
+                <button id="tutorial-next">Seguinte →</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+        <!-- MODAL DE LOCALIZAÇÃO E ANÁLISE AGRÍCOLA -->
+<div
+    id="location-modal"
+    class="location-modal"
+    aria-hidden="true"
+>
+    <div class="modal-backdrop"></div>
+
+    <article
+        class="location-card"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="location-name"
+    >
+
+        <header class="modal-header">
+
+            <span class="section-label">
+                IDENTIFICAÇÃO GEOGRÁFICA
+            </span>
+
+            <button
+                type="button"
+                id="close-location-modal"
+                class="modal-close"
+                aria-label="Fechar janela"
+            >
+                ×
+            </button>
+
+        </header>
+
+        <div class="location-symbol">
+            ◎
+        </div>
+
+        <div class="location-information">
+
+            <span class="location-category">
+                LOCALIZAÇÃO SELECIONADA
+            </span>
+
+            <h2 id="location-name">
+                A identificar...
+            </h2>
+
+            <p id="location-description">
+                A obter informações geográficas desta região.
+            </p>
+
+        </div>
+
+        <div class="location-details">
+
+            <div class="detail-item">
+                <span>PAÍS</span>
+                <strong id="location-country">—</strong>
+            </div>
+
+            <div class="detail-item">
+                <span>REGIÃO</span>
+                <strong id="location-region">—</strong>
+            </div>
+
+            <div class="detail-item">
+                <span>LATITUDE</span>
+                <strong id="location-latitude">—</strong>
+            </div>
+
+            <div class="detail-item">
+                <span>LONGITUDE</span>
+                <strong id="location-longitude">—</strong>
+            </div>
+
+        </div>
+
+        <!-- PRIORIDADE AGRÍCOLA -->
+        <section class="analysis-priority">
+
+            <span class="section-label">
+                ANÁLISE AGRÍCOLA
+            </span>
+
+            <h3>Qual é a tua prioridade?</h3>
+
+            <p>
+                Escolhe o objetivo agrícola que pretendes
+                considerar na análise desta região.
+            </p>
+
+            <label for="analysis-priority">
+                Prioridade principal
+            </label>
+
+            <select id="analysis-priority" required>
+                <option value="" selected disabled>
+                    Seleciona uma prioridade
+                </option>
+
+                <option value="water_conservation">
+                    Conservação da água
+                </option>
+
+                <option value="soil_health">
+                    Saúde do solo
+                </option>
+
+                <option value="crop_productivity">
+                    Produtividade agrícola
+                </option>
+
+                <option value="climate_adaptation">
+                    Adaptação climática
+                </option>
+            </select>
+
+        </section>
+
+        <!-- ESTADO DA ANÁLISE -->
+        <section
+            id="analysis-panel"
+            class="analysis-panel"
+            hidden
+            aria-live="polite"
+        >
+
+            <div class="analysis-panel-header">
+                <span class="section-label">
+                    RESULTADO DA ANÁLISE
+                </span>
+
+                <span id="analysis-status">
+                    A aguardar...
+                </span>
+            </div>
+
+            <!-- DADOS AMBIENTAIS -->
+            <div id="analysis-environment"></div>
+
+            <!-- MOTOR DE RECOMENDAÇÃO -->
+            <div class="recommendation-section">
+
+                <h3>Estratégias agrícolas</h3>
+
+                <p id="analysis-engine-message">
+                    A análise ainda não foi realizada.
+                </p>
+
+                <div id="analysis-strategies"></div>
+
+            </div>
+
+        </section>
+
+        <footer class="modal-actions">
+
+            <button
+                type="button"
+                id="analyze-location"
+                class="analyze-button"
+            >
+                Analisar esta região
+                <span>→</span>
+            </button>
+
+            <button
+                type="button"
+                id="close-modal-secondary"
+                class="cancel-button"
+            >
+                Fechar
+            </button>
+
+        </footer>
+
+    </article>
+
+</div>
+
+
+        <!-- MENSAGENS DO SISTEMA -->
+        <div
+            id="explore-message"
+            class="explore-message"
+            role="status"
+            aria-live="polite"
+        ></div>
+
+    </main>
+
+
+    <!-- Leaflet JavaScript -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <script src="assets/js/access-mode.js"></script>
+
+    <script src="assets/js/api.js"></script>
+
+    <!-- JavaScript da AcreView -->
+    <script src="assets/js/explore.js"></script>
+
+    <script>
+    document.getElementById("back-button").addEventListener("click", () => {
+        if (window.history.length > 1) {
+            window.history.back();
+        } else {
+            window.location.href = "index.html";
+        }
+    });
+</script>
+
+</body>
+</html>

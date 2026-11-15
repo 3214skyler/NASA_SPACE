@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#030907">
+    <meta name="description" content="AcreView — Assistente inteligente de apoio à agricultura.">
+
+    <title>AcreView | Assistente IA</title>
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <link rel="stylesheet" href="assets/css/assistant.css">
+</head>
+
+<body>
+
+<div class="assistant-layout">
+
+    <!-- SIDEBAR -->
+    <aside class="assistant-sidebar" id="assistant-sidebar">
+
+        <a href="dashboard.html" class="brand">
+    <img
+        src="assets/images/acreview-logo.png"
+        alt="AcreView"
+        class="brand-logo"
+    >
+</a>
+
+        <div class="sidebar-section">
+            <p class="sidebar-label">MENU PRINCIPAL</p>
+
+            <a href="dashboard.html" class="nav-item">
+                <i class="fa-solid fa-chart-pie"></i>
+                <span>Dashboard</span>
+            </a>
+
+            <a href="explore.html" class="nav-item">
+                <i class="fa-solid fa-globe"></i>
+                <span>Explorar planeta</span>
+            </a>
+
+            <a href="monitoring.html" class="nav-item">
+                <i class="fa-solid fa-satellite"></i>
+                <span>Monitorização</span>
+            </a>
+
+            <a href="planning.html" class="nav-item">
+                <i class="fa-solid fa-seedling"></i>
+                <span>Planeamento</span>
+            </a>
+
+            <a href="history.html" class="nav-item">
+                <i class="fa-solid fa-clock-rotate-left"></i>
+                <span>Histórico agrícola</span>
+            </a>
+
+            <a href="assistant.html" class="nav-item active">
+                <i class="fa-solid fa-robot"></i>
+                <span>Assistente IA</span>
+                <span class="active-indicator"></span>
+            </a>
+        </div>
+
+        <div class="sidebar-section conversation-section">
+            <div class="conversation-heading">
+                <p class="sidebar-label">CONVERSAS</p>
+
+                <button id="new-chat-button" title="Nova conversa">
+                    <i class="fa-solid fa-plus"></i>
+                </button>
+            </div>
+
+            <div id="conversation-list" class="conversation-list">
+                <p class="conversation-empty">
+                    As tuas conversas aparecerão aqui.
+                </p>
+            </div>
+        </div>
+
+        <div class="sidebar-bottom">
+            <a href="profile.html" class="nav-item">
+                <i class="fa-solid fa-user"></i>
+                <span>Meu perfil</span>
+            </a>
+
+            <a href="index.html" class="nav-item logout-link">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Sair</span>
+            </a>
+        </div>
+
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="assistant-main">
+
+        <!-- TOPBAR -->
+        <header class="assistant-header">
+
+            <div class="header-left">
+                <button id="mobile-menu-button"
+                        class="mobile-menu-button">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+
+                <div>
+                    <span class="header-eyebrow">
+                        ACREVIEW INTELLIGENCE
+                    </span>
+                    <h1>Assistente IA</h1>
+                </div>
+            </div>
+
+            <div class="header-right">
+                <span class="ai-status">
+                    <span class="status-dot"></span>
+                    Interface de demonstração
+                </span>
+
+                <div class="user-avatar" id="assistant-avatar">A</div>
+            </div>
+
+        </header>
+
+        <!-- CONTENT -->
+        <section class="assistant-content">
+
+            <!-- CHAT AREA -->
+            <section class="chat-panel">
+
+                <div class="chat-topbar">
+                    <div>
+                        <span class="chat-title">
+                            Consultor agrícola
+                        </span>
+
+                        <span class="chat-subtitle">
+                            Apoio inteligente à tomada de decisões
+                        </span>
+                    </div>
+
+                    <button id="clear-chat-button"
+                            class="icon-button"
+                            title="Limpar conversa">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                </div>
+
+                <!-- WELCOME SCREEN -->
+                <div id="welcome-screen" class="welcome-screen">
+
+                    <div class="ai-orb">
+                        <div class="orb-ring ring-one"></div>
+                        <div class="orb-ring ring-two"></div>
+
+                        <div class="orb-core">
+                            <i class="fa-solid fa-seedling"></i>
+                        </div>
+                    </div>
+
+                    <span class="welcome-tag">
+                        <i class="fa-solid fa-sparkles"></i>
+                        INTELIGÊNCIA AGRÍCOLA
+                    </span>
+
+                    <h2>
+                        Vamos cultivar<br>
+                        <span>decisões melhores.</span>
+                    </h2>
+
+                    <p>
+                        Explora questões sobre culturas, solo, rotação,
+                        sustentabilidade e adaptação climática.
+                    </p>
+
+                    <div class="suggestion-grid">
+
+                        <button class="suggestion-card"
+                                data-prompt="Como posso começar a planear uma rotação de culturas?">
+                            <i class="fa-solid fa-arrows-rotate"></i>
+
+                            <span>
+                                <strong>Rotação de culturas</strong>
+                                <small>Explorar estratégias de rotação</small>
+                            </span>
+
+                            <i class="fa-solid fa-arrow-up-right-from-square card-arrow"></i>
+                        </button>
+
+                        <button class="suggestion-card"
+                                data-prompt="Que fatores devo considerar para avaliar a saúde do meu solo?">
+                            <i class="fa-solid fa-mountain-sun"></i>
+
+                            <span>
+                                <strong>Saúde do solo</strong>
+                                <small>Compreender os fatores do solo</small>
+                            </span>
+
+                            <i class="fa-solid fa-arrow-up-right-from-square card-arrow"></i>
+                        </button>
+
+                        <button class="suggestion-card"
+                                data-prompt="Como posso preparar a minha exploração para períodos de pouca chuva?">
+                            <i class="fa-solid fa-cloud-sun"></i>
+
+                            <span>
+                                <strong>Adaptação climática</strong>
+                                <small>Preparação para variações do clima</small>
+                            </span>
+
+                            <i class="fa-solid fa-arrow-up-right-from-square card-arrow"></i>
+                        </button>
+
+                        <button class="suggestion-card"
+                                data-prompt="Que informações devo recolher para avaliar a minha exploração agrícola?">
+                            <i class="fa-solid fa-chart-line"></i>
+
+                            <span>
+                                <strong>Análise da exploração</strong>
+                                <small>Identificar dados importantes</small>
+                            </span>
+
+                            <i class="fa-solid fa-arrow-up-right-from-square card-arrow"></i>
+                        </button>
+
+                    </div>
+
+                </div>
+
+                <!-- MESSAGES -->
+                <div id="chat-messages" class="chat-messages"></div>
+
+                <!-- INPUT AREA -->
+                <form id="chat-form" class="chat-composer">
+
+                    <div class="composer-tools">
+                        <span>
+                            <i class="fa-solid fa-leaf"></i>
+                            Apoio agrícola
+                        </span>
+
+                        <span id="message-counter">0 / 2000</span>
+                    </div>
+
+                    <div class="composer-input">
+                        <textarea
+                            id="chat-input"
+                            maxlength="2000"
+                            rows="1"
+                            placeholder="Pergunta alguma coisa sobre a tua exploração..."
+                            required></textarea>
+
+                        <button type="submit"
+                                id="send-message-button"
+                                title="Enviar mensagem">
+                            <i class="fa-solid fa-arrow-up"></i>
+                        </button>
+                    </div>
+
+                    <p class="composer-disclaimer">
+                        A IA é uma ferramenta de apoio. As decisões agrícolas
+                        continuam a pertencer ao agricultor.
+                    </p>
+
+                </form>
+
+            </section>
+
+            <!-- CONTEXT PANEL -->
+            <aside class="context-panel">
+
+                <div class="context-heading">
+                    <div>
+                        <span class="panel-eyebrow">
+                            CONTEXTO AGRÍCOLA
+                        </span>
+                        <h2>A tua exploração</h2>
+                    </div>
+
+                    <i class="fa-solid fa-leaf"></i>
+                </div>
+
+                <div class="context-card">
+
+                    <label for="assistant-property">
+                        Exploração selecionada
+                    </label>
+
+                    <select id="assistant-property">
+                        <option value="">
+                            Nenhuma exploração registada
+                        </option>
+                    </select>
+
+                    <div class="context-divider"></div>
+
+                    <div class="context-detail">
+                        <span>Localização</span>
+                        <strong id="context-location">Não disponível</strong>
+                    </div>
+
+                    <div class="context-detail">
+                        <span>Área</span>
+                        <strong id="context-area">--</strong>
+                    </div>
+
+                    <div class="context-detail">
+                        <span>Solo</span>
+                        <strong id="context-soil">Não informado</strong>
+                    </div>
+
+                    <div class="context-detail">
+                        <span>Culturas</span>
+                        <strong id="context-crops">Não informado</strong>
+                    </div>
+
+                </div>
+
+                <div class="context-card information-card">
+
+                    <div class="information-icon">
+                        <i class="fa-solid fa-circle-info"></i>
+                    </div>
+
+                    <h3>Como funciona?</h3>
+
+                    <p>
+                        O assistente deverá utilizar os dados da tua exploração,
+                        informações ambientais e conhecimento agrícola para
+                        ajudar a explorar diferentes estratégias.
+                    </p>
+
+                </div>
+
+                <div class="context-card data-card">
+
+                    <div class="data-card-heading">
+                        <i class="fa-solid fa-satellite-dish"></i>
+                        <h3>Fontes de informação</h3>
+                    </div>
+
+                    <div class="source-item">
+                        <span class="source-dot"></span>
+                        <span>Dados da NASA</span>
+                        <small>A integrar</small>
+                    </div>
+
+                    <div class="source-item">
+                        <span class="source-dot"></span>
+                        <span>Dados do solo</span>
+                        <small>A integrar</small>
+                    </div>
+
+                    <div class="source-item">
+                        <span class="source-dot"></span>
+                        <span>Dados da exploração</span>
+                        <small id="property-data-status">A verificar</small>
+                    </div>
+
+                </div>
+
+                <div class="responsibility-note">
+                    <i class="fa-solid fa-shield-halved"></i>
+
+                    <p>
+                        As recomendações deverão apresentar as suas fontes,
+                        limitações e justificações. O agricultor mantém sempre
+                        o controlo das decisões.
+                    </p>
+                </div>
+
+            </aside>
+
+        </section>
+
+    </main>
+
+</div>
+
+<script src="assets/js/access-mode.js"></script>
+
+<script src="assets/js/assistant.js"></script>
+
+</body>
+</html>

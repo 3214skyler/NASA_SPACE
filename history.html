@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="theme-color" content="#030907">
+    <meta name="description" content="AcreView — Histórico e evolução das atividades agrícolas.">
+
+    <title>AcreView | Histórico Agrícola</title>
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <link rel="stylesheet" href="assets/css/history.css">
+</head>
+
+<body>
+
+    <div class="history-layout">
+
+        <!-- SIDEBAR -->
+        <aside class="history-sidebar" id="history-sidebar">
+
+            <a href="dashboard.html" class="sidebar-brand">
+    <img
+        src="assets/images/acreview-logo.png"
+        alt="AcreView — Agricultural Intelligence"
+        class="sidebar-logo"
+    >
+</a>
+
+            <div class="sidebar-section-label">
+                MENU PRINCIPAL
+            </div>
+
+            <nav class="sidebar-navigation">
+
+                <a href="dashboard.html" class="sidebar-link">
+                    <i class="fa-solid fa-house"></i>
+                    <span>Dashboard</span>
+                </a>
+
+                <a href="explore.html" class="sidebar-link">
+                    <i class="fa-solid fa-earth-americas"></i>
+                    <span>Explorar planeta</span>
+                </a>
+
+                <a href="monitoring.html" class="sidebar-link">
+                    <i class="fa-solid fa-satellite"></i>
+                    <span>Monitorização</span>
+                </a>
+
+                <a href="planning.html" class="sidebar-link">
+                    <i class="fa-solid fa-calendar-check"></i>
+                    <span>Planeamento</span>
+                </a>
+
+                <a href="history.html" class="sidebar-link active">
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+                    <span>Histórico</span>
+                </a>
+
+                <a href="assistant.html" class="sidebar-link">
+                    <i class="fa-solid fa-brain"></i>
+                    <span>Assistente IA</span>
+                </a>
+
+            </nav>
+
+            <div class="sidebar-section-label">
+                CONTA
+            </div>
+
+            <nav class="sidebar-navigation">
+
+                <a href="profile.html" class="sidebar-link">
+                    <i class="fa-solid fa-user"></i>
+                    <span>Meu perfil</span>
+                </a>
+
+                <a href="index.html" class="sidebar-link logout-link">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Sair</span>
+                </a>
+
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="sidebar-status">
+                    <span class="status-indicator"></span>
+                    <span>Sistema operacional</span>
+                </div>
+
+                <small>AcreView © 2026</small>
+            </div>
+
+        </aside>
+
+
+        <!-- MAIN CONTENT -->
+        <main class="history-main">
+
+            <!-- TOPBAR -->
+            <header class="history-header">
+
+                <button class="mobile-menu-button" id="mobile-menu-button"
+                        aria-label="Abrir menu">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+
+                <div class="header-title">
+                    <span>GESTÃO AGRÍCOLA</span>
+                    <h1>Histórico</h1>
+                </div>
+
+                <div class="header-user">
+
+                    <div class="header-user-info">
+                        <span id="history-user-name">Agricultor</span>
+                        <small>Área de trabalho</small>
+                    </div>
+
+                    <div class="user-avatar" id="history-avatar">
+                        A
+                    </div>
+
+                </div>
+
+            </header>
+
+
+            <!-- PAGE INTRO -->
+            <section class="history-hero">
+
+                <div class="hero-content">
+
+                    <div class="hero-label">
+                        <i class="fa-solid fa-clock-rotate-left"></i>
+                        MEMÓRIA DA EXPLORAÇÃO
+                    </div>
+
+                    <h2>
+                        Cada decisão conta.<br>
+                        <span>Acompanhe a evolução da sua exploração.</span>
+                    </h2>
+
+                    <p>
+                        Consulte as atividades agrícolas, os planos e os
+                        registos ambientais das suas propriedades ao longo
+                        do tempo.
+                    </p>
+
+                </div>
+
+                <div class="hero-visual">
+
+                    <div class="orbit orbit-one"></div>
+                    <div class="orbit orbit-two"></div>
+
+                    <div class="hero-icon">
+                        <i class="fa-solid fa-seedling"></i>
+                    </div>
+
+                    <div class="floating-icon floating-one">
+                        <i class="fa-solid fa-clock"></i>
+                    </div>
+
+                    <div class="floating-icon floating-two">
+                        <i class="fa-solid fa-chart-line"></i>
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- SUMMARY -->
+            <section class="history-summary">
+
+                <article class="summary-card">
+
+                    <div class="summary-icon green">
+                        <i class="fa-solid fa-list-check"></i>
+                    </div>
+
+                    <div>
+                        <span>Total de registos</span>
+                        <strong id="total-records">0</strong>
+                        <small>Atividades registadas</small>
+                    </div>
+
+                </article>
+
+
+                <article class="summary-card">
+
+                    <div class="summary-icon blue">
+                        <i class="fa-solid fa-seedling"></i>
+                    </div>
+
+                    <div>
+                        <span>Atividades agrícolas</span>
+                        <strong id="agricultural-records">0</strong>
+                        <small>Plantações e colheitas</small>
+                    </div>
+
+                </article>
+
+
+                <article class="summary-card">
+
+                    <div class="summary-icon purple">
+                        <i class="fa-solid fa-calendar-check"></i>
+                    </div>
+
+                    <div>
+                        <span>Planos registados</span>
+                        <strong id="planning-records">0</strong>
+                        <small>Planos agrícolas</small>
+                    </div>
+
+                </article>
+
+
+                <article class="summary-card">
+
+                    <div class="summary-icon orange">
+                        <i class="fa-solid fa-earth-americas"></i>
+                    </div>
+
+                    <div>
+                        <span>Propriedades</span>
+                        <strong id="history-properties">0</strong>
+                        <small>Explorações registadas</small>
+                    </div>
+
+                </article>
+
+            </section>
+
+
+            <!-- FILTERS -->
+            <section class="history-filters">
+
+                <div class="section-heading">
+
+                    <div>
+                        <span class="section-eyebrow">CONSULTA</span>
+                        <h2>Explorar histórico</h2>
+                    </div>
+
+                    <button id="reset-filters" class="reset-button">
+                        <i class="fa-solid fa-rotate-left"></i>
+                        Limpar filtros
+                    </button>
+
+                </div>
+
+
+                <div class="filter-grid">
+
+                    <div class="filter-field">
+
+                        <label for="history-search">
+                            Pesquisa
+                        </label>
+
+                        <div class="search-input">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+
+                            <input
+                                type="search"
+                                id="history-search"
+                                placeholder="Pesquisar atividade..."
+                            >
+                        </div>
+
+                    </div>
+
+
+                    <div class="filter-field">
+
+                        <label for="history-property">
+                            Propriedade
+                        </label>
+
+                        <select id="history-property">
+                            <option value="all">Todas as propriedades</option>
+                        </select>
+
+                    </div>
+
+
+                    <div class="filter-field">
+
+                        <label for="history-type">
+                            Tipo de atividade
+                        </label>
+
+                        <select id="history-type">
+                            <option value="all">Todos os tipos</option>
+                            <option value="agriculture">Agricultura</option>
+                            <option value="planning">Planeamento</option>
+                            <option value="environment">Ambiente</option>
+                            <option value="system">Sistema</option>
+                        </select>
+
+                    </div>
+
+
+                    <div class="filter-field">
+
+                        <label for="history-period">
+                            Período
+                        </label>
+
+                        <select id="history-period">
+                            <option value="all">Todo o período</option>
+                            <option value="7">Últimos 7 dias</option>
+                            <option value="30">Últimos 30 dias</option>
+                            <option value="90">Últimos 90 dias</option>
+                            <option value="365">Último ano</option>
+                        </select>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- TIMELINE -->
+            <section class="timeline-section">
+
+                <div class="section-heading">
+
+                    <div>
+                        <span class="section-eyebrow">REGISTOS CRONOLÓGICOS</span>
+                        <h2>Linha do tempo</h2>
+                        <p>Uma visão organizada da evolução da sua atividade agrícola.</p>
+                    </div>
+
+                    <div class="timeline-count">
+                        <i class="fa-solid fa-clock"></i>
+                        <span id="visible-records">0 registos</span>
+                    </div>
+
+                </div>
+
+
+                <div class="timeline-container">
+
+                    <div id="history-timeline" class="history-timeline">
+
+                        <!-- Os registos serão apresentados aqui pelo JavaScript. -->
+
+                    </div>
+
+
+                    <div id="history-empty" class="history-empty">
+
+                        <div class="empty-icon">
+                            <i class="fa-solid fa-clock-rotate-left"></i>
+                        </div>
+
+                        <h3>Ainda não existem registos</h3>
+
+                        <p>
+                            Quando existirem atividades agrícolas, planos
+                            ou registos disponíveis, serão apresentados
+                            aqui por ordem cronológica.
+                        </p>
+
+                        <a href="planning.html" class="empty-action">
+                            <i class="fa-solid fa-calendar-plus"></i>
+                            Ir para planeamento
+                        </a>
+
+                    </div>
+
+
+                    <div id="history-no-results" class="history-empty hidden">
+
+                        <div class="empty-icon">
+                            <i class="fa-solid fa-filter-circle-xmark"></i>
+                        </div>
+
+                        <h3>Nenhum resultado encontrado</h3>
+
+                        <p>
+                            Não existem registos que correspondam aos
+                            filtros selecionados.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- INFORMATION PANEL -->
+            <section class="history-information">
+
+                <div class="information-icon">
+                    <i class="fa-solid fa-circle-info"></i>
+                </div>
+
+                <div>
+                    <h3>Sobre os dados do histórico</h3>
+
+                    <p>
+                        O AcreView organiza os registos disponíveis
+                        para facilitar o acompanhamento da exploração.
+                        Os dados ambientais e as observações de satélite
+                        serão apresentados quando estiverem efetivamente
+                        disponíveis e validados.
+                    </p>
+                </div>
+
+            </section>
+
+
+            <!-- FOOTER -->
+            <footer class="history-footer">
+                <span>AcreView © 2026</span>
+                <span>Conhecimento para uma agricultura sustentável.</span>
+            </footer>
+
+        </main>
+
+    </div>
+
+    <script src="assets/js/access-mode.js"></script>
+
+    <script src="assets/js/history.js"></script>
+
+</body>
+</html>

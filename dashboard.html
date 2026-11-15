@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="theme-color" content="#020807">
+    <meta name="description" content="AcreView — Centro de acompanhamento agrícola inteligente.">
+
+    <title>AcreView | Dashboard</title>
+
+    <!-- Leaflet -->
+    <link rel="stylesheet"
+          href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+    <!-- Ícones -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="assets/css/dashboard.css">
+</head>
+
+<body>
+
+<div class="dashboard-layout">
+
+    <!-- =====================================
+         SIDEBAR
+    ====================================== -->
+
+    <aside class="dashboard-sidebar" id="dashboard-sidebar">
+
+        <a href="dashboard.html" class="dashboard-brand">
+    <img
+        src="assets/images/acreview-logo.png"
+        alt="AcreView — Agricultural Intelligence"
+        class="dashboard-logo"
+    >
+</a>
+
+
+        <div class="sidebar-user">
+
+            <div class="user-avatar" id="sidebar-avatar">
+                <i class="fa-solid fa-user"></i>
+            </div>
+
+            <div class="user-information">
+                <strong id="sidebar-user-name">Agricultor</strong>
+                <span>Exploração agrícola</span>
+            </div>
+
+            <span class="user-status"></span>
+
+        </div>
+
+
+        <nav class="dashboard-navigation">
+
+            <span class="navigation-label">ESPAÇO DE TRABALHO</span>
+
+            <a href="dashboard.html" class="navigation-item active">
+                <i class="fa-solid fa-house"></i>
+                <span>Visão geral</span>
+            </a>
+
+            <a href="explore.html" class="navigation-item">
+                <i class="fa-solid fa-earth-africa"></i>
+                <span>Exploração geográfica</span>
+            </a>
+
+            <a href="#properties-section" class="navigation-item">
+                <i class="fa-solid fa-map-location-dot"></i>
+                <span>Propriedades</span>
+            </a>
+
+
+            <span class="navigation-label">AGRICULTURA</span>
+
+            <a href="monitoring.html" class="navigation-item">
+                <i class="fa-solid fa-satellite"></i>
+                <span>Monitorização</span>
+            </a>
+
+            <a href="planning.html" class="navigation-item">
+                <i class="fa-solid fa-seedling"></i>
+                <span>Planeamento agrícola</span>
+            </a>
+
+            <a href="history.html" class="navigation-item">
+                <i class="fa-solid fa-clock-rotate-left"></i>
+                <span>Histórico agrícola</span>
+            </a>
+
+
+            <span class="navigation-label">INTELIGÊNCIA</span>
+
+            <a href="assistant.html" class="navigation-item ai-navigation">
+                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                <span>Assistente IA</span>
+                <span class="ai-indicator">AI</span>
+            </a>
+
+        </nav>
+
+
+        <div class="sidebar-bottom">
+
+            <a href="profile.html" class="navigation-item">
+                <i class="fa-solid fa-user-gear"></i>
+                <span>Meu perfil</span>
+            </a>
+
+            <a href="index.html" class="navigation-item logout-link">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                <span>Sair</span>
+            </a>
+
+            <div class="sidebar-version">
+                ACREVIEW SYSTEM · 2026
+            </div>
+
+        </div>
+
+    </aside>
+
+
+    <!-- =====================================
+         MAIN CONTENT
+    ====================================== -->
+
+    <main class="dashboard-main">
+
+
+        <!-- HEADER -->
+
+        <header class="dashboard-header">
+
+            <button class="mobile-menu-button" id="mobile-menu-button"
+                    aria-label="Abrir menu">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+
+            <div class="header-context">
+                <span class="section-label">CENTRO DE CONTROLO</span>
+                <strong>Dashboard</strong>
+            </div>
+
+            <div class="header-actions">
+
+                <div class="system-indicator">
+                    <span class="status-dot"></span>
+                    SISTEMA ONLINE
+                </div>
+
+                <button class="notification-button"
+                        id="notification-button"
+                        aria-label="Notificações">
+                    <i class="fa-regular fa-bell"></i>
+                    <span class="notification-badge">0</span>
+                </button>
+
+                <a href="profile.html" class="header-profile">
+
+                    <div class="header-avatar" id="header-avatar">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+
+                    <div>
+                        <strong id="header-user-name">Agricultor</strong>
+                        <small>Meu perfil</small>
+                    </div>
+
+                    <i class="fa-solid fa-chevron-down"></i>
+
+                </a>
+
+            </div>
+
+        </header>
+
+
+        <!-- DASHBOARD CONTENT -->
+
+        <div class="dashboard-content">
+
+
+            <!-- WELCOME -->
+
+            <section class="welcome-section">
+
+                <div class="welcome-text">
+
+                    <span class="section-label">
+                        ACREVIEW / VISÃO GERAL
+                    </span>
+
+                    <h1>
+                        Olá, <span id="welcome-user-name">Agricultor</span>.
+                        <br>
+                        Vamos acompanhar a tua exploração?
+                    </h1>
+
+                    <p>
+                        Acompanha as condições ambientais, compreende
+                        as tuas propriedades e explora novas possibilidades
+                        para uma agricultura mais sustentável.
+                    </p>
+
+                </div>
+
+                <div class="welcome-date">
+
+                    <span>DATA DE HOJE</span>
+
+                    <strong id="current-date">
+                        -- / -- / ----
+                    </strong>
+
+                    <small>
+                        <i class="fa-regular fa-calendar"></i>
+                        ACREVIEW AGRICULTURAL SYSTEM
+                    </small>
+
+                </div>
+
+            </section>
+
+
+            <!-- QUICK ACTIONS -->
+
+            <section class="quick-actions">
+
+                <a href="explore.html" class="quick-action">
+                    <span class="quick-icon">
+                        <i class="fa-solid fa-earth-africa"></i>
+                    </span>
+
+                    <span>
+                        <strong>Explorar mapa</strong>
+                        <small>Descobrir regiões</small>
+                    </span>
+
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                </a>
+
+
+                <a href="monitoring.html" class="quick-action">
+                    <span class="quick-icon">
+                        <i class="fa-solid fa-satellite"></i>
+                    </span>
+
+                    <span>
+                        <strong>Monitorização</strong>
+                        <small>Consultar ambiente</small>
+                    </span>
+
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                </a>
+
+
+                <a href="assistant.html" class="quick-action">
+                    <span class="quick-icon ai-quick-icon">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    </span>
+
+                    <span>
+                        <strong>Assistente IA</strong>
+                        <small>Receber apoio</small>
+                    </span>
+
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                </a>
+
+            </section>
+
+
+            <!-- AGRICULTURAL INDICATORS -->
+
+            <section class="indicators-section">
+
+                <div class="section-heading">
+
+                    <div>
+                        <span class="section-label">RESUMO AGRÍCOLA</span>
+                        <h2>Visão da exploração</h2>
+                    </div>
+
+                    <span class="data-status">
+                        <span class="status-dot"></span>
+                        DADOS DA CONTA
+                    </span>
+
+                </div>
+
+
+                <div class="indicators-grid">
+
+                    <article class="indicator-card">
+
+                        <div class="indicator-top">
+                            <span>Propriedades</span>
+                            <i class="fa-solid fa-map-location-dot"></i>
+                        </div>
+
+                        <strong id="total-properties">0</strong>
+
+                        <small>Propriedades registadas</small>
+
+                        <div class="indicator-footer">
+                            <span>Gestão territorial</span>
+                        </div>
+
+                    </article>
+
+
+                    <article class="indicator-card">
+
+                        <div class="indicator-top">
+                            <span>Área agrícola</span>
+                            <i class="fa-solid fa-vector-square"></i>
+                        </div>
+
+                        <strong id="total-area">0 ha</strong>
+
+                        <small>Área total registada</small>
+
+                        <div class="indicator-footer">
+                            <span>Superfície acompanhada</span>
+                        </div>
+
+                    </article>
+
+
+                    <article class="indicator-card">
+
+                        <div class="indicator-top">
+                            <span>Culturas</span>
+                            <i class="fa-solid fa-seedling"></i>
+                        </div>
+
+                        <strong id="total-crops">0</strong>
+
+                        <small>Culturas acompanhadas</small>
+
+                        <div class="indicator-footer">
+                            <span>Produção agrícola</span>
+                        </div>
+
+                    </article>
+
+
+                    <article class="indicator-card">
+
+                        <div class="indicator-top">
+                            <span>Monitorização</span>
+                            <i class="fa-solid fa-chart-line"></i>
+                        </div>
+
+                        <strong id="monitoring-status">—</strong>
+
+                        <small>Estado dos dados ambientais</small>
+
+                        <div class="indicator-footer">
+                            <span>Acompanhamento ambiental</span>
+                        </div>
+
+                    </article>
+
+                </div>
+
+            </section>
+
+
+            <!-- MAP AND PROPERTIES -->
+
+            <section class="dashboard-grid" id="properties-section">
+
+
+                <!-- MAP PREVIEW -->
+
+                <article class="dashboard-panel map-panel">
+
+                    <div class="panel-heading">
+
+                        <div>
+                            <span class="section-label">GEOSPATIAL SYSTEM</span>
+                            <h2>Mapa das propriedades</h2>
+                            <p>Visualiza a localização das tuas explorações.</p>
+                        </div>
+
+                        <a href="explore.html" class="panel-link">
+                            Mapa completo
+                            <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                        </a>
+
+                    </div>
+
+
+                    <div id="dashboard-map"></div>
+
+
+                    <div class="map-footer">
+                        <span>
+                            <i class="fa-solid fa-location-dot"></i>
+                            Localização das propriedades
+                        </span>
+
+                        <span>ACREVIEW MAP SYSTEM</span>
+                    </div>
+
+                </article>
+
+
+                <!-- PROPERTIES LIST -->
+
+                <article class="dashboard-panel properties-panel">
+
+                    <div class="panel-heading">
+
+                        <div>
+                            <span class="section-label">GESTÃO TERRITORIAL</span>
+                            <h2>As minhas propriedades</h2>
+                        </div>
+
+                        <a href="profile.html" class="panel-link">
+                            Gerir
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+
+                    </div>
+
+
+                    <div class="properties-list" id="dashboard-properties">
+
+                        <div class="empty-state">
+
+                            <div class="empty-icon">
+                                <i class="fa-solid fa-seedling"></i>
+                            </div>
+
+                            <h3>Ainda não tens propriedades</h3>
+
+                            <p>
+                                Regista uma propriedade para começares
+                                a acompanhar a tua exploração agrícola.
+                            </p>
+
+                            <a href="explore.html" class="empty-action">
+                                Registar propriedade
+                                <i class="fa-solid fa-arrow-right"></i>
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </article>
+
+            </section>
+
+
+            <!-- ENVIRONMENTAL MONITORING -->
+
+            <section class="monitoring-section">
+
+                <div class="section-heading">
+
+                    <div>
+                        <span class="section-label">EARTH OBSERVATION</span>
+                        <h2>Monitorização ambiental</h2>
+                        <p>
+                            Indicadores que ajudam a compreender
+                            as condições do ambiente.
+                        </p>
+                    </div>
+
+                    <a href="monitoring.html" class="panel-link">
+                        Ver monitorização completa
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+
+                </div>
+
+
+                <div class="environment-grid">
+
+
+                    <article class="environment-card">
+
+                        <div class="environment-icon temperature-icon">
+                            <i class="fa-solid fa-temperature-half"></i>
+                        </div>
+
+                        <span>Temperatura</span>
+
+                        <strong id="environment-temperature">-- °C</strong>
+
+                        <small>Dados ainda não disponíveis</small>
+
+                    </article>
+
+
+                    <article class="environment-card">
+
+                        <div class="environment-icon rainfall-icon">
+                            <i class="fa-solid fa-cloud-rain"></i>
+                        </div>
+
+                        <span>Precipitação</span>
+
+                        <strong id="environment-rainfall">-- mm</strong>
+
+                        <small>Dados ainda não disponíveis</small>
+
+                    </article>
+
+
+                    <article class="environment-card">
+
+                        <div class="environment-icon soil-icon">
+                            <i class="fa-solid fa-droplet"></i>
+                        </div>
+
+                        <span>Humidade do solo</span>
+
+                        <strong id="environment-soil">-- %</strong>
+
+                        <small>Dados ainda não disponíveis</small>
+
+                    </article>
+
+
+                    <article class="environment-card">
+
+                        <div class="environment-icon vegetation-icon">
+                            <i class="fa-solid fa-leaf"></i>
+                        </div>
+
+                        <span>Vegetação NDVI</span>
+
+                        <strong id="environment-ndvi">--</strong>
+
+                        <small>Dados ainda não disponíveis</small>
+
+                    </article>
+
+                </div>
+
+                <div class="environment-disclaimer">
+                    <i class="fa-solid fa-circle-info"></i>
+                    Os indicadores ambientais serão apresentados após
+                    a integração das respetivas fontes de dados.
+                </div>
+
+            </section>
+
+
+            <!-- AI ASSISTANT -->
+
+            <section class="ai-section">
+
+                <div class="ai-panel">
+
+                    <div class="ai-visual">
+
+                        <div class="ai-orbit orbit-one"></div>
+                        <div class="ai-orbit orbit-two"></div>
+
+                        <div class="ai-symbol">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i>
+                        </div>
+
+                    </div>
+
+
+                    <div class="ai-information">
+
+                        <span class="section-label">
+                            ACREVIEW INTELLIGENCE
+                        </span>
+
+                        <h2>
+                            A agricultura evolui.
+                            <span>Vamos acompanhá-la juntos.</span>
+                        </h2>
+
+                        <p>
+                            O assistente AcreView AI ajuda-te a interpretar
+                            dados ambientais, compreender possíveis riscos
+                            e explorar estratégias para a tua propriedade.
+                        </p>
+
+                        <div class="ai-capabilities">
+
+                            <span>
+                                <i class="fa-solid fa-check"></i>
+                                Análise contextualizada
+                            </span>
+
+                            <span>
+                                <i class="fa-solid fa-check"></i>
+                                Explicações compreensíveis
+                            </span>
+
+                            <span>
+                                <i class="fa-solid fa-check"></i>
+                                Alternativas agrícolas
+                            </span>
+
+                        </div>
+
+                        <a href="assistant.html" class="ai-button">
+                            Conversar com o assistente
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+
+                        <small class="ai-responsibility">
+                            A IA apoia e informa. As decisões continuam
+                            sempre nas mãos do agricultor.
+                        </small>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- AGRICULTURAL PLANNING -->
+
+            <section class="planning-section">
+
+                <div class="section-heading">
+
+                    <div>
+                        <span class="section-label">AGRICULTURAL STRATEGY</span>
+                        <h2>Planeamento agrícola</h2>
+                        <p>
+                            Organiza as culturas e explora estratégias
+                            de gestão sustentável.
+                        </p>
+                    </div>
+
+                    <a href="planning.html" class="panel-link">
+                        Abrir planeamento
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+
+                </div>
+
+
+                <div class="planning-grid">
+
+                    <article class="planning-card">
+
+                        <div class="planning-icon">
+                            <i class="fa-solid fa-seedling"></i>
+                        </div>
+
+                        <h3>Gestão de culturas</h3>
+
+                        <p>
+                            Regista e acompanha as culturas existentes
+                            nas tuas propriedades.
+                        </p>
+
+                        <a href="planning.html">
+                            Explorar culturas
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+
+                    </article>
+
+
+                    <article class="planning-card">
+
+                        <div class="planning-icon">
+                            <i class="fa-solid fa-arrows-rotate"></i>
+                        </div>
+
+                        <h3>Rotação de culturas</h3>
+
+                        <p>
+                            Compara alternativas de rotação para apoiar
+                            a saúde e a fertilidade do solo.
+                        </p>
+
+                        <a href="planning.html">
+                            Planear rotação
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+
+                    </article>
+
+
+                    <article class="planning-card">
+
+                        <div class="planning-icon">
+                            <i class="fa-solid fa-shield-heart"></i>
+                        </div>
+
+                        <h3>Resiliência agrícola</h3>
+
+                        <p>
+                            Explora estratégias para enfrentar
+                            variações climáticas e ambientais.
+                        </p>
+
+                        <a href="planning.html">
+                            Explorar estratégias
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+
+                    </article>
+
+                </div>
+
+            </section>
+
+
+            <!-- HISTORY -->
+
+            <section class="history-section">
+
+                <div class="dashboard-panel history-panel">
+
+                    <div class="panel-heading">
+
+                        <div>
+                            <span class="section-label">AGRICULTURAL RECORDS</span>
+                            <h2>Evolução da exploração</h2>
+                            <p>
+                                Acompanha os registos e as alterações
+                                das tuas propriedades ao longo do tempo.
+                            </p>
+                        </div>
+
+                        <a href="history.html" class="panel-link">
+                            Consultar histórico
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+
+                    </div>
+
+
+                   <div id="dashboard-history-content">
+
+                        <div class="history-empty">
+
+                            <i class="fa-solid fa-chart-area"></i>
+
+                            <h3>O teu histórico começa aqui</h3>
+
+                            <p>
+                                À medida que registares informações e
+                                acompanhares as tuas propriedades, poderás
+                                consultar a sua evolução nesta área.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- FOOTER -->
+
+            <footer class="dashboard-footer">
+
+                <div>
+                    <strong>ACREVIEW</strong>
+                    <span>Earth observation for sustainable agriculture.</span>
+                </div>
+
+                <span>© 2026 ACREVIEW · AGRICULTURAL INTELLIGENCE</span>
+
+            </footer>
+
+
+        </div>
+
+    </main>
+
+</div>
+
+
+<!-- Leaflet -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script src="assets/js/access-mode.js"></script>
+
+<!-- Backend API -->
+<script src="assets/js/api.js"></script>
+
+<!-- Dashboard JavaScript -->
+<script src="assets/js/dashboard.js"></script>
+
+</body>
+</html>

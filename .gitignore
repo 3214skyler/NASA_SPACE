@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+.venv/
+venv/
+
+# Environment variables
+.env
+.env.*
+
+# Cache
+.cache/
+
+# Testes
+.pytest_cache/
+.coverage
+htmlcov/
+
+# IDE
+.vscode/
+.idea/
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# Resultados temporários de testes
+environmental_site_test.json
+environmental_test.json
+gaez_discovery.json
+gpm_test.json
+vegetation_test.json
