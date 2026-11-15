@@ -63,3 +63,6 @@ INSERT INTO analises_agricolas (propriedade_id, estrategia_id, precipitacao_medi
    (SELECT id FROM estrategias_rotacao WHERE nome = 'Milho + feijão'),
    118, 0.21, 26.4, '2026-01-01', '2026-01-31',
    'Exemplo: dados fictícios. Precisa de validação com agrónomos locais.');
+
+-- Marca os dados ambientais do exemplo como demonstração (não são medições reais)
+UPDATE dados_ambientais SET demonstracao = true;

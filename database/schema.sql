@@ -44,7 +44,8 @@ CREATE TABLE public.agricultores (
     nome text NOT NULL,
     email text NOT NULL,
     pais text,
-    criado_em timestamp without time zone DEFAULT now()
+    criado_em timestamp without time zone DEFAULT now(),
+    password_hash text
 );
 
 
@@ -153,6 +154,7 @@ CREATE TABLE public.dados_ambientais (
     data_fim date NOT NULL,
     resolucao text,
     origem text DEFAULT 'estimado'::text NOT NULL,
+    demonstracao boolean DEFAULT false NOT NULL,
     CONSTRAINT dados_ambientais_origem_check CHECK ((origem = ANY (ARRAY['confirmado'::text, 'estimado'::text, 'declarado'::text, 'desconhecido'::text])))
 );
 
@@ -188,6 +190,8 @@ CREATE TABLE public.estrategias_rotacao (
     descricao text,
     tipo text NOT NULL,
     pontuacao numeric,
+    beneficios text,
+    riscos text,
     CONSTRAINT estrategias_rotacao_tipo_check CHECK ((tipo = ANY (ARRAY['atual'::text, 'proposta'::text])))
 );
 
@@ -288,7 +292,8 @@ CREATE TABLE public.propriedades (
     agricultor_id integer NOT NULL,
     nome text NOT NULL,
     criado_em timestamp without time zone DEFAULT now(),
-    localizacao public.geography(Point,4326) NOT NULL
+    localizacao public.geography(Point,4326) NOT NULL,
+    limites public.geography(Polygon,4326)
 );
 
 
@@ -310,6 +315,46 @@ CREATE SEQUENCE public.propriedades_id_seq
 --
 
 ALTER SEQUENCE public.propriedades_id_seq OWNED BY public.propriedades.id;
+
+
+--
+-- Name: recomendacoes; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.recomendacoes (
+    id integer NOT NULL,
+    propriedade_id integer NOT NULL,
+    estrategia_id integer,
+    titulo text NOT NULL,
+    justificacao text NOT NULL,
+    dados_utilizados jsonb,
+    riscos text,
+    confianca numeric,
+    origem text DEFAULT 'estimado'::text NOT NULL,
+    criado_em timestamp without time zone DEFAULT now(),
+    CONSTRAINT recomendacoes_confianca_check CHECK (((confianca >= (0)::numeric) AND (confianca <= (1)::numeric))),
+    CONSTRAINT recomendacoes_origem_check CHECK ((origem = ANY (ARRAY['confirmado'::text, 'estimado'::text, 'declarado'::text, 'desconhecido'::text])))
+);
+
+
+--
+-- Name: recomendacoes_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.recomendacoes_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: recomendacoes_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.recomendacoes_id_seq OWNED BY public.recomendacoes.id;
 
 
 --
@@ -366,6 +411,13 @@ ALTER TABLE ONLY public.plantacoes ALTER COLUMN id SET DEFAULT nextval('public.p
 --
 
 ALTER TABLE ONLY public.propriedades ALTER COLUMN id SET DEFAULT nextval('public.propriedades_id_seq'::regclass);
+
+
+--
+-- Name: recomendacoes id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.recomendacoes ALTER COLUMN id SET DEFAULT nextval('public.recomendacoes_id_seq'::regclass);
 
 
 --
@@ -457,10 +509,32 @@ ALTER TABLE ONLY public.propriedades
 
 
 --
+-- Name: recomendacoes recomendacoes_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.recomendacoes
+    ADD CONSTRAINT recomendacoes_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: idx_prop_limites; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_prop_limites ON public.propriedades USING gist (limites);
+
+
+--
 -- Name: idx_prop_loc; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX idx_prop_loc ON public.propriedades USING gist (localizacao);
+
+
+--
+-- Name: idx_recom_prop; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_recom_prop ON public.recomendacoes USING btree (propriedade_id);
 
 
 --
@@ -533,6 +607,22 @@ ALTER TABLE ONLY public.plantacoes
 
 ALTER TABLE ONLY public.propriedades
     ADD CONSTRAINT propriedades_agricultor_id_fkey FOREIGN KEY (agricultor_id) REFERENCES public.agricultores(id) ON DELETE CASCADE;
+
+
+--
+-- Name: recomendacoes recomendacoes_estrategia_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.recomendacoes
+    ADD CONSTRAINT recomendacoes_estrategia_id_fkey FOREIGN KEY (estrategia_id) REFERENCES public.estrategias_rotacao(id) ON DELETE SET NULL;
+
+
+--
+-- Name: recomendacoes recomendacoes_propriedade_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.recomendacoes
+    ADD CONSTRAINT recomendacoes_propriedade_id_fkey FOREIGN KEY (propriedade_id) REFERENCES public.propriedades(id) ON DELETE CASCADE;
 
 
 --

@@ -51,3 +51,18 @@ estrategias_rotacao 1 → N itens_rotacao, analises_agricolas
 
 - Os dados de exemplo são fictícios.
 - Os dados de solo oficiais dos EUA (SSURGO, Web Soil Survey) não cobrem Angola; o solo deverá vir do agricultor (`origem = 'declarado'`).
+
+## Migração 002 (evolução da base)
+
+Ficheiro: `migrations/002_evolucao.sql` (já incluída no `schema.sql`).
+
+- **propriedades.limites**: polígono do terreno desenhado no mapa, `geography(Polygon,4326)`. O ponto central continua em `localizacao`.
+- **agricultores.password_hash**: só o hash da palavra-passe, gerado pelo Backend. Nunca guardar a palavra-passe.
+- **estrategias_rotacao.beneficios / riscos**: texto explicativo de cada estratégia.
+- **dados_ambientais.demonstracao**: `true` nos dados fictícios do `seed.sql`. Dados reais da NASA devem entrar com `false`, e o frontend não deve mostrar dados de demonstração como medições reais.
+- **recomendacoes** (tabela nova): recomendações com `justificacao`, `dados_utilizados` (JSON), `riscos`, `confianca` (opcional, de 0 a 1), `origem` e data. Pode ligar-se a uma estratégia.
+
+## Ainda por fazer
+
+- Tabelas de planos agrícolas e de histórico de atividades (dependem do que o frontend guarda hoje no `localStorage`).
+- Tabela de características do solo (tipo, pH, matéria orgânica), declaradas pelo agricultor.
