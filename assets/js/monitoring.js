@@ -15,6 +15,9 @@ let monitoringMap = null;
 let monitoringProperties = [];
 let propertyLayers = [];
 
+let environmentalRequestController = null;
+let monitoringRequestId = 0;
+
 
 // =========================================================
 // 2. STORAGE
@@ -362,10 +365,10 @@ function populatePropertySelector() {
 
 
 // =========================================================
-// 12. SELECT PROPERTY
+// 12. SELECT PROPERTY AND FETCH ENVIRONMENTAL DATA
 // =========================================================
 
-function selectMonitoringProperty() {
+async function selectMonitoringProperty() {
     const selector = document.getElementById("monitoring-property");
 
     if (!selector || !monitoringMap) return;
@@ -373,8 +376,16 @@ function selectMonitoringProperty() {
     const selectedIndex = selector.value;
 
     if (selectedIndex === "") {
+        if (environmentalRequestController) {
+            environmentalRequestController.abort();
+        }
+
+        monitoringRequestId++;
+
         renderPropertiesOnMap();
+        resetEnvironmentalIndicators();
         updateDataStatus(false);
+
         return;
     }
 
@@ -386,7 +397,6 @@ function selectMonitoringProperty() {
     const location = getValidPropertyLocation(property);
 
     if (polygonCoordinates.length >= 3) {
-
         const bounds = L.latLngBounds(polygonCoordinates);
 
         monitoringMap.fitBounds(bounds, {
@@ -395,76 +405,350 @@ function selectMonitoringProperty() {
         });
 
     } else if (location) {
-
         monitoringMap.setView(location, 14);
 
     } else {
+        resetEnvironmentalIndicators();
 
-        updateDataStatus(false);
+        updateDataStatus(
+            false,
+            null,
+            "Esta propriedade não possui coordenadas geográficas válidas."
+        );
 
         return;
     }
 
-    updateDataStatus(true, property);
+    await fetchPropertyEnvironmentalData(property);
+}
+
+// =========================================================
+// 13. ENVIRONMENTAL DATA INTEGRATION
+// =========================================================
+
+function formatEnvironmentalValue(value, decimals = 1) {
+    const number = Number(value);
+
+    if (!Number.isFinite(number)) {
+        return "--";
+    }
+
+    return number.toLocaleString("pt-PT", {
+        minimumFractionDigits: decimals,
+        maximumFractionDigits: decimals
+    });
+}
+
+
+function setIndicator(elementId, value) {
+    const element = document.getElementById(elementId);
+
+    if (element) {
+        element.textContent = value;
+    }
+}
+
+
+function resetEnvironmentalIndicators() {
+    setIndicator("monitoring-temperature", "--");
+    setIndicator("monitoring-rainfall", "--");
+    setIndicator("monitoring-soil-moisture", "--");
+    setIndicator("monitoring-ndvi", "--");
+}
+
+
+function getAvailableSource(environmentalData, source) {
+    const block = environmentalData?.[source];
+
+    if (!block || block.status !== "ok" || !block.data) {
+        return null;
+    }
+
+    return block.data;
+}
+
+
+function updateEnvironmentalIndicators(response) {
+    const data = response?.environmental_data;
+
+    if (!data) {
+        resetEnvironmentalIndicators();
+        return;
+    }
+
+    // NASA POWER — Temperatura média
+    const power = getAvailableSource(data, "nasa_power");
+
+    const temperature = power?.variables?.T2M?.summary?.mean;
+
+    setIndicator(
+        "monitoring-temperature",
+        temperature !== null && temperature !== undefined
+            ? `${formatEnvironmentalValue(temperature)} °C`
+            : "--"
+    );
+
+    // NASA GPM — Precipitação acumulada nos últimos 30 dias
+    const gpm = getAvailableSource(data, "gpm");
+
+    const rainfall = gpm?.summary?.total_last_30_days_mm;
+
+    setIndicator(
+        "monitoring-rainfall",
+        rainfall !== null && rainfall !== undefined
+            ? `${formatEnvironmentalValue(rainfall)} mm`
+            : "--"
+    );
+
+    // NASA SMAP — Humidade do solo
+    const smap = getAvailableSource(data, "smap");
+
+    const latestSoilData = smap?.latest;
+
+    let soilMoisture = null;
+
+    if (latestSoilData) {
+        if (latestSoilData.root_zone_soil_moisture !== null &&
+            latestSoilData.root_zone_soil_moisture !== undefined) {
+
+            soilMoisture = latestSoilData.root_zone_soil_moisture;
+
+        } else if (
+            latestSoilData.surface_soil_moisture !== null &&
+            latestSoilData.surface_soil_moisture !== undefined
+        ) {
+            soilMoisture = latestSoilData.surface_soil_moisture;
+        }
+    }
+
+    setIndicator(
+        "monitoring-soil-moisture",
+        soilMoisture !== null
+            ? `${formatEnvironmentalValue(soilMoisture * 100)} %`
+            : "--"
+    );
+
+    // LANDSAT — NDVI
+    const vegetation = getAvailableSource(data, "vegetation");
+
+    const ndvi = vegetation?.latest?.ndvi;
+
+    setIndicator(
+        "monitoring-ndvi",
+        ndvi !== null && ndvi !== undefined
+            ? formatEnvironmentalValue(ndvi, 3)
+            : "--"
+    );
 }
 
 
 // =========================================================
-// 13. DATA STATUS
+// SOURCE STATUS
 // =========================================================
 
-function updateDataStatus(hasProperty, property = null) {
+function getSourceStatusLabel(status) {
+    const labels = {
+        ok: "Disponível",
+        no_data: "Sem dados",
+        credentials_required: "Credenciais necessárias",
+        not_configured: "Não configurado",
+        error: "Erro na consulta"
+    };
+
+    return labels[status] || "Estado desconhecido";
+}
+
+
+function updateDataStatus(
+    hasProperty,
+    property = null,
+    customMessage = null,
+    response = null
+) {
     const status = document.getElementById("monitoring-data-status");
 
     if (!status) return;
 
     if (!hasProperty) {
-
         status.innerHTML = `
             <div class="status-icon">
                 <i class="fa-solid fa-satellite-dish"></i>
             </div>
 
             <div>
-                <strong>A aguardar dados ambientais</strong>
-
+                <strong>A aguardar propriedade</strong>
                 <p>
-                    Selecione uma propriedade para consultar os dados
-                    disponíveis. Os indicadores ambientais ainda não
-                    estão ligados às fontes de dados.
+                    Selecione uma propriedade para consultar
+                    os dados ambientais disponíveis.
                 </p>
             </div>
 
             <span class="status-badge">
                 <span></span>
-                Sem dados
+                Sem seleção
             </span>
         `;
 
         return;
     }
 
+    if (customMessage) {
+        status.innerHTML = `
+            <div class="status-icon">
+                <i class="fa-solid fa-circle-exclamation"></i>
+            </div>
+
+            <div>
+                <strong>${escapeHTML(property?.name || "Propriedade")}</strong>
+                <p>${escapeHTML(customMessage)}</p>
+            </div>
+
+            <span class="status-badge">
+                <span></span>
+                Indisponível
+            </span>
+        `;
+
+        return;
+    }
+
+    const summary = response?.sources_summary || {};
+
+    const available = Object.values(summary)
+        .filter(value => value === "ok").length;
+
+    const total = Object.keys(summary).length;
+
+    const overallStatus = response?.status || "unavailable";
+
+    const title = {
+        success: "Dados ambientais disponíveis",
+        partial: "Dados ambientais parciais",
+        unavailable: "Dados ambientais indisponíveis"
+    };
+
+    const message = total > 0
+        ? `${available} de ${total} fontes disponíveis. Os indicadores são apresentados conforme os dados efetivamente recebidos.`
+        : "A consultar as fontes de observação da Terra.";
+
+    const badge = {
+        success: "Dados disponíveis",
+        partial: "Dados parciais",
+        unavailable: "Sem dados"
+    };
+
     status.innerHTML = `
         <div class="status-icon">
-            <i class="fa-solid fa-location-dot"></i>
+            <i class="fa-solid fa-satellite-dish"></i>
         </div>
 
         <div>
-            <strong>${escapeHTML(property.name || "Propriedade selecionada")}</strong>
+            <strong>${escapeHTML(property?.name || "Propriedade")}</strong>
 
             <p>
-                Propriedade selecionada. Os dados ambientais ainda
-                aguardam integração com as fontes de observação da Terra.
+                ${escapeHTML(title[overallStatus] || "Estado dos dados")}
+                — ${escapeHTML(message)}
             </p>
         </div>
 
         <span class="status-badge">
             <span></span>
-            A aguardar dados
+            ${escapeHTML(badge[overallStatus] || "Desconhecido")}
         </span>
     `;
 }
 
+
+// =========================================================
+// FETCH ENVIRONMENTAL DATA
+// =========================================================
+
+async function fetchPropertyEnvironmentalData(property) {
+    if (!window.AcreViewAPI) {
+        updateDataStatus(
+            true,
+            property,
+            "O cliente de comunicação com o backend não foi carregado."
+        );
+
+        return;
+    }
+
+    const location = getValidPropertyLocation(property);
+
+    if (!location) {
+        resetEnvironmentalIndicators();
+
+        updateDataStatus(
+            true,
+            property,
+            "Não foi possível encontrar as coordenadas desta propriedade."
+        );
+
+        return;
+    }
+
+    if (environmentalRequestController) {
+        environmentalRequestController.abort();
+    }
+
+    environmentalRequestController = new AbortController();
+
+    const controller = environmentalRequestController;
+    const requestId = ++monitoringRequestId;
+
+    resetEnvironmentalIndicators();
+
+    updateDataStatus(
+        true,
+        property,
+        "A consultar NASA POWER, SMAP, GPM e Landsat..."
+    );
+
+    try {
+        const response = await window.AcreViewAPI.fetchEnvironmentalData(
+            location[0],
+            location[1],
+            {
+                signal: controller.signal
+            }
+        );
+
+        if (requestId !== monitoringRequestId) return;
+
+        updateEnvironmentalIndicators(response);
+
+        updateDataStatus(
+            true,
+            property,
+            null,
+            response
+        );
+
+        console.info(
+            "Dados ambientais recebidos:",
+            response
+        );
+
+    } catch (error) {
+        if (error.name === "AbortError") return;
+
+        console.error(
+            "Erro ao consultar dados ambientais:",
+            error
+        );
+
+        if (requestId !== monitoringRequestId) return;
+
+        resetEnvironmentalIndicators();
+
+        updateDataStatus(
+            true,
+            property,
+            error.message
+        );
+    }
+}
 
 // =========================================================
 // 14. LOAD PROPERTIES
@@ -563,8 +847,7 @@ function initializeRefreshButton() {
 
     if (!button) return;
 
-    button.addEventListener("click", () => {
-
+    button.addEventListener("click", async () => {
         button.disabled = true;
 
         const icon = button.querySelector("i");
@@ -573,17 +856,29 @@ function initializeRefreshButton() {
             icon.classList.add("fa-spin");
         }
 
-        loadMonitoringProperties();
+        try {
+            monitoringProperties = getStoredProperties();
 
-        setTimeout(() => {
+            populatePropertySelector();
 
+            renderPropertiesOnMap();
+
+            const selector = document.getElementById("monitoring-property");
+
+            if (selector && selector.value !== "") {
+                await selectMonitoringProperty();
+            } else {
+                resetEnvironmentalIndicators();
+                updateDataStatus(false);
+            }
+
+        } finally {
             button.disabled = false;
 
             if (icon) {
                 icon.classList.remove("fa-spin");
             }
-
-        }, 600);
+        }
     });
 }
 
