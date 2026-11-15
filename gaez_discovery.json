@@ -1,0 +1,1143 @@
+[
+  {
+    "service": "LR",
+    "url": "https://gaez-services.fao.org/server/rest/services/LR/ImageServer",
+    "description": "",
+    "pixel_type": "U8",
+    "band_count": 1,
+    "pixel_size": [
+      0.008333333333333333,
+      0.008333333333333333
+    ],
+    "has_multidimensions": false,
+    "capabilities": "Catalog,Pixels,Download,Image,Metadata",
+    "fields": [
+      [
+        "OBJECTID",
+        "OBJECTID",
+        "esriFieldTypeOID"
+      ],
+      [
+        "Shape",
+        "Shape",
+        "esriFieldTypeGeometry"
+      ],
+      [
+        "Name",
+        "Name",
+        "esriFieldTypeString"
+      ],
+      [
+        "Category",
+        "Category",
+        "esriFieldTypeInteger"
+      ],
+      [
+        "sub_theme_name",
+        "Sub-Theme Name",
+        "esriFieldTypeString"
+      ],
+      [
+        "variable",
+        "Variable Name",
+        "esriFieldTypeString"
+      ],
+      [
+        "file_description",
+        "Description",
+        "esriFieldTypeString"
+      ],
+      [
+        "year",
+        "Time Period",
+        "esriFieldTypeString"
+      ],
+      [
+        "model",
+        "Climate Model",
+        "esriFieldTypeString"
+      ],
+      [
+        "rcp",
+        "RCP",
+        "esriFieldTypeString"
+      ],
+      [
+        "units",
+        "Data Units",
+        "esriFieldTypeString"
+      ],
+      [
+        "renderer",
+        "Recommended Renderer",
+        "esriFieldTypeString"
+      ],
+      [
+        "download_url",
+        "Download URL",
+        "esriFieldTypeString"
+      ],
+      [
+        "Thumbnail",
+        "Thumbnail",
+        "esriFieldTypeBlob"
+      ],
+      [
+        "file_id",
+        "File Identifier",
+        "esriFieldTypeString"
+      ]
+    ],
+    "raster_functions": [
+      "AEZ Classification (33 Classes)",
+      "None",
+      "AEZ Classification (57 Classes)",
+      "Median Altitude",
+      "Exclusion Areas",
+      "Dominant Soil",
+      "Major Hydrological Basins",
+      "Dominant Land Cover",
+      "Moisture Regime Class",
+      "Suitability Classes",
+      "Slope Class Renderer",
+      "Soil Regime Renderer",
+      "Limiting Soil Quality",
+      "Soil Resource Classes",
+      "Thermal Regime Class",
+      "Share of Class in Grid Cell",
+      "Socio-economic Data"
+    ],
+    "detected_fields": {
+      "crop": null,
+      "unit": "units",
+      "theme": "sub_theme_name"
+    },
+    "identify_supported": true,
+    "catalog_items_returned": 134,
+    "sample_attributes": [
+      {
+        "OBJECTID": 603,
+        "Name": "aez_v9v2red_ENSEMBLE_rcp2p6_2080s",
+        "Category": 1,
+        "sub_theme_name": "Agro-ecological Zones",
+        "variable": "Simplified AEZ classification (33 classes)",
+        "file_description": "Simplified AEZ classification (33 classes)",
+        "year": "2071-2100",
+        "model": "ENSEMBLE",
+        "rcp": "RCP2.6",
+        "units": "Class",
+        "renderer": "AEZ Classification (33 classes)",
+        "download_url": "https://s3.eu-west-1.amazonaws.com/data.gaezdev.aws.fao.org/LR/aez/aez_v9v2red_ENSEMBLE_rcp2p6_2080s.tif",
+        "Thumbnail": null,
+        "file_id": "000000033"
+      },
+      {
+        "OBJECTID": 615,
+        "Name": "aez_v9v2_ENSEMBLE_rcp2p6_2050s",
+        "Category": 1,
+        "sub_theme_name": "Agro-ecological Zones",
+        "variable": "AEZ classification by climate/soil/terrain/LC (57 classes)",
+        "file_description": "AEZ classification by climate/soil/terrain/LC (57 classes)",
+        "year": "2041-2070",
+        "model": "ENSEMBLE",
+        "rcp": "RCP2.6",
+        "units": "Class",
+        "renderer": "AEZ Classification (57 classes)",
+        "download_url": "https://s3.eu-west-1.amazonaws.com/data.gaezdev.aws.fao.org/LR/aez/aez_v9v2_ENSEMBLE_rcp2p6_2050s.tif",
+        "Thumbnail": null,
+        "file_id": "000000014"
+      },
+      {
+        "OBJECTID": 616,
+        "Name": "aez_v9v2_ENSEMBLE_rcp2p6_2080s",
+        "Category": 1,
+        "sub_theme_name": "Agro-ecological Zones",
+        "variable": "AEZ classification by climate/soil/terrain/LC (57 classes)",
+        "file_description": "AEZ classification by climate/soil/terrain/LC (57 classes)",
+        "year": "2071-2100",
+        "model": "ENSEMBLE",
+        "rcp": "RCP2.6",
+        "units": "Class",
+        "renderer": "AEZ Classification (57 classes)",
+        "download_url": "https://s3.eu-west-1.amazonaws.com/data.gaezdev.aws.fao.org/LR/aez/aez_v9v2_ENSEMBLE_rcp2p6_2080s.tif",
+        "Thumbnail": null,
+        "file_id": "000000015"
+      }
+    ],
+    "distinct_crops": null
+  },
+  {
+    "service": "res01",
+    "url": "https://gaez-services.fao.org/server/rest/services/res01/ImageServer",
+    "description": "",
+    "pixel_type": "S16",
+    "band_count": 1,
+    "pixel_size": [
+      0.08333333,
+      0.08333333
+    ],
+    "has_multidimensions": false,
+    "capabilities": "Catalog,Download,Image,Metadata",
+    "fields": [
+      [
+        "objectid",
+        "OBJECTID",
+        "esriFieldTypeOID"
+      ],
+      [
+        "name",
+        "Name",
+        "esriFieldTypeString"
+      ],
+      [
+        "category",
+        "Category",
+        "esriFieldTypeInteger"
+      ],
+      [
+        "filepath",
+        "Path to File",
+        "esriFieldTypeString"
+      ],
+      [
+        "sub_theme_name",
+        "Sub-Theme Name",
+        "esriFieldTypeString"
+      ],
+      [
+        "variable",
+        "Variable Name",
+        "esriFieldTypeString"
+      ],
+      [
+        "file_description",
+        "Description",
+        "esriFieldTypeString"
+      ],
+      [
+        "year",
+        "Time Period",
+        "esriFieldTypeString"
+      ],
+      [
+        "model",
+        "Climate Model",
+        "esriFieldTypeString"
+      ],
+      [
+        "rcp",
+        "RCP",
+        "esriFieldTypeString"
+      ],
+      [
+        "units",
+        "Data Units",
+        "esriFieldTypeString"
+      ],
+      [
+        "renderer",
+        "Recommended Renderer",
+        "esriFieldTypeString"
+      ],
+      [
+        "download_url",
+        "Download URL",
+        "esriFieldTypeString"
+      ],
+      [
+        "shape",
+        "Shape",
+        "esriFieldTypeGeometry"
+      ],
+      [
+        "file_id",
+        "File Identifier",
+        "esriFieldTypeString"
+      ]
+    ],
+    "raster_functions": [
+      "Thermal Zones Renderer",
+      "None",
+      "Permafrost Zones - Classes",
+      "Climate Classification - 2-character Koeppen-Geiger",
+      "Climate Classification - 3-character Koeppen-Geiger",
+      "Thermal Regime Symbology",
+      "Classification by thermal climates and thermal zones",
+      "Thermal Climates",
+      "Multi-cropping Class",
+      "Number of Growing Period Days",
+      "Growing Period Renderer",
+      "Agro-climatic Resources Symbology - Days",
+      "Agro-climatic Resources Symbology - Precipitation",
+      "Beginning date of longest component LGP",
+      "Agro-climatic Resources Symbology - Temperature"
+    ],
+    "detected_fields": {
+      "crop": null,
+      "unit": "units",
+      "theme": "sub_theme_name"
+    },
+    "error": "ReadTimeout: HTTPSConnectionPool(host='gaez-services.fao.org', port=443): Read timed out. (read timeout=90)"
+  },
+  {
+    "service": "res02",
+    "url": "https://gaez-services.fao.org/server/rest/services/res02/ImageServer",
+    "description": "",
+    "pixel_type": "S16",
+    "band_count": 1,
+    "pixel_size": [
+      0.08333333,
+      0.08333333
+    ],
+    "has_multidimensions": false,
+    "capabilities": "Catalog,Download,Image,Metadata",
+    "fields": [
+      [
+        "objectid",
+        "OBJECTID",
+        "esriFieldTypeOID"
+      ],
+      [
+        "name",
+        "Name",
+        "esriFieldTypeString"
+      ],
+      [
+        "category",
+        "Category",
+        "esriFieldTypeInteger"
+      ],
+      [
+        "filepath",
+        "Path to File",
+        "esriFieldTypeString"
+      ],
+      [
+        "sub_theme_name",
+        "Sub-Theme Name",
+        "esriFieldTypeString"
+      ],
+      [
+        "variable",
+        "Variable Name",
+        "esriFieldTypeString"
+      ],
+      [
+        "file_description",
+        "Description",
+        "esriFieldTypeString"
+      ],
+      [
+        "year",
+        "Time Period",
+        "esriFieldTypeString"
+      ],
+      [
+        "model",
+        "Climate Model",
+        "esriFieldTypeString"
+      ],
+      [
+        "rcp",
+        "RCP",
+        "esriFieldTypeString"
+      ],
+      [
+        "crop",
+        "Crop",
+        "esriFieldTypeString"
+      ],
+      [
+        "water_supply",
+        "Water Supply",
+        "esriFieldTypeString"
+      ],
+      [
+        "input_level",
+        "Input Level",
+        "esriFieldTypeString"
+      ],
+      [
+        "units",
+        "Data  Units",
+        "esriFieldTypeString"
+      ],
+      [
+        "renderer",
+        "Recommended Renderer",
+        "esriFieldTypeString"
+      ],
+      [
+        "download_url",
+        "Download URL",
+        "esriFieldTypeString"
+      ],
+      [
+        "shape",
+        "Shape",
+        "esriFieldTypeGeometry"
+      ],
+      [
+        "file_id",
+        "File Identifier",
+        "esriFieldTypeString"
+      ]
+    ],
+    "raster_functions": [
+      "Agro-climatic Potential Yield Symbology",
+      "None",
+      "Selected LUT Sequence Number",
+      "Beginning of Crop Growth Cycle (day)",
+      "Growth Cycle Attributes - Precipitation",
+      "Growth Cycle Attributes - Temperature",
+      "Agro-climatic Potential Yield - Days"
+    ],
+    "detected_fields": {
+      "crop": "crop",
+      "unit": "units",
+      "theme": "sub_theme_name"
+    },
+    "identify_supported": true,
+    "catalog_items_returned": 1000,
+    "sample_attributes": [
+      {
+        "objectid": 293514,
+        "name": "fmlt200b_cyl",
+        "category": 1,
+        "filepath": "\\res02\\GFDL-ESM2M\\rcp8p5\\2050sH\\fmlt200b_cyl.tif",
+        "sub_theme_name": "Growth Cycle Attributes",
+        "variable": "Length of crop growth cycle (days)",
+        "file_description": "Length of crop growth cycle (days) for the time period 2041-2070 for Foxtail millet with an Available water content of 200 mm/m (under rain-fed conditions) and high input level using climate data source GFDL-ESM2M based on RCP8.5",
+        "year": "2041-2070",
+        "model": "GFDL-ESM2M",
+        "rcp": "RCP8.5",
+        "crop": "Foxtail millet",
+        "water_supply": "Available water content of 200 mm/m (under rain-fed conditions)",
+        "input_level": "High",
+        "units": "days",
+        "renderer": "Agro-climatic Potential Yield - Days",
+        "download_url": " https://s3.eu-west-1.amazonaws.com/data.gaezdev.aws.fao.org/res02/GFDL-ESM2M/rcp8p5/2050sH/fmlt200b_cyl.tif",
+        "file_id": "000394153"
+      },
+      {
+        "objectid": 295747,
+        "name": "soyb200a_cyl",
+        "category": 1,
+        "filepath": "\\res02\\GFDL-ESM2M\\rcp8p5\\2050sH\\soyb200a_cyl.tif",
+        "sub_theme_name": "Growth Cycle Attributes",
+        "variable": "Length of crop growth cycle (days)",
+        "file_description": "Length of crop growth cycle (days) for the time period 2041-2070 for Soybean with an Available water content of 200 mm/m (under irrigation conditions) and high input level using climate data source GFDL-ESM2M based on RCP8.5",
+        "year": "2041-2070",
+        "model": "GFDL-ESM2M",
+        "rcp": "RCP8.5",
+        "crop": "Soybean",
+        "water_supply": "Available water content of 200 mm/m (under irrigation conditions)",
+        "input_level": "High",
+        "units": "days",
+        "renderer": "Agro-climatic Potential Yield - Days",
+        "download_url": " https://s3.eu-west-1.amazonaws.com/data.gaezdev.aws.fao.org/res02/GFDL-ESM2M/rcp8p5/2050sH/soyb200a_cyl.tif",
+        "file_id": "000394776"
+      },
+      {
+        "objectid": 336898,
+        "name": "rape200b_cyl",
+        "category": 1,
+        "filepath": "\\res02\\GFDL-ESM2M\\rcp4p5\\2020sH\\rape200b_cyl.tif",
+        "sub_theme_name": "Growth Cycle Attributes",
+        "variable": "Length of crop growth cycle (days)",
+        "file_description": "Length of crop growth cycle (days) for the time period 2011-2040 for Rapeseed with an Available water content of 200 mm/m (under rain-fed conditions) and high input level using climate data source GFDL-ESM2M based on RCP4.5",
+        "year": "2011-2040",
+        "model": "GFDL-ESM2M",
+        "rcp": "RCP4.5",
+        "crop": "Rapeseed",
+        "water_supply": "Available water content of 200 mm/m (under rain-fed conditions)",
+        "input_level": "High",
+        "units": "days",
+        "renderer": "Agro-climatic Potential Yield - Days",
+        "download_url": " https://s3.eu-west-1.amazonaws.com/data.gaezdev.aws.fao.org/res02/GFDL-ESM2M/rcp4p5/2020sH/rape200b_cyl.tif",
+        "file_id": "000395338"
+      }
+    ],
+    "distinct_crops": [
+      "Alfalfa",
+      "Banana",
+      "Barley",
+      "Biomass highland sorghum",
+      "Biomass lowland sorghum",
+      "Biomass sorghum",
+      "Biomass temperate sorghum",
+      "Buckwheat",
+      "Cabbage",
+      "Carrot",
+      "Cassava",
+      "Chickpea",
+      "Citrus",
+      "Cocoa",
+      "Cocoa cumoun",
+      "Cocoa hybrid",
+      "Coconut",
+      "Cocoyam",
+      "Coffee",
+      "Coffee arabica",
+      "Coffee robusta",
+      "Cotton",
+      "Cowpea",
+      "Dry pea",
+      "Dryland rice",
+      "Flax",
+      "Foxtail millet",
+      "Gram",
+      "Grass",
+      "Greater yam",
+      "Groundnut",
+      "Highland maize",
+      "Highland sorghum",
+      "Jatropha",
+      "Lowland maize",
+      "Lowland sorghum",
+      "Maize",
+      "Millet",
+      "Miscanthus",
+      "Napier grass",
+      "Oat",
+      "Oil palm",
+      "Olive",
+      "Onion",
+      "Para rubber",
+      "Pasture legumes",
+      "Pearl millet",
+      "Phaseolus bean",
+      "Pigeonpea",
+      "Rapeseed",
+      "Reed canary grass",
+      "Rye",
+      "Silage maize",
+      "Sorghum",
+      "Soybean",
+      "Spring barley",
+      "Spring rye",
+      "Spring wheat",
+      "Sugarbeet",
+      "Sugarcane",
+      "Sunflower",
+      "Sweet potato",
+      "Switchgrass",
+      "Tea",
+      "Temperate maize",
+      "Temperate sorghum",
+      "Tobacco",
+      "Tomato",
+      "Wetland rice",
+      "Wheat",
+      "White potato",
+      "White yam",
+      "Winter barley",
+      "Winter rye",
+      "Winter wheat",
+      "Yam",
+      "Yellow yam"
+    ]
+  },
+  {
+    "service": "res05",
+    "url": "https://gaez-services.fao.org/server/rest/services/res05/ImageServer",
+    "description": "",
+    "pixel_type": "S16",
+    "band_count": 1,
+    "pixel_size": [
+      0.08333333,
+      0.08333333
+    ],
+    "has_multidimensions": false,
+    "capabilities": "Catalog,Download,Image,Metadata",
+    "fields": [
+      [
+        "objectid",
+        "OBJECTID",
+        "esriFieldTypeOID"
+      ],
+      [
+        "name",
+        "Name",
+        "esriFieldTypeString"
+      ],
+      [
+        "category",
+        "Category",
+        "esriFieldTypeInteger"
+      ],
+      [
+        "filepath",
+        "Path to File",
+        "esriFieldTypeString"
+      ],
+      [
+        "sub_theme_name",
+        "Sub-Theme Name",
+        "esriFieldTypeString"
+      ],
+      [
+        "variable",
+        "Variable Name",
+        "esriFieldTypeString"
+      ],
+      [
+        "file_description",
+        "Description",
+        "esriFieldTypeString"
+      ],
+      [
+        "year",
+        "Time Period",
+        "esriFieldTypeString"
+      ],
+      [
+        "model",
+        "Climate Model",
+        "esriFieldTypeString"
+      ],
+      [
+        "rcp",
+        "RCP",
+        "esriFieldTypeString"
+      ],
+      [
+        "crop",
+        "Crop",
+        "esriFieldTypeString"
+      ],
+      [
+        "water_supply",
+        "Water Supply",
+        "esriFieldTypeString"
+      ],
+      [
+        "input_level",
+        "Input Level",
+        "esriFieldTypeString"
+      ],
+      [
+        "c02_fertilization",
+        "CO2 Fertilization",
+        "esriFieldTypeString"
+      ],
+      [
+        "units",
+        "Data Units",
+        "esriFieldTypeString"
+      ],
+      [
+        "renderer",
+        "Recommended Renderer",
+        "esriFieldTypeString"
+      ],
+      [
+        "download_url",
+        "Download URL",
+        "esriFieldTypeString"
+      ],
+      [
+        "shape",
+        "Shape",
+        "esriFieldTypeGeometry"
+      ],
+      [
+        "file_id",
+        "File Identifier",
+        "esriFieldTypeString"
+      ]
+    ],
+    "raster_functions": [
+      "Suitability and Attainable Yield Symbology",
+      "None",
+      "Crop Suitability Index in Classes - All Land in Grid Cell",
+      "Crop Suitability Index in Classes - Current Cropland in Grid Cell",
+      "Crop Water Indicators"
+    ],
+    "detected_fields": {
+      "crop": "crop",
+      "unit": "units",
+      "theme": "sub_theme_name"
+    },
+    "identify_supported": true,
+    "catalog_items_returned": 1000,
+    "sample_attributes": [
+      {
+        "objectid": 116811,
+        "name": "ylHr0_csv",
+        "category": 1,
+        "filepath": "\\res05\\IPSL-CM5A-LR\\rcp6p0\\2020sH\\ylHr0_csv.tif",
+        "sub_theme_name": "Agro-ecological Attainable Yield ",
+        "variable": "Output density (potential production divided by total grid cell area)",
+        "file_description": "Output density (potential production divided by total grid cell area) for the time period 2011-2040 for Cassava under rainfed conditions and high input level and without CO2 fertilization using climate data source IPSL-CM5A-LR based on RCP6.0",
+        "year": "2011-2040",
+        "model": "IPSL-CM5A-LR",
+        "rcp": "RCP6.0",
+        "crop": "Cassava",
+        "water_supply": "Rainfed",
+        "input_level": "High",
+        "c02_fertilization": "Without CO2 Fertilization",
+        "units": "kg DW/ha",
+        "renderer": "Suitability and Attainable Yield Symbology",
+        "download_url": "https://s3.eu-west-1.amazonaws.com/data.gaezdev.aws.fao.org/res05/IPSL-CM5A-LR/rcp6p0/2020sH/ylHr0_csv.tif",
+        "file_id": "000504299"
+      },
+      {
+        "objectid": 114200,
+        "name": "siHr0_whe",
+        "category": 1,
+        "filepath": "\\res05\\IPSL-CM5A-LR\\rcp6p0\\2020sH\\siHr0_whe.tif",
+        "sub_theme_name": "Suitability Class",
+        "variable": "Crop suitability index in classes; all land in grid cell",
+        "file_description": "Crop suitability index in classes; all land in grid cell for the time period 2011-2040 for Wheat under rainfed conditions and high input level and without CO2 fertilization using climate data source IPSL-CM5A-LR based on RCP6.0",
+        "year": "2011-2040",
+        "model": "IPSL-CM5A-LR",
+        "rcp": "RCP6.0",
+        "crop": "Wheat",
+        "water_supply": "Rainfed",
+        "input_level": "High",
+        "c02_fertilization": "Without CO2 Fertilization",
+        "units": "Class",
+        "renderer": "Crop Suitability Index in Classes - All Land in Grid Cell",
+        "download_url": "https://s3.eu-west-1.amazonaws.com/data.gaezdev.aws.fao.org/res05/IPSL-CM5A-LR/rcp6p0/2020sH/siHr0_whe.tif",
+        "file_id": "000504475"
+      },
+      {
+        "objectid": 115203,
+        "name": "sx2Hr0_grm",
+        "category": 1,
+        "filepath": "\\res05\\IPSL-CM5A-LR\\rcp6p0\\2020sH\\sx2Hr0_grm.tif",
+        "sub_theme_name": "Suitability Index",
+        "variable": "Share of VS+S+MS land in grid cell (range 0 – 10000)",
+        "file_description": "Share of VS+S+MS land in grid cell (range 0 – 10000) for the time period 2011-2040 for Gram under rainfed conditions and high input level and without CO2 fertilization using climate data source IPSL-CM5A-LR based on RCP6.0",
+        "year": "2011-2040",
+        "model": "IPSL-CM5A-LR",
+        "rcp": "RCP6.0",
+        "crop": "Gram",
+        "water_supply": "Rainfed",
+        "input_level": "High",
+        "c02_fertilization": "Without CO2 Fertilization",
+        "units": "Index",
+        "renderer": "Suitability and Attainable Yield Symbology",
+        "download_url": "https://s3.eu-west-1.amazonaws.com/data.gaezdev.aws.fao.org/res05/IPSL-CM5A-LR/rcp6p0/2020sH/sx2Hr0_grm.tif",
+        "file_id": "000504791"
+      }
+    ],
+    "distinct_crops": [
+      "Alfalfa",
+      "Banana",
+      "Barley",
+      "Biomass sorghum",
+      "Buckwheat",
+      "Cabbage",
+      "Carrot",
+      "Cassava",
+      "Chickpea",
+      "Citrus",
+      "Cocoa",
+      "Coconut",
+      "Coffee",
+      "Cotton",
+      "Cowpea",
+      "Dry pea",
+      "Dryland rice",
+      "Flax",
+      "Foxtail millet",
+      "Gram",
+      "Groundnut",
+      "Jatropha",
+      "Maize",
+      "Miscanthus",
+      "Napier grass",
+      "Oat",
+      "Oil palm",
+      "Olive",
+      "Onion",
+      "Pearl millet",
+      "Phaseolus bean",
+      "Pigeonpea",
+      "Rapeseed",
+      "Reed canary grass",
+      "Rubber",
+      "Rye",
+      "Sorghum",
+      "Soybean",
+      "Sugarbeet",
+      "Sugarcane",
+      "Sunflower",
+      "Sweet potato",
+      "Switchgrass",
+      "Tea",
+      "Tobacco",
+      "Tomato",
+      "Wetland rice",
+      "Wheat",
+      "White potato",
+      "Yam"
+    ]
+  },
+  {
+    "service": "res06",
+    "url": "https://gaez-services.fao.org/server/rest/services/res06/ImageServer",
+    "description": "",
+    "pixel_type": "F32",
+    "band_count": 1,
+    "pixel_size": [
+      0.08333333333333333,
+      0.08333333333333333
+    ],
+    "has_multidimensions": false,
+    "capabilities": "Catalog,Download,Image,Metadata",
+    "fields": [
+      [
+        "OBJECTID",
+        "OBJECTID",
+        "esriFieldTypeOID"
+      ],
+      [
+        "Shape",
+        "Shape",
+        "esriFieldTypeGeometry"
+      ],
+      [
+        "Name",
+        "Name",
+        "esriFieldTypeString"
+      ],
+      [
+        "Category",
+        "Category",
+        "esriFieldTypeInteger"
+      ],
+      [
+        "filepath",
+        "Path to File",
+        "esriFieldTypeString"
+      ],
+      [
+        "sub_theme_name",
+        "Sub-Theme Name",
+        "esriFieldTypeString"
+      ],
+      [
+        "variable",
+        "Variable Name",
+        "esriFieldTypeString"
+      ],
+      [
+        "file_description",
+        "Description",
+        "esriFieldTypeString"
+      ],
+      [
+        "year",
+        "Time Period",
+        "esriFieldTypeString"
+      ],
+      [
+        "crop",
+        "Crop",
+        "esriFieldTypeString"
+      ],
+      [
+        "water_supply",
+        "Water Supply",
+        "esriFieldTypeString"
+      ],
+      [
+        "units",
+        "Data Units",
+        "esriFieldTypeString"
+      ],
+      [
+        "renderer",
+        "Recommended Renderer",
+        "esriFieldTypeString"
+      ],
+      [
+        "download_url",
+        "Download URL",
+        "esriFieldTypeString"
+      ],
+      [
+        "file_id",
+        "File Identifier",
+        "esriFieldTypeString"
+      ]
+    ],
+    "raster_functions": [
+      "Actual Yields and Production Symbology",
+      "None"
+    ],
+    "detected_fields": {
+      "crop": "crop",
+      "unit": "units",
+      "theme": "sub_theme_name"
+    },
+    "identify_supported": true,
+    "catalog_items_returned": 498,
+    "sample_attributes": [
+      {
+        "OBJECTID": 499,
+        "Name": "ban_2000_har",
+        "Category": 1,
+        "filepath": "\\res06\\I\\2000\\ban_2000_har.tif",
+        "sub_theme_name": "Area, Yield and Production",
+        "variable": "Harvested area",
+        "file_description": "Harvested area for the year 2000 for Banana under Irrigated water supply conditions",
+        "year": "2000",
+        "crop": "Banana",
+        "water_supply": "Irrigated",
+        "units": "1000 ha",
+        "renderer": "Actual Yields and Production Symbology",
+        "download_url": " https://s3.eu-west-1.amazonaws.com/data.gaezdev.aws.fao.org/res06/I/2000/ban_2000_har.tif",
+        "file_id": null
+      },
+      {
+        "OBJECTID": 500,
+        "Name": "ban_2000_prd",
+        "Category": 1,
+        "filepath": "\\res06\\I\\2000\\ban_2000_prd.tif",
+        "sub_theme_name": "Area, Yield and Production",
+        "variable": "Production",
+        "file_description": "Production for the year 2000 for Banana under Irrigated water supply conditions",
+        "year": "2000",
+        "crop": "Banana",
+        "water_supply": "Irrigated",
+        "units": "1000 t",
+        "renderer": "Actual Yields and Production Symbology",
+        "download_url": " https://s3.eu-west-1.amazonaws.com/data.gaezdev.aws.fao.org/res06/I/2000/ban_2000_prd.tif",
+        "file_id": null
+      },
+      {
+        "OBJECTID": 501,
+        "Name": "ban_2000_yld",
+        "Category": 1,
+        "filepath": "\\res06\\I\\2000\\ban_2000_yld.tif",
+        "sub_theme_name": "Area, Yield and Production",
+        "variable": "Yield",
+        "file_description": "Yield for the year 2000 for Banana under Irrigated water supply conditions",
+        "year": "2000",
+        "crop": "Banana",
+        "water_supply": "Irrigated",
+        "units": "t/ha",
+        "renderer": "Actual Yields and Production Symbology",
+        "download_url": " https://s3.eu-west-1.amazonaws.com/data.gaezdev.aws.fao.org/res06/I/2000/ban_2000_yld.tif",
+        "file_id": null
+      }
+    ],
+    "distinct_crops": [
+      "Banana",
+      "Barley",
+      "Cassava",
+      "Cereals",
+      "Cotton",
+      "Fodder crops",
+      "Fruits and nuts",
+      "Groundnut",
+      "Main crops",
+      "Maize",
+      "Millet",
+      "Oil palm",
+      "Oil seeds",
+      "Olive",
+      "Other cereals",
+      "Potato and sweet potato",
+      "Pulses",
+      "Rapeseed",
+      "Rest of crops",
+      "Root crops",
+      "Sorghum",
+      "Soybean",
+      "Stimulants",
+      "Sugarbeet",
+      "Sugarcane",
+      "Sunflower",
+      "Tobacco",
+      "Vegetables",
+      "Wetland rice",
+      "Wheat",
+      "Yams and other roots"
+    ]
+  },
+  {
+    "service": "res07",
+    "url": "https://gaez-services.fao.org/server/rest/services/res07/ImageServer",
+    "description": "",
+    "pixel_type": "U8",
+    "band_count": 1,
+    "pixel_size": [
+      0.08333333333333333,
+      0.08333333333333333
+    ],
+    "has_multidimensions": false,
+    "capabilities": "Catalog,Download,Image,Metadata",
+    "fields": [
+      [
+        "OBJECTID",
+        "OBJECTID",
+        "esriFieldTypeOID"
+      ],
+      [
+        "Shape",
+        "Shape",
+        "esriFieldTypeGeometry"
+      ],
+      [
+        "Name",
+        "Name",
+        "esriFieldTypeString"
+      ],
+      [
+        "Category",
+        "Category",
+        "esriFieldTypeInteger"
+      ],
+      [
+        "filepath",
+        "Path to File",
+        "esriFieldTypeString"
+      ],
+      [
+        "sub_theme_name",
+        "Sub-Theme Name",
+        "esriFieldTypeString"
+      ],
+      [
+        "variable",
+        "Variable Name",
+        "esriFieldTypeString"
+      ],
+      [
+        "file_description",
+        "Description",
+        "esriFieldTypeString"
+      ],
+      [
+        "year",
+        "Time Period",
+        "esriFieldTypeString"
+      ],
+      [
+        "crop",
+        "Crop",
+        "esriFieldTypeString"
+      ],
+      [
+        "water_supply",
+        "Water Supply",
+        "esriFieldTypeString"
+      ],
+      [
+        "units",
+        "Data Units",
+        "esriFieldTypeString"
+      ],
+      [
+        "renderer",
+        "Recommended Renderer",
+        "esriFieldTypeString"
+      ],
+      [
+        "download_url",
+        "Download URL",
+        "esriFieldTypeString"
+      ],
+      [
+        "file_id",
+        "File Identifier",
+        "esriFieldTypeString"
+      ]
+    ],
+    "raster_functions": [
+      "Yield and Production Gaps Symbology",
+      "Production Gap",
+      "None"
+    ],
+    "detected_fields": {
+      "crop": "crop",
+      "unit": "units",
+      "theme": "sub_theme_name"
+    },
+    "identify_supported": true,
+    "catalog_items_returned": 288,
+    "sample_attributes": [
+      {
+        "OBJECTID": 1,
+        "Name": "ban_2000_qga",
+        "Category": 1,
+        "filepath": "\\res07\\I\\2000\\ban_2000_qga.tif",
+        "sub_theme_name": "Production Gap",
+        "variable": "Cropwise Apparent Production Gap",
+        "file_description": "Cropwise Apparent Production Gap for the year 2000 for Banana under Irrigated water supply conditions",
+        "year": "2000",
+        "crop": "Banana",
+        "water_supply": "Irrigated",
+        "units": "1000 t",
+        "renderer": "Production Gap",
+        "download_url": " https://s3.eu-west-1.amazonaws.com/data.gaezdev.aws.fao.org/res07/I/2000/ban_2000_qga.tif",
+        "file_id": "000777267"
+      },
+      {
+        "OBJECTID": 2,
+        "Name": "ban_2000_yga_cl",
+        "Category": 1,
+        "filepath": "\\res07\\I\\2000\\ban_2000_yga_cl.tif",
+        "sub_theme_name": "Crop Yield Achievement Ratio",
+        "variable": "Cropwise Yield Achievement Ratio",
+        "file_description": "Cropwise Yield Achievement Ratio for the year 2000 for Banana under Irrigated water supply conditions",
+        "year": "2000",
+        "crop": "Banana",
+        "water_supply": "Irrigated",
+        "units": "Class",
+        "renderer": "Yield and Production Gaps Symbology",
+        "download_url": " https://s3.eu-west-1.amazonaws.com/data.gaezdev.aws.fao.org/res07/I/2000/ban_2000_yga_cl.tif",
+        "file_id": "000777262"
+      },
+      {
+        "OBJECTID": 3,
+        "Name": "brl_2000_qga",
+        "Category": 1,
+        "filepath": "\\res07\\I\\2000\\brl_2000_qga.tif",
+        "sub_theme_name": "Production Gap",
+        "variable": "Cropwise Apparent Production Gap",
+        "file_description": "Cropwise Apparent Production Gap for the year 2000 for Barley under Irrigated water supply conditions",
+        "year": "2000",
+        "crop": "Barley",
+        "water_supply": "Irrigated",
+        "units": "1000 t",
+        "renderer": "Production Gap",
+        "download_url": " https://s3.eu-west-1.amazonaws.com/data.gaezdev.aws.fao.org/res07/I/2000/brl_2000_qga.tif",
+        "file_id": "000777257"
+      }
+    ],
+    "distinct_crops": [
+      "All crops",
+      "Banana",
+      "Barley",
+      "Cassava",
+      "Cereals",
+      "Cotton",
+      "Groundnut",
+      "Maize",
+      "Millet",
+      "Oil crops",
+      "Oil palm",
+      "Olive",
+      "Other cereals",
+      "Potato and sweet potato",
+      "Pulses",
+      "Rapeseed",
+      "Root crops",
+      "Sorghum",
+      "Soybean",
+      "Sugarbeet",
+      "Sugarcane",
+      "Sunflower",
+      "Tobacco",
+      "Wetland rice",
+      "Wheat",
+      "Yams and other roots"
+    ]
+  }
+]

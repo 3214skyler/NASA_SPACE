@@ -1,0 +1,19 @@
+fastapi>=0.112.0
+uvicorn[standard]>=0.30.0
+pydantic>=2.8.0
+pydantic-settings>=2.2.0
+requests>=2.31.0
+pandas>=2.2.0
+numpy>=1.26.4
+
+# --- Acesso a dados NASA/USGS ---
+earthaccess>=0.14.0   # login Earthdata, pesquisa CMR e abertura remota (SMAP, GPM)
+h5py>=3.11            # leitura do HDF5 do SMAP L4
+h5netcdf>=1.3         # leitura dos NetCDF4 do IMERG via xarray
+xarray>=2024.6        # seleção de ponto na grelha IMERG
+rasterio>=1.4.0       # leitura por janela de COGs Landsat
+pyproj>=3.6           # EASE-Grid 2.0 (SMAP)
+
+# --- Testes ---
+pytest>=8.0
+httpx>=0.27           # TestClient do FastAPI
