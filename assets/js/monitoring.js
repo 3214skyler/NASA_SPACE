@@ -427,6 +427,14 @@ async function selectMonitoringProperty() {
 // =========================================================
 
 function formatEnvironmentalValue(value, decimals = 1) {
+    if (
+        value === null ||
+        value === undefined ||
+        value === ""
+    ) {
+        return "--";
+    }
+
     const number = Number(value);
 
     if (!Number.isFinite(number)) {
@@ -438,7 +446,6 @@ function formatEnvironmentalValue(value, decimals = 1) {
         maximumFractionDigits: decimals
     });
 }
-
 
 function setIndicator(elementId, value) {
     const element = document.getElementById(elementId);

@@ -1,5 +1,8 @@
+from pathlib import Path
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+BASE_DIR = Path(__file__).resolve().parents[2]
+ENV_FILE = BASE_DIR / ".env"
 
 class Settings(BaseSettings):
     PROJECT_NAME: str = "Field Shift API"
@@ -45,7 +48,10 @@ class Settings(BaseSettings):
     # --- FAO GAEZ ---
     GAEZ_CATALOG_PATH: str = "app/data/gaez_catalog.json"
 
-    model_config = SettingsConfigDict(env_file=".env", case_sensitive=True, extra="ignore")
-
+    model_config = SettingsConfigDict(
+        env_file=ENV_FILE,
+        case_sensitive=True,
+        extra="ignore"
+    )
 
 settings = Settings()

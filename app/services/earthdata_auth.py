@@ -24,7 +24,7 @@ def get_auth():
         for name in ("EARTHDATA_TOKEN", "EARTHDATA_USERNAME", "EARTHDATA_PASSWORD"):
             value = getattr(settings, name)
             if value:
-                os.environ.setdefault(name, value)
+                os.environ[name] = value
 
         has_token = bool(os.environ.get("EARTHDATA_TOKEN"))
         has_pair = bool(os.environ.get("EARTHDATA_USERNAME") and os.environ.get("EARTHDATA_PASSWORD"))

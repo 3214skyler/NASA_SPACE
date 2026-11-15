@@ -19,6 +19,12 @@ from app.core.config import settings
 from app.services import earthdata_auth
 from app.services.base import DataUnavailable, SourceError, num
 
+from concurrent.futures import ThreadPoolExecutor
+from time import perf_counter
+import logging
+
+logger = logging.getLogger(__name__)
+
 VAR_CANDIDATES = ["precipitation", "precipitationCal"]
 
 
@@ -30,23 +36,48 @@ def _granule_date(granule) -> str:
 def _point_value(file_obj, lat: float, lon: float) -> tuple[float | None, str]:
     import xarray as xr
 
-    last_error: Exception | None = None
-    for group in (None, "Grid"):
-        try:
-            ds = xr.open_dataset(file_obj, engine="h5netcdf", group=group, decode_times=False)
-        except Exception as exc:  # noqa: BLE001
-            last_error = exc
-            continue
-        with ds:
-            name = next((v for v in VAR_CANDIDATES if v in ds.variables), None)
-            if name is None:
-                continue
-            value = ds[name].sel(lat=lat, lon=lon, method="nearest")
-            f = num(value.squeeze().values)
-            units = ds[name].attrs.get("units", "mm/day")
-            return (None if f is None or f < 0 else f), units
-    raise SourceError(f"Variável de precipitação não encontrada no ficheiro IMERG ({last_error}).")
+    last_error = None
 
+    for group in ("Grid", None):
+        try:
+            if hasattr(file_obj, "seek"):
+                file_obj.seek(0)
+
+            with xr.open_dataset(
+                file_obj,
+                engine="h5netcdf",
+                group=group,
+                decode_times=False,
+            ) as ds:
+
+                name = next(
+                    (v for v in VAR_CANDIDATES if v in ds.variables),
+                    None,
+                )
+
+                if name is None:
+                    continue
+
+                value = ds[name].sel(
+                    lat=lat,
+                    lon=lon,
+                    method="nearest",
+                )
+
+                result = num(value.squeeze().values)
+                units = ds[name].attrs.get("units", "mm/day")
+
+                return (
+                    None if result is None or result < 0 else result,
+                    units,
+                )
+
+        except Exception as exc:
+            last_error = exc
+
+    raise SourceError(
+        f"Não foi possível extrair a precipitação IMERG: {last_error}"
+    )
 
 def summarize(series: list[dict[str, Any]], heavy_mm: float) -> dict[str, Any]:
     """Acumulados e indicadores a partir da série diária (dict com date, precipitation_mm)."""
@@ -78,11 +109,16 @@ def fetch(lat: float, lon: float) -> dict[str, Any]:
     end = datetime.now(timezone.utc)
     start = end - timedelta(days=settings.GPM_DAYS + 1)
     try:
+        start_search = perf_counter()
         granules = earthaccess.search_data(
             short_name=settings.GPM_SHORT_NAME,
             version=settings.GPM_VERSION,
             temporal=(start.strftime("%Y-%m-%d"), end.strftime("%Y-%m-%d")),
             count=settings.GPM_DAYS + 5,
+        )
+        logger.info(
+            "GPM: pesquisa CMR: %.2f segundos",
+            perf_counter() - start_search,
         )
     except Exception as exc:  # noqa: BLE001
         raise SourceError(f"Erro na pesquisa CMR do GPM/IMERG: {exc}") from exc
@@ -96,18 +132,55 @@ def fetch(lat: float, lon: float) -> dict[str, Any]:
     chosen = [per_day[d] for d in days]
 
     try:
+        start_open = perf_counter()
         files = earthaccess.open(chosen)
+        logger.info(
+            "GPM: abertura dos ficheiros: %.2f segundos",
+            perf_counter() - start_open,
+        )
     except Exception as exc:  # noqa: BLE001
         raise SourceError(f"Não foi possível abrir os ficheiros IMERG: {exc}") from exc
 
-    series, errors, units = [], [], "mm/day"
-    for day, file_obj in zip(days, files):
-        try:
-            value, units = _point_value(file_obj, lat, lon)
-            series.append({"date": day, "precipitation_mm": value})
-        except Exception as exc:  # noqa: BLE001
-            series.append({"date": day, "precipitation_mm": None})
-            errors.append(f"{day}: {exc}")
+    series = []
+    errors = []
+    units = "mm/day"
+
+    start_processing = perf_counter()
+
+    workers = min(8, len(files))
+
+    with ThreadPoolExecutor(max_workers=workers) as executor:
+        results = list(
+            executor.map(
+                lambda item: _process_day(
+                    item[0],
+                    item[1],
+                    lat,
+                    lon,
+                ),
+                zip(days, files),
+            )
+        )
+
+    for result in results:
+        series.append({
+            "date": result["date"],
+            "precipitation_mm": result["precipitation_mm"],
+        })
+
+        if result["precipitation_mm"] is not None:
+            units = result["units"]
+
+        if result["error"]:
+            errors.append(
+                f"{result['date']}: {result['error']}"
+            )
+
+    logger.info(
+        "GPM: processamento de %d ficheiros concluído em %.2f segundos",
+        len(files),
+        perf_counter() - start_processing,
+    )
 
     if not any(s["precipitation_mm"] is not None for s in series):
         raise DataUnavailable("Sem valores IMERG válidos para este ponto." + (f" Erros: {errors[:2]}" if errors else ""))
@@ -128,3 +201,22 @@ def fetch(lat: float, lon: float) -> dict[str, Any]:
             *errors[:3],
         ],
     }
+
+def _process_day(day, file_obj, lat, lon):
+    try:
+        value, units = _point_value(file_obj, lat, lon)
+
+        return {
+            "date": day,
+            "precipitation_mm": value,
+            "units": units,
+            "error": None,
+        }
+
+    except Exception as exc:
+        return {
+            "date": day,
+            "precipitation_mm": None,
+            "units": "mm/day",
+            "error": str(exc),
+        }
