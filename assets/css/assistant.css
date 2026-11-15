@@ -1506,3 +1506,16 @@ textarea:focus-visible {
         scroll-behavior: auto !important;
     }
 }
+
+.brand {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+}
+
+.brand-logo {
+    display: block;
+    width: 210px;
+    height: 60px;
+    object-fit: contain;
+}

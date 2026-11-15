@@ -711,3 +711,16 @@ body {
         transition: none !important;
     }
 }
+
+.brand {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+}
+
+.brand-logo {
+    height: 65px;
+    width: auto;
+    max-width: 280px;
+    object-fit: contain;
+}

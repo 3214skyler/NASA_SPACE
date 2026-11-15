@@ -1481,3 +1481,18 @@ select:focus-visible {
     }
 
 }
+
+.sidebar-brand {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    text-decoration: none;
+}
+
+.sidebar-logo {
+    width: 100%;
+    max-width: 220px;
+    height: 65px;
+    object-fit: contain;
+    object-position: left center;
+}

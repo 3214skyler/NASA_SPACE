@@ -2252,3 +2252,18 @@ button {
     }
 
 }
+
+.dashboard-brand {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    flex-shrink: 0;
+}
+
+.dashboard-logo {
+    display: block;
+    width: 230px;
+    height: auto;
+    max-height: 65px;
+    object-fit: contain;
+}

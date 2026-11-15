@@ -2145,3 +2145,16 @@ a {
     }
 
 }
+
+.brand {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+}
+
+.brand-logo {
+    width: 210px;
+    height: 60px;
+    object-fit: contain;
+    display: block;
+}

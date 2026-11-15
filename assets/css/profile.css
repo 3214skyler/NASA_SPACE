@@ -2418,3 +2418,16 @@ html[data-theme="light"] ::-webkit-scrollbar-thumb {
     }
 
 }
+
+.logo {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+}
+
+.logo-image {
+    display: block;
+    width: 210px;
+    height: 60px;
+    object-fit: contain;
+}

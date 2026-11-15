@@ -2088,3 +2088,19 @@ body.modal-open {
     }
 
 }
+.sidebar-brand {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    flex-shrink: 0;
+    width: 100%;
+}
+
+.sidebar-logo {
+    display: block;
+    width: 100%;
+    max-width: 220px;
+    height: 65px;
+    object-fit: contain;
+    object-position: left center;
+}
