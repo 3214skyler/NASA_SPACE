@@ -426,6 +426,7 @@ async function selectMonitoringProperty() {
 // 13. ENVIRONMENTAL DATA INTEGRATION
 // =========================================================
 
+
 function formatEnvironmentalValue(value, decimals = 1) {
     if (
         value === null ||
@@ -441,11 +442,15 @@ function formatEnvironmentalValue(value, decimals = 1) {
         return "--";
     }
 
-    return number.toLocaleString("pt-PT", {
+    const rounded = Number(number.toFixed(decimals));
+    const normalized = Object.is(rounded, -0) ? 0 : rounded;
+
+    return normalized.toLocaleString("pt-PT", {
         minimumFractionDigits: decimals,
         maximumFractionDigits: decimals
     });
 }
+
 
 function setIndicator(elementId, value) {
     const element = document.getElementById(elementId);
@@ -474,6 +479,77 @@ function getAvailableSource(environmentalData, source) {
     }
 
     return block.data;
+}
+
+
+function renderEnvironmentalAssessments(assessments) {
+    const panel = document.getElementById("environmental-risks");
+
+    if (!panel) return;
+
+    const categories = [
+        { key: "drought", title: "Avaliação de seca" },
+        { key: "excess_precipitation", title: "Excesso de precipitação" },
+        { key: "vegetation", title: "Alterações na vegetação" }
+    ];
+
+    if (!assessments) {
+        panel.textContent = "Avaliação ambiental indisponível.";
+        return;
+    }
+
+    panel.innerHTML = `
+        <div class="risk-assessments">
+            ${categories.map(category => {
+                const result = assessments[category.key];
+
+                if (!result) {
+                    return `
+                        <article class="risk-assessment-card">
+                            <h3>${category.title}</h3>
+                            <p>Dados de avaliação indisponíveis.</p>
+                        </article>
+                    `;
+                }
+
+                const assessed = result.status === "assessed";
+
+                const evidence = (result.evidence || []).map(item => `
+                    <li>
+                        <strong>${escapeHTML(item.indicator)}:</strong>
+                        ${escapeHTML(formatEnvironmentalValue(item.value, 2))}
+                        ${escapeHTML(item.unit)}
+                        <small>
+                            ${escapeHTML(item.source)}
+                            ${item.date ? ` — ${escapeHTML(item.date)}` : ""}
+                        </small>
+                    </li>
+                `).join("");
+
+                const limitations = (result.limitations || []).map(item => `
+                    <li>${escapeHTML(item)}</li>
+                `).join("");
+
+                return `
+                    <article class="risk-assessment-card">
+                        <h3>${category.title}</h3>
+
+                        <span class="risk-assessment-status">
+                            ${assessed ? "Dados analisados" : "Dados insuficientes"}
+                        </span>
+
+                        <p>${escapeHTML(result.explanation)}</p>
+
+                        <h4>Indicadores</h4>
+                        <ul>${evidence || "<li>Sem indicadores disponíveis.</li>"}</ul>
+
+                        <h4>Limitações</h4>
+                        <ul>${limitations || "<li>Sem limitações registadas.</li>"}</ul>
+                    </article>
+                `;
+            }).join("")}
+        </div>
+    `;
 }
 
 
@@ -727,7 +803,7 @@ async function fetchPropertyEnvironmentalData(property) {
         if (requestId !== monitoringRequestId) return;
 
         updateEnvironmentalIndicators(response);
-
+        renderEnvironmentalAssessments(response?.risk_assessments);
         updateDataStatus(
             true,
             property,

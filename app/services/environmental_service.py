@@ -4,6 +4,11 @@ from typing import Any, Callable
 
 from app.services import gaez_service, gpm_service, nasa_power_service, smap_service, vegetation_service
 from app.services.base import run_source
+from app.services.risk_assessment_service import (
+    assess_drought,
+    assess_excess_precipitation,
+    assess_vegetation,
+)
 
 HOUR, DAY = 3600, 86400
 
@@ -39,6 +44,11 @@ def fetch_all(lat: float, lon: float) -> dict[str, Any]:
     with ThreadPoolExecutor(max_workers=len(keys)) as pool:
         blocks = list(pool.map(lambda k: fetch_source(k, lat, lon), keys))
     environmental = dict(zip(keys, blocks))
+    risk_assessments = {
+        "drought": assess_drought(environmental),
+        "excess_precipitation": assess_excess_precipitation(environmental),
+        "vegetation": assess_vegetation(environmental),
+    }
     ok = [k for k, b in environmental.items() if b["status"] == "ok"]
     status = "success" if len(ok) == len(keys) else ("partial" if ok else "unavailable")
     return {
@@ -46,4 +56,5 @@ def fetch_all(lat: float, lon: float) -> dict[str, Any]:
         "location": {"latitude": lat, "longitude": lon},
         "sources_summary": {k: b["status"] for k, b in environmental.items()},
         "environmental_data": environmental,
+        "risk_assessments": risk_assessments,
     }

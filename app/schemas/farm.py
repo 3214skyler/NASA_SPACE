@@ -47,6 +47,10 @@ class EnvironmentalDataResponse(BaseModel):
     sources_summary: dict[str, SourceStatus]
     environmental_data: dict[str, SourceBlock]
 
+    risk_assessments: dict[str, dict[str, Any]] = Field(
+        default_factory=dict
+    )
+
 
 class StrategyResponse(BaseModel):
     id: int

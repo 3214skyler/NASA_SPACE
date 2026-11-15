@@ -1414,6 +1414,7 @@ body::before {
 
 }
 
+
 /* =========================================================
    ENVIRONMENTAL CHARTS
 ========================================================= */
@@ -1450,4 +1451,62 @@ body::before {
     max-width: 280px;
     font-size: 13px;
     line-height: 1.6;
+}
+
+.risk-assessments {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.risk-assessment-card {
+    min-width: 0;
+    padding: 18px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    background: rgba(15, 34, 22, 0.65);
+}
+
+.risk-assessment-card h3 {
+    margin-bottom: 12px;
+    font-size: 13px;
+}
+
+.risk-assessment-card h4 {
+    margin-top: 16px;
+    font-size: 10px;
+}
+
+.risk-assessment-card p,
+.risk-assessment-card li {
+    color: var(--text-secondary);
+    font-size: 10px;
+    line-height: 1.7;
+}
+
+.risk-assessment-card ul {
+    padding-left: 16px;
+}
+
+.risk-assessment-card li {
+    margin-top: 7px;
+}
+
+.risk-assessment-card small {
+    display: block;
+    opacity: 0.75;
+}
+
+.risk-assessment-status {
+    display: inline-block;
+    margin-bottom: 10px;
+    color: var(--green);
+    font-size: 10px;
+}
+
+@media (max-width: 900px) {
+    .risk-assessments {
+        grid-template-columns: 1fr;
+    }
 }
