@@ -461,6 +461,8 @@ function resetEnvironmentalIndicators() {
     setIndicator("monitoring-rainfall", "--");
     setIndicator("monitoring-soil-moisture", "--");
     setIndicator("monitoring-ndvi", "--");
+
+    resetMonitoringCharts();
 }
 
 
@@ -546,6 +548,7 @@ function updateEnvironmentalIndicators(response) {
             ? formatEnvironmentalValue(ndvi, 3)
             : "--"
     );
+    renderEnvironmentalCharts(response);
 }
 
 
@@ -758,6 +761,471 @@ async function fetchPropertyEnvironmentalData(property) {
 }
 
 // =========================================================
+// ENVIRONMENTAL CHARTS
+// =========================================================
+
+const monitoringCharts = {};
+
+let monitoringChartData = null;
+
+
+// ---------------------------------------------------------
+// CHART CONFIGURATION
+// ---------------------------------------------------------
+
+function destroyMonitoringCharts() {
+
+    Object.values(monitoringCharts).forEach(chart => {
+        chart.destroy();
+    });
+
+    Object.keys(monitoringCharts).forEach(key => {
+        delete monitoringCharts[key];
+    });
+}
+
+
+// ---------------------------------------------------------
+// CHART EMPTY STATE
+// ---------------------------------------------------------
+
+function setChartMessage(elementId, message) {
+
+    const container = document.getElementById(elementId);
+
+    if (!container) return;
+
+    container.innerHTML = `
+        <div class="chart-empty-state">
+            <i class="fa-solid fa-chart-line"></i>
+            <p>${escapeHTML(message)}</p>
+        </div>
+    `;
+}
+
+
+// ---------------------------------------------------------
+// DATE FORMATTING
+// ---------------------------------------------------------
+
+function formatChartDate(date) {
+
+    const parsed = new Date(`${date}T12:00:00`);
+
+    if (Number.isNaN(parsed.getTime())) {
+        return date;
+    }
+
+    return parsed.toLocaleDateString("pt-PT", {
+        day: "2-digit",
+        month: "short"
+    });
+}
+
+
+// ---------------------------------------------------------
+// FILTER TEMPORAL DATA
+// ---------------------------------------------------------
+
+function filterChartSeries(series, period) {
+
+    if (!Array.isArray(series)) return [];
+
+    const valid = series
+        .filter(item => {
+            return (
+                item &&
+                item.date &&
+                Number.isFinite(Number(item.value))
+            );
+        })
+        .sort((a, b) => a.date.localeCompare(b.date));
+
+    if (valid.length === 0) return [];
+
+    const latestDate = new Date(
+        `${valid[valid.length - 1].date}T12:00:00`
+    );
+
+    const cutoff = new Date(latestDate);
+
+    cutoff.setDate(cutoff.getDate() - Number(period) + 1);
+
+    return valid.filter(item => {
+        const date = new Date(`${item.date}T12:00:00`);
+
+        return date >= cutoff && date <= latestDate;
+    });
+}
+
+
+// ---------------------------------------------------------
+// CREATE CHART
+// ---------------------------------------------------------
+
+function createMonitoringChart(
+    elementId,
+    chartType,
+    series,
+    label,
+    unit,
+    color
+) {
+
+    const container = document.getElementById(elementId);
+
+    if (!container) return;
+
+    const validSeries = series.filter(item =>
+        item &&
+        item.date &&
+        Number.isFinite(Number(item.value))
+    );
+
+    if (validSeries.length === 0) {
+
+        setChartMessage(
+            elementId,
+            "Não existem observações disponíveis para este período."
+        );
+
+        return;
+    }
+
+    container.innerHTML = `
+        <div class="monitoring-chart-canvas">
+            <canvas></canvas>
+        </div>
+    `;
+
+    const canvas = container.querySelector("canvas");
+
+    const context = canvas.getContext("2d");
+
+    const chart = new Chart(context, {
+
+        type: chartType,
+
+        data: {
+
+            labels: validSeries.map(item =>
+                formatChartDate(item.date)
+            ),
+
+            datasets: [{
+
+                label: label,
+
+                data: validSeries.map(item =>
+                    Number(item.value)
+                ),
+
+                borderColor: color,
+
+                backgroundColor:
+                    chartType === "bar"
+                        ? `${color}99`
+                        : `${color}20`,
+
+                borderWidth: 2,
+
+                tension: 0.35,
+
+                fill: chartType === "line",
+
+                pointRadius: 3,
+
+                pointHoverRadius: 6,
+
+                borderRadius: chartType === "bar" ? 4 : 0
+
+            }]
+
+        },
+
+        options: {
+
+            responsive: true,
+
+            maintainAspectRatio: false,
+
+            interaction: {
+                intersect: false,
+                mode: "index"
+            },
+
+            plugins: {
+
+                legend: {
+                    display: false
+                },
+
+                tooltip: {
+
+                    callbacks: {
+
+                        label: context => {
+                            return `${label}: ${formatEnvironmentalValue(
+                                context.parsed.y,
+                                2
+                            )} ${unit}`;
+                        }
+
+                    }
+
+                }
+
+            },
+
+            scales: {
+
+                x: {
+
+                    grid: {
+                        display: false
+                    },
+
+                    ticks: {
+                        maxTicksLimit: 7,
+                        color: "#9ca3af"
+                    }
+
+                },
+
+                y: {
+
+                    beginAtZero: chartType === "bar",
+
+                    grid: {
+                        color: "rgba(255,255,255,0.06)"
+                    },
+
+                    ticks: {
+
+                        color: "#9ca3af",
+
+                        callback: value => `${value} ${unit}`
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    });
+
+    monitoringCharts[elementId] = chart;
+}
+
+
+// ---------------------------------------------------------
+// EXTRACT NASA POWER SERIES
+// ---------------------------------------------------------
+
+function getPowerSeries(power, variable) {
+
+    const dates = power?.dates;
+
+    const values = power?.variables?.[variable]?.values;
+
+    if (
+        !Array.isArray(dates) ||
+        !Array.isArray(values) ||
+        dates.length !== values.length
+    ) {
+        return [];
+    }
+
+    return dates.map((date, index) => ({
+        date,
+        value: values[index]
+    }));
+}
+
+
+// ---------------------------------------------------------
+// BUILD ENVIRONMENTAL CHARTS
+// ---------------------------------------------------------
+
+function renderEnvironmentalCharts(response) {
+
+    if (typeof Chart === "undefined") {
+
+        console.error("Chart.js não foi carregado.");
+
+        return;
+    }
+
+    destroyMonitoringCharts();
+
+    monitoringChartData = response?.environmental_data;
+
+    if (!monitoringChartData) {
+
+        resetMonitoringCharts();
+
+        return;
+    }
+
+    const period = Number(
+        document.getElementById("monitoring-period")?.value || 30
+    );
+
+    const data = monitoringChartData;
+
+    // -----------------------------------------------------
+    // TEMPERATURE — NASA POWER
+    // -----------------------------------------------------
+
+    const power = getAvailableSource(data, "nasa_power");
+
+    const temperatureSeries = filterChartSeries(
+        getPowerSeries(power, "T2M")
+            .map(item => ({
+                date: item.date,
+                value: item.value
+            })),
+        period
+    );
+
+    createMonitoringChart(
+        "temperature-chart",
+        "line",
+        temperatureSeries,
+        "Temperatura",
+        "°C",
+        "#f59e0b"
+    );
+
+
+    // -----------------------------------------------------
+    // RAINFALL — NASA GPM / POWER
+    // -----------------------------------------------------
+
+    const gpm = getAvailableSource(data, "gpm");
+
+    let rainfallSeries = [];
+
+    if (period <= 30) {
+
+        rainfallSeries = (gpm?.series || []).map(item => ({
+            date: item.date,
+            value: item.precipitation_mm
+        }));
+
+    } else {
+
+        rainfallSeries = getPowerSeries(
+            power,
+            "PRECTOTCORR"
+        );
+    }
+
+    rainfallSeries = filterChartSeries(
+        rainfallSeries,
+        period
+    );
+
+    createMonitoringChart(
+        "rainfall-chart",
+        "bar",
+        rainfallSeries,
+        "Precipitação",
+        "mm",
+        "#38bdf8"
+    );
+
+
+    // -----------------------------------------------------
+    // NDVI — LANDSAT
+    // -----------------------------------------------------
+
+    const vegetation = getAvailableSource(
+        data,
+        "vegetation"
+    );
+
+    const ndviSeries = filterChartSeries(
+
+        (vegetation?.observations || []).map(item => ({
+            date: item.date,
+            value: item.ndvi
+        })),
+
+        period
+    );
+
+    createMonitoringChart(
+        "ndvi-chart",
+        "line",
+        ndviSeries,
+        "NDVI",
+        "",
+        "#4ade80"
+    );
+
+
+    // -----------------------------------------------------
+    // SOIL MOISTURE — SMAP
+    // -----------------------------------------------------
+
+    const smap = getAvailableSource(data, "smap");
+
+    const soilSeries = filterChartSeries(
+
+        (smap?.series || []).map(item => ({
+            date: item.observation_time_utc?.slice(0, 10),
+            value:
+                item.root_zone_soil_moisture !== null &&
+                item.root_zone_soil_moisture !== undefined
+                    ? item.root_zone_soil_moisture * 100
+                    : null
+        })),
+
+        period
+    );
+
+    createMonitoringChart(
+        "soil-chart",
+        "line",
+        soilSeries,
+        "Humidade do solo",
+        "%",
+        "#60a5fa"
+    );
+}
+
+
+// ---------------------------------------------------------
+// RESET CHARTS
+// ---------------------------------------------------------
+
+function resetMonitoringCharts() {
+
+    destroyMonitoringCharts();
+
+    monitoringChartData = null;
+
+    const charts = [
+        "temperature-chart",
+        "rainfall-chart",
+        "ndvi-chart",
+        "soil-chart"
+    ];
+
+    charts.forEach(id => {
+
+        setChartMessage(
+            id,
+            "Selecione uma propriedade para consultar os dados."
+        );
+
+    });
+}
+
+// =========================================================
 // 14. LOAD PROPERTIES
 // =========================================================
 
@@ -777,18 +1245,21 @@ function loadMonitoringProperties() {
 // =========================================================
 
 function initializePeriodSelector() {
-    const selector = document.getElementById("monitoring-period");
+
+    const selector = document.getElementById(
+        "monitoring-period"
+    );
 
     if (!selector) return;
 
     selector.addEventListener("change", () => {
-        console.info(
-            "Período selecionado:",
-            selector.value,
-            "dias"
-        );
 
-        // Será utilizado quando os dados históricos forem integrados.
+        if (!monitoringChartData) return;
+
+        renderEnvironmentalCharts({
+            environmental_data: monitoringChartData
+        });
+
     });
 }
 

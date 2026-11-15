@@ -36,9 +36,10 @@
                 EARTH OBSERVATION SYSTEM
             </div>
 
-            <a href="auth.html" class="account-button">
-                Entrar na conta
-            </a>
+            <button type="button" class="account-button" id="back-button">
+                <span>←</span>
+                Voltar
+            </button>
 
         </header>
 
@@ -496,6 +497,16 @@
 
     <!-- JavaScript da AcreView -->
     <script src="assets/js/explore.js"></script>
+
+    <script>
+    document.getElementById("back-button").addEventListener("click", () => {
+        if (window.history.length > 1) {
+            window.history.back();
+        } else {
+            window.location.href = "index.html";
+        }
+    });
+</script>
 
 </body>
 </html>

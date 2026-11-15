@@ -14,6 +14,8 @@ const DASHBOARD_SETTINGS_KEY = "acreViewSettings";
 let dashboardProperties = [];
 let dashboardMap = null;
 let dashboardPropertiesLayer = null;
+let dashboardEnvironmentalData = null;
+let dashboardEnvironmentalRequestId = 0;
 
 
 // =====================================================
@@ -857,17 +859,26 @@ window.addEventListener("resize", () => {
 
 window.addEventListener("storage", event => {
 
+    const relevantKeys = [
+        DASHBOARD_PROPERTIES_KEY,
+        DASHBOARD_SETTINGS_KEY,
+        "acreViewHistory",
+        "acreViewPlans"
+    ];
+
     if (
-        event.key !== DASHBOARD_PROPERTIES_KEY &&
-        event.key !== DASHBOARD_SETTINGS_KEY &&
+        !relevantKeys.includes(event.key) &&
         event.key !== null
     ) {
         return;
-
     }
 
 
     loadDashboardProperties();
+
+    renderDashboardHistory();
+
+    loadDashboardEnvironmentalData();
 
     updateDashboardIndicators();
 
@@ -921,6 +932,528 @@ function initializeDashboardAccessMode() {
 
 
 // =====================================================
+// 16. ENVIRONMENTAL DATA — BACKEND INTEGRATION
+// =====================================================
+
+function getDashboardEnvironmentalProperty() {
+
+    return dashboardProperties.find(property => {
+
+        const latitude = Number(property.latitude);
+        const longitude = Number(property.longitude);
+
+        return (
+            Number.isFinite(latitude) &&
+            Number.isFinite(longitude) &&
+            latitude >= -90 &&
+            latitude <= 90 &&
+            longitude >= -180 &&
+            longitude <= 180
+        );
+
+    }) || null;
+
+}
+
+
+function updateEnvironmentalCard(id, value, description) {
+
+    const element = document.getElementById(id);
+
+    if (!element) return;
+
+    element.textContent = value;
+
+    const card = element.closest(".environment-card");
+
+    const descriptionElement = card?.querySelector("small");
+
+    if (descriptionElement && description) {
+        descriptionElement.textContent = description;
+    }
+
+}
+
+
+function setEnvironmentalLoading() {
+
+    updateEnvironmentalCard(
+        "environment-temperature",
+        "A carregar...",
+        "A consultar NASA POWER"
+    );
+
+    updateEnvironmentalCard(
+        "environment-rainfall",
+        "A carregar...",
+        "A consultar GPM"
+    );
+
+    updateEnvironmentalCard(
+        "environment-soil",
+        "A carregar...",
+        "A consultar SMAP"
+    );
+
+    updateEnvironmentalCard(
+        "environment-ndvi",
+        "A carregar...",
+        "A consultar Landsat"
+    );
+
+}
+
+
+function setEnvironmentalUnavailable(message) {
+
+    updateEnvironmentalCard(
+        "environment-temperature",
+        "-- °C",
+        message
+    );
+
+    updateEnvironmentalCard(
+        "environment-rainfall",
+        "-- mm",
+        message
+    );
+
+    updateEnvironmentalCard(
+        "environment-soil",
+        "-- %",
+        message
+    );
+
+    updateEnvironmentalCard(
+        "environment-ndvi",
+        "--",
+        message
+    );
+
+}
+
+
+async function loadDashboardEnvironmentalData() {
+
+    const property = getDashboardEnvironmentalProperty();
+
+    const monitoringStatus = document.getElementById(
+        "monitoring-status"
+    );
+
+    if (!property) {
+
+        dashboardEnvironmentalData = null;
+
+        setEnvironmentalUnavailable(
+            "Regista uma propriedade com coordenadas."
+        );
+
+        if (monitoringStatus) {
+            monitoringStatus.textContent = "Sem localização";
+        }
+
+        return;
+
+    }
+
+    if (!window.AcreViewAPI) {
+
+        console.error("AcreView API não foi carregada.");
+
+        setEnvironmentalUnavailable(
+            "Não foi possível ligar ao backend."
+        );
+
+        if (monitoringStatus) {
+            monitoringStatus.textContent = "Desligado";
+        }
+
+        return;
+
+    }
+
+    const requestId = ++dashboardEnvironmentalRequestId;
+
+    const latitude = Number(property.latitude);
+    const longitude = Number(property.longitude);
+
+    setEnvironmentalLoading();
+
+    if (monitoringStatus) {
+        monitoringStatus.textContent = "A consultar...";
+    }
+
+    try {
+
+        const response = await window.AcreViewAPI
+            .fetchEnvironmentalData(latitude, longitude);
+
+        // Ignorar respostas antigas
+        if (requestId !== dashboardEnvironmentalRequestId) {
+            return;
+        }
+
+        dashboardEnvironmentalData = response;
+
+        const data = response.environmental_data || {};
+
+        // NASA POWER
+        const nasa = data.nasa_power;
+
+        const temperature =
+            nasa?.data?.variables?.T2M?.summary?.mean;
+
+        if (nasa?.status === "ok" && Number.isFinite(temperature)) {
+
+            updateEnvironmentalCard(
+                "environment-temperature",
+                `${temperature.toFixed(2)} °C`,
+                "Média dos últimos 365 dias · NASA POWER"
+            );
+
+        } else {
+
+            updateEnvironmentalCard(
+                "environment-temperature",
+                "-- °C",
+                "Dados NASA POWER indisponíveis"
+            );
+
+        }
+
+
+        // GPM
+        const gpm = data.gpm;
+
+        const rainfall =
+            gpm?.data?.summary?.total_last_30_days_mm;
+
+        if (gpm?.status === "ok" && Number.isFinite(rainfall)) {
+
+            updateEnvironmentalCard(
+                "environment-rainfall",
+                `${rainfall.toFixed(2)} mm`,
+                "Acumulado dos últimos 30 dias · GPM"
+            );
+
+        } else {
+
+            updateEnvironmentalCard(
+                "environment-rainfall",
+                "-- mm",
+                "Dados GPM indisponíveis"
+            );
+
+        }
+
+
+        // SMAP — Humidade na zona radicular
+        const smap = data.smap;
+
+        const soilMoisture =
+            smap?.data?.latest?.root_zone_soil_moisture;
+
+        if (smap?.status === "ok" && Number.isFinite(soilMoisture)) {
+
+            updateEnvironmentalCard(
+                "environment-soil",
+                `${(soilMoisture * 100).toFixed(2)} %`,
+                "Humidade estimada na zona radicular · SMAP"
+            );
+
+        } else {
+
+            updateEnvironmentalCard(
+                "environment-soil",
+                "-- %",
+                "Dados SMAP indisponíveis"
+            );
+
+        }
+
+
+        // Landsat — NDVI
+        const vegetation = data.vegetation;
+
+        const ndvi =
+            vegetation?.data?.latest?.ndvi;
+
+        if (
+            vegetation?.status === "ok" &&
+            Number.isFinite(ndvi)
+        ) {
+
+            updateEnvironmentalCard(
+                "environment-ndvi",
+                ndvi.toFixed(4),
+                `Observação ${vegetation.data.latest.date} · Landsat`
+            );
+
+        } else {
+
+            updateEnvironmentalCard(
+                "environment-ndvi",
+                "--",
+                "Dados de vegetação indisponíveis"
+            );
+
+        }
+
+
+        // Estado geral das fontes
+        const sourceStatuses = Object.values(
+            response.sources_summary || {}
+        );
+
+        const successfulSources = sourceStatuses.filter(
+            status => status === "ok"
+        ).length;
+
+        const totalSources = sourceStatuses.length;
+
+        if (monitoringStatus) {
+
+            monitoringStatus.textContent =
+                successfulSources === totalSources
+                    ? "Operacional"
+                    : successfulSources > 0
+                        ? "Parcial"
+                        : "Indisponível";
+
+        }
+
+        console.info(
+            "AcreView: dados ambientais carregados.",
+            response
+        );
+
+    } catch (error) {
+
+        if (requestId !== dashboardEnvironmentalRequestId) {
+            return;
+        }
+
+        console.error(
+            "Erro ao carregar dados ambientais:",
+            error
+        );
+
+        setEnvironmentalUnavailable(
+            "Não foi possível obter os dados ambientais."
+        );
+
+        if (monitoringStatus) {
+            monitoringStatus.textContent = "Erro";
+        }
+
+    }
+
+}
+
+// =========================================================
+// DASHBOARD — AGRICULTURAL HISTORY
+// =========================================================
+
+function renderDashboardHistory() {
+
+    const container = document.getElementById(
+        "dashboard-history-content"
+    );
+
+    if (!container) return;
+
+    const readRecords = (key) => {
+        try {
+            const data = JSON.parse(localStorage.getItem(key));
+            return Array.isArray(data) ? data : [];
+        } catch {
+            return [];
+        }
+    };
+
+    const manualRecords = readRecords("acreViewHistory");
+    const properties = readRecords("acreViewProperties");
+
+    const propertyName = (propertyId) => {
+
+        const property = properties.find(
+            item => String(item.id) === String(propertyId)
+        );
+
+        return property?.name || "Propriedade não identificada";
+    };
+
+    const records = [];
+
+    // =====================================================
+    // 1. HISTÓRICO MANUAL
+    // =====================================================
+
+    manualRecords.forEach(record => {
+
+        if (
+            !record.date ||
+            !record.title ||
+            !["agriculture", "planning", "environment", "system"]
+                .includes(record.type)
+        ) return;
+
+        const date = new Date(record.date);
+
+        if (Number.isNaN(date.getTime())) return;
+
+        records.push({
+            id: record.id || null,
+            type: record.type,
+            title: record.title,
+            description: record.description || "",
+            date,
+            property: record.propertyId
+                ? propertyName(record.propertyId)
+                : null
+        });
+    });
+
+    // =====================================================
+    // 2. PROPRIEDADES REGISTADAS
+    // =====================================================
+
+    properties.forEach(property => {
+
+        if (!property.createdAt) return;
+
+        const date = new Date(property.createdAt);
+
+        if (Number.isNaN(date.getTime())) return;
+
+        // Evita duplicar uma propriedade já registada
+        const alreadyRegistered = records.some(record =>
+            record.title === "Propriedade registada" &&
+            record.property === property.name
+        );
+
+        if (alreadyRegistered) return;
+
+        records.push({
+            id: property.id,
+            type: "agriculture",
+            title: "Propriedade registada",
+            description: `A propriedade ${property.name || "sem nome"} foi adicionada ao AcreView.`,
+            date,
+            property: property.name || null
+        });
+    });
+
+    // =====================================================
+    // 3. ORDENAÇÃO
+    // =====================================================
+
+    records.sort((a, b) => b.date - a.date);
+
+    const recentRecords = records.slice(0, 5);
+
+    // =====================================================
+    // 4. ESTADO VAZIO
+    // =====================================================
+
+    if (recentRecords.length === 0) {
+
+        container.innerHTML = `
+            <div class="history-empty">
+                <i class="fa-solid fa-chart-area"></i>
+
+                <h3>O teu histórico começa aqui</h3>
+
+                <p>
+                    À medida que registares informações e
+                    acompanhares as tuas propriedades, poderás
+                    consultar a sua evolução nesta área.
+                </p>
+            </div>
+        `;
+
+        return;
+    }
+
+    // =====================================================
+    // 5. ÍCONES
+    // =====================================================
+
+    const icons = {
+        agriculture: "fa-seedling",
+        planning: "fa-calendar-check",
+        environment: "fa-cloud-sun",
+        system: "fa-circle-info"
+    };
+
+    // =====================================================
+    // 6. FORMATAÇÃO DAS DATAS
+    // =====================================================
+
+    const formatDate = (date) => {
+
+        return new Intl.DateTimeFormat("pt-PT", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit"
+        }).format(date);
+    };
+
+    // =====================================================
+    // 7. RENDERIZAÇÃO
+    // =====================================================
+
+    container.innerHTML = `
+
+        <div class="history-list">
+
+            ${recentRecords.map(record => `
+
+                <article class="history-item">
+
+                    <div class="history-item-icon ${record.type}">
+                        <i class="fa-solid ${icons[record.type]}"></i>
+                    </div>
+
+                    <div class="history-item-content">
+
+                        <h3>
+                            ${escapeDashboardHTML(record.title)}
+                        </h3>
+
+                        <p>
+                            ${escapeDashboardHTML(record.description)}
+                        </p>
+
+                        ${record.property ? `
+                            <span class="history-item-property">
+                                <i class="fa-solid fa-location-dot"></i>
+                                ${escapeDashboardHTML(record.property)}
+                            </span>
+                        ` : ""}
+
+                    </div>
+
+                    <time
+                        class="history-item-date"
+                        datetime="${record.date.toISOString()}"
+                    >
+                        ${formatDate(record.date)}
+                    </time>
+
+                </article>
+
+            `).join("")}
+
+        </div>
+
+    `;
+}
+
+// =====================================================
 // 15. INITIALIZATION
 // =====================================================
 
@@ -929,6 +1462,8 @@ function initializeDashboard() {
     initializeDashboardAccessMode();
 
     loadDashboardProperties();
+
+    renderDashboardHistory();
 
     initializeDashboardProfile();
 
@@ -943,6 +1478,8 @@ function initializeDashboard() {
     initializeDashboardNavigation();
 
     initializeDashboardNotifications();
+
+    loadDashboardEnvironmentalData();
 
 }
 

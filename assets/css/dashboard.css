@@ -1674,6 +1674,207 @@ button {
 
 
 /* =========================================================
+   16.1. AGRICULTURAL HISTORY — RECENT ACTIVITIES
+========================================================= */
+
+.history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.history-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+
+    padding: 17px 5px;
+
+    border-bottom: 1px solid var(--border);
+
+    transition: var(--transition);
+}
+
+.history-item:last-child {
+    border-bottom: none;
+}
+
+.history-item:hover {
+    background: rgba(112, 223, 140, 0.025);
+    transform: translateX(4px);
+}
+
+.history-item-icon {
+    width: 40px;
+    height: 40px;
+
+    display: grid;
+    place-items: center;
+
+    flex-shrink: 0;
+
+    background: var(--primary-soft);
+
+    border: 1px solid var(--border);
+    border-radius: 12px;
+
+    color: var(--primary);
+
+    font-size: 15px;
+}
+
+.history-item-icon.agriculture {
+    color: var(--primary);
+    background: var(--primary-soft);
+}
+
+.history-item-icon.planning {
+    color: var(--blue);
+    background: rgba(101, 186, 255, 0.10);
+}
+
+.history-item-icon.environment {
+    color: var(--orange);
+    background: rgba(245, 183, 108, 0.10);
+}
+
+.history-item-icon.system {
+    color: var(--purple);
+    background: rgba(185, 154, 255, 0.10);
+}
+
+.history-item-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.history-item-content h3 {
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.5;
+}
+
+.history-item-content p {
+    margin-top: 5px;
+
+    color: var(--text-muted);
+
+    font-size: 10px;
+    line-height: 1.7;
+}
+
+.history-item-property {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+
+    margin-top: 9px;
+
+    color: var(--text-soft);
+
+    font-size: 9px;
+}
+
+.history-item-property i {
+    color: var(--primary);
+}
+
+.history-item-date {
+    flex-shrink: 0;
+
+    color: var(--text-muted);
+
+    font-size: 9px;
+    white-space: nowrap;
+}
+
+.history-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+
+    min-height: 120px;
+
+    color: var(--text-muted);
+
+    font-size: 11px;
+}
+
+.history-loading i {
+    color: var(--primary);
+}
+
+.history-more {
+    display: flex;
+    justify-content: center;
+
+    margin-top: 17px;
+}
+
+.history-more a {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+
+    padding: 10px 16px;
+
+    background: var(--primary-soft);
+
+    border: 1px solid var(--border);
+    border-radius: 9px;
+
+    color: var(--primary);
+
+    font-size: 10px;
+    font-weight: 700;
+
+    transition: var(--transition);
+}
+
+.history-more a:hover {
+    background: rgba(112, 223, 140, 0.2);
+    border-color: var(--border-hover);
+    transform: translateY(-2px);
+}
+
+
+/* RESPONSIVE HISTORY */
+
+@media (max-width: 760px) {
+
+    .history-item {
+        gap: 11px;
+        padding: 15px 2px;
+    }
+
+    .history-item-icon {
+        width: 35px;
+        height: 35px;
+        font-size: 13px;
+    }
+
+    .history-item-date {
+        font-size: 8px;
+    }
+
+}
+
+@media (max-width: 400px) {
+
+    .history-item {
+        flex-wrap: wrap;
+    }
+
+    .history-item-date {
+        width: 100%;
+        margin-left: 46px;
+    }
+
+}
+
+
+/* =========================================================
    17. FOOTER
 ========================================================= */
 

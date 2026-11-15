@@ -1413,3 +1413,41 @@ body::before {
     }
 
 }
+
+/* =========================================================
+   ENVIRONMENTAL CHARTS
+========================================================= */
+
+.chart-placeholder {
+    position: relative;
+    min-height: 260px;
+    padding: 18px;
+}
+
+.monitoring-chart-canvas {
+    position: relative;
+    width: 100%;
+    height: 250px;
+}
+
+.chart-empty-state {
+    min-height: 220px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    text-align: center;
+    color: #94a3b8;
+}
+
+.chart-empty-state i {
+    font-size: 30px;
+    opacity: 0.55;
+}
+
+.chart-empty-state p {
+    max-width: 280px;
+    font-size: 13px;
+    line-height: 1.6;
+}

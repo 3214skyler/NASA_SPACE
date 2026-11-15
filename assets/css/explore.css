@@ -117,9 +117,17 @@ a {
     padding: 11px 18px;
     border: 1px solid var(--border);
     border-radius: 8px;
+    background: transparent;
     color: var(--primary-light);
     font-size: 12px;
+    font-family: inherit;
+    cursor: pointer;
     transition: 0.3s ease;
+}
+
+.account-button:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: var(--primary-light);
 }
 
 .account-button:hover {
