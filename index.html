@@ -1,15 +1,16 @@
 <!DOCTYPE html>
 <html lang="pt">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <meta name="theme-color" content="#020807">
-    <meta name="description" content="AcreView — Explore o planeta. Compreenda a agricultura.">
+    <meta name="description" content="AcreView — Inteligência agrícola baseada na observação da Terra.">
 
     <title>AcreView | Inicializando</title>
 
-    <!-- Three.js será utilizado para o globo 3D -->
+    <!-- Three.js -->
     <script type="importmap">
         {
             "imports": {
@@ -18,19 +19,20 @@
         }
     </script>
 
-    <!-- Estilos do Intro -->
+    <!-- CSS -->
     <link rel="stylesheet" href="assets/css/intro.css">
 </head>
 
 <body>
 
-    <!-- Tela de inicialização -->
+    <!-- =====================================
+         TELA DE INICIALIZAÇÃO
+    ====================================== -->
+
     <main id="intro-screen">
 
-        <!-- Globo terrestre 3D -->
         <div id="globe-container"></div>
 
-        <!-- Informações de carregamento -->
         <section class="intro-content">
 
             <h1 class="intro-title">ACREVIEW</h1>
@@ -39,7 +41,6 @@
                 INICIALIZANDO...
             </p>
 
-            <!-- Barra de progresso -->
             <div class="loading-bar">
                 <div id="loading-progress"></div>
             </div>
@@ -48,153 +49,146 @@
 
         </section>
 
-        <!-- Identificação da aplicação -->
         <footer class="intro-footer">
             EARTH OBSERVATION SYSTEM
         </footer>
 
     </main>
-    <!-- Página de boas-vindas -->
+
+
+    <!-- =====================================
+         TELA DE BOAS-VINDAS
+    ====================================== -->
+
     <main id="welcome-screen">
 
-    <header class="welcome-header">
-        <a href="#" class="brand">
-            <span class="brand-icon">A</span>
-            ACREVIEW
-        </a>
+        <header class="welcome-header">
 
-        <span class="system-status">
-            <span class="status-dot"></span>
-            EARTH OBSERVATION SYSTEM
-        </span>
-    </header>
+            <a href="index.html" class="brand">
+                <span class="brand-icon">A</span>
+                ACREVIEW
+            </a>
 
-    <section class="welcome-main">
-
-        <div class="welcome-heading">
-
-            <span class="welcome-label">
-                AGRICULTURA • TECNOLOGIA • SUSTENTABILIDADE
+            <span class="system-status">
+                <span class="status-dot"></span>
+                EARTH OBSERVATION SYSTEM
             </span>
 
-            <h1>
-                Bem-vindo ao
-                <span>AcreView.</span>
-            </h1>
-
-            <p>
-                Explore o planeta, compreenda o ambiente
-                e descubra novas possibilidades para uma
-                agricultura mais inteligente e sustentável.
-            </p>
-
-        </div>
-
-        <div class="options-container">
-
-            <!-- OPÇÃO 1: COM CONTA -->
-
-            <article class="option-card ai-card">
-
-                <div class="card-top">
-                    <span class="card-number">01 / PERSONALIZADO</span>
-                    <span class="card-icon">✦</span>
-                </div>
-
-                <div class="option-illustration ai-illustration">
-                    <div class="orbit orbit-one"></div>
-                    <div class="orbit orbit-two"></div>
-                    <div class="illustration-symbol">✦</div>
-                </div>
-
-                <div class="card-information">
-
-                    <span class="option-category">ACREVIEW INTELLIGENCE</span>
-
-                    <h2>Apoio inteligente</h2>
-
-                    <p>
-                        Crie a tua conta e recebe apoio personalizado
-                        da IA da AcreView para compreender a tua
-                        exploração agrícola e tomar decisões informadas.
-                    </p>
-
-                    <ul>
-                        <li>Assistente inteligente de IA</li>
-                        <li>Análise da tua propriedade</li>
-                        <li>Recomendações agrícolas personalizadas</li>
-                        <li>Acompanhamento da evolução da exploração</li>
-                    </ul>
-
-                    <a href="auth.html" class="option-button ai-button">
-                        Criar conta / Entrar
-                        <span>→</span>
-                    </a>
-
-                </div>
-
-            </article>
+        </header>
 
 
-            <!-- OPÇÃO 2: SEM CONTA -->
+        <section class="welcome-main">
 
-            <article class="option-card map-card">
+            <div class="welcome-heading">
 
-                <div class="card-top">
-                    <span class="card-number">02 / ACESSO LIVRE</span>
-                    <span class="card-icon">◎</span>
-                </div>
+                <span class="welcome-label">
+                    AGRICULTURA • TECNOLOGIA • SUSTENTABILIDADE
+                </span>
 
-                <div class="option-illustration map-illustration">
+                <h1>
+                    Bem-vindo ao
+                    <span>AcreView.</span>
+                </h1>
 
-                    <div class="map-orbit"></div>
+                <p>
+                    Explore o planeta, compreenda as mudanças ambientais
+                    e descubra novas possibilidades para uma agricultura
+                    mais inteligente e sustentável.
+                </p>
 
-                    <div class="mini-globe">
-                        🌍
+            </div>
+
+
+            <!-- =====================================
+                 ACESSO COMPLETO — AVALIADOR
+            ====================================== -->
+
+            <div class="options-container"
+                 style="grid-template-columns: minmax(0, 680px); justify-content: center;">
+
+                <article class="option-card map-card">
+
+                    <div class="card-top">
+
+                        <span class="card-number">
+                            01 / ACESSO COMPLETO
+                        </span>
+
+                        <span class="card-icon">◎</span>
+
                     </div>
 
-                </div>
 
-                <div class="card-information">
+                    <div class="option-illustration map-illustration">
 
-                    <span class="option-category">GLOBAL EXPLORATION</span>
+                        <div class="map-orbit"></div>
 
-                    <h2>Explorar o planeta</h2>
+                        <div class="mini-globe">
+                            🌍
+                        </div>
 
-                    <p>
-                        Consulta dados ambientais de qualquer região
-                        do mundo. Explora imagens de satélite e
-                        indicadores sem precisar de criar uma conta.
-                    </p>
+                    </div>
 
-                    <ul>
-                        <li>Mapa mundial interativo</li>
-                        <li>Pesquisa por localização ou coordenadas</li>
-                        <li>Dados de satélite e ambientais</li>
-                        <li>Exploração sem registo</li>
-                    </ul>
 
-                    <a href="explore.html" class="option-button map-button">
-                        Explorar sem conta
-                        <span>→</span>
-                    </a>
+                    <div class="card-information">
 
-                </div>
+                        <span class="option-category">
+                            ACREVIEW FULL EXPERIENCE
+                        </span>
 
-            </article>
+                        <h2>Modo Avaliador</h2>
 
-        </div>
+                        <p>
+                            Explore todas as funcionalidades do AcreView
+                            sem precisar de criar uma conta. Analise
+                            propriedades, acompanhe indicadores ambientais
+                            e experimente ferramentas de planeamento agrícola.
+                        </p>
 
-    </section>
+                        <ul>
+                            <li>Acesso completo à plataforma</li>
+                            <li>Mapa agrícola interativo</li>
+                            <li>Monitorização ambiental</li>
+                            <li>Planeamento e rotação de culturas</li>
+                            <li>Histórico e assistente inteligente</li>
+                        </ul>
 
-    <footer class="welcome-footer">
-        <span>ACREVIEW © 2026</span>
-        <span>EXPLORING EARTH FOR A BETTER FUTURE</span>
-    </footer>
+                        <a href="dashboard.html?mode=evaluator"
+                           class="option-button map-button">
+
+                            Experimentar AcreView
+
+                            <span>→</span>
+
+                        </a>
+
+                    </div>
+
+                </article>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================
+             RODAPÉ
+        ====================================== -->
+
+        <footer class="welcome-footer">
+
+            <span>ACREVIEW © 2026</span>
+
+            <span>
+                EXPLORING EARTH FOR A BETTER FUTURE
+            </span>
+
+        </footer>
 
     </main>
 
-    <!-- JavaScript do Intro -->
+
+    <!-- JavaScript -->
     <script type="module" src="assets/js/intro.js"></script>
 
 </body>

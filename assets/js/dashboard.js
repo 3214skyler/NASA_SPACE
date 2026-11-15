@@ -115,6 +115,11 @@ function formatDashboardArea(area) {
 
 function initializeDashboardProfile() {
 
+    const access = window.ACREVIEW_ACCESS || {
+        mode: "farmer",
+        isEvaluator: false
+    };
+
     const nameElements = [
         document.getElementById("sidebar-user-name"),
         document.getElementById("header-user-name"),
@@ -126,20 +131,15 @@ function initializeDashboardProfile() {
         document.getElementById("header-avatar")
     ];
 
-    /*
-       O sistema de perfil atual ainda não guarda
-       o nome nem a fotografia no localStorage.
-
-       Por isso, não inventamos informações.
-    */
+    const displayName = access.isEvaluator
+        ? "Avaliador"
+        : "Agricultor";
 
     nameElements.forEach(element => {
 
         if (!element) return;
 
-        if (!element.textContent.trim()) {
-            element.textContent = "Agricultor";
-        }
+        element.textContent = displayName;
 
     });
 
@@ -147,16 +147,15 @@ function initializeDashboardProfile() {
 
         if (!element) return;
 
-        if (
-            element.tagName === "IMG" &&
-            !element.getAttribute("src")
-        ) {
+        if (element.tagName === "IMG") {
 
             element.style.display = "none";
 
-        } else if (element.tagName !== "IMG") {
+        } else {
 
-            element.textContent = "A";
+            element.textContent = access.isEvaluator
+                ? "A"
+                : "A";
 
         }
 
@@ -880,12 +879,54 @@ window.addEventListener("storage", event => {
 
 });
 
+// =====================================================
+// 15. ACCESS MODE
+// =====================================================
+
+function initializeDashboardAccessMode() {
+
+    const access = window.ACREVIEW_ACCESS;
+
+    if (!access) {
+
+        console.warn(
+            "AcreView Access Mode não foi inicializado."
+        );
+
+        return;
+
+    }
+
+    document.body.dataset.accessMode = access.mode;
+
+    if (access.isEvaluator) {
+
+        document.body.classList.add("evaluator-mode");
+
+        console.info(
+            "AcreView iniciado em Modo Avaliador."
+        );
+
+    } else {
+
+        document.body.classList.remove("evaluator-mode");
+
+        console.info(
+            "AcreView iniciado em Modo Agricultor."
+        );
+
+    }
+
+}
+
 
 // =====================================================
 // 15. INITIALIZATION
 // =====================================================
 
 function initializeDashboard() {
+
+    initializeDashboardAccessMode();
 
     loadDashboardProperties();
 
