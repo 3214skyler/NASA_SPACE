@@ -352,131 +352,184 @@
     </div>
 </div>
 
-        <!-- MODAL DE LOCALIZAÇÃO -->
-        <div
-            id="location-modal"
-            class="location-modal"
-            aria-hidden="true"
-        >
+        <!-- MODAL DE LOCALIZAÇÃO E ANÁLISE AGRÍCOLA -->
+<div
+    id="location-modal"
+    class="location-modal"
+    aria-hidden="true"
+>
+    <div class="modal-backdrop"></div>
 
-            <div class="modal-backdrop"></div>
+    <article
+        class="location-card"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="location-name"
+    >
 
-            <article
-                class="location-card"
-                role="dialog"
-                aria-modal="true"
-                aria-labelledby="location-name"
+        <header class="modal-header">
+
+            <span class="section-label">
+                IDENTIFICAÇÃO GEOGRÁFICA
+            </span>
+
+            <button
+                type="button"
+                id="close-location-modal"
+                class="modal-close"
+                aria-label="Fechar janela"
             >
+                ×
+            </button>
 
-                <header class="modal-header">
+        </header>
 
-                    <span class="section-label">
-                        IDENTIFICAÇÃO GEOGRÁFICA
-                    </span>
+        <div class="location-symbol">
+            ◎
+        </div>
 
-                    <button
-                        type="button"
-                        id="close-location-modal"
-                        class="modal-close"
-                        aria-label="Fechar janela"
-                    >
-                        ×
-                    </button>
+        <div class="location-information">
 
-                </header>
+            <span class="location-category">
+                LOCALIZAÇÃO SELECIONADA
+            </span>
 
+            <h2 id="location-name">
+                A identificar...
+            </h2>
 
-                <div class="location-symbol">
-                    ◎
-                </div>
-
-
-                <div class="location-information">
-
-                    <span class="location-category">
-                        LOCALIZAÇÃO SELECIONADA
-                    </span>
-
-                    <h2 id="location-name">
-                        A identificar...
-                    </h2>
-
-                    <p id="location-description">
-                        A obter informações geográficas desta região.
-                    </p>
-
-                </div>
-
-
-                <div class="location-details">
-
-                    <div class="detail-item">
-
-                        <span>PAÍS</span>
-
-                        <strong id="location-country">
-                            —
-                        </strong>
-
-                    </div>
-
-                    <div class="detail-item">
-
-                        <span>REGIÃO</span>
-
-                        <strong id="location-region">
-                            —
-                        </strong>
-
-                    </div>
-
-                    <div class="detail-item">
-
-                        <span>LATITUDE</span>
-
-                        <strong id="location-latitude">
-                            —
-                        </strong>
-
-                    </div>
-
-                    <div class="detail-item">
-
-                        <span>LONGITUDE</span>
-
-                        <strong id="location-longitude">
-                            —
-                        </strong>
-
-                    </div>
-
-                </div>
-
-
-                <footer class="modal-actions">
-
-                    <button
-                        type="button"
-                        id="analyze-location"
-                        class="analyze-button"
-                    >
-                        Analisar esta região
-                        <span>→</span>
-                    </button>
-
-                    <button
-                        type="button"
-                        id="close-modal-secondary"
-                        class="cancel-button"
-                    >
-                        Fechar
-                    </button>
-
-                </footer>
-
-            </article>
+            <p id="location-description">
+                A obter informações geográficas desta região.
+            </p>
 
         </div>
+
+        <div class="location-details">
+
+            <div class="detail-item">
+                <span>PAÍS</span>
+                <strong id="location-country">—</strong>
+            </div>
+
+            <div class="detail-item">
+                <span>REGIÃO</span>
+                <strong id="location-region">—</strong>
+            </div>
+
+            <div class="detail-item">
+                <span>LATITUDE</span>
+                <strong id="location-latitude">—</strong>
+            </div>
+
+            <div class="detail-item">
+                <span>LONGITUDE</span>
+                <strong id="location-longitude">—</strong>
+            </div>
+
+        </div>
+
+        <!-- PRIORIDADE AGRÍCOLA -->
+        <section class="analysis-priority">
+
+            <span class="section-label">
+                ANÁLISE AGRÍCOLA
+            </span>
+
+            <h3>Qual é a tua prioridade?</h3>
+
+            <p>
+                Escolhe o objetivo agrícola que pretendes
+                considerar na análise desta região.
+            </p>
+
+            <label for="analysis-priority">
+                Prioridade principal
+            </label>
+
+            <select id="analysis-priority" required>
+                <option value="" selected disabled>
+                    Seleciona uma prioridade
+                </option>
+
+                <option value="water_conservation">
+                    Conservação da água
+                </option>
+
+                <option value="soil_health">
+                    Saúde do solo
+                </option>
+
+                <option value="crop_productivity">
+                    Produtividade agrícola
+                </option>
+
+                <option value="climate_adaptation">
+                    Adaptação climática
+                </option>
+            </select>
+
+        </section>
+
+        <!-- ESTADO DA ANÁLISE -->
+        <section
+            id="analysis-panel"
+            class="analysis-panel"
+            hidden
+            aria-live="polite"
+        >
+
+            <div class="analysis-panel-header">
+                <span class="section-label">
+                    RESULTADO DA ANÁLISE
+                </span>
+
+                <span id="analysis-status">
+                    A aguardar...
+                </span>
+            </div>
+
+            <!-- DADOS AMBIENTAIS -->
+            <div id="analysis-environment"></div>
+
+            <!-- MOTOR DE RECOMENDAÇÃO -->
+            <div class="recommendation-section">
+
+                <h3>Estratégias agrícolas</h3>
+
+                <p id="analysis-engine-message">
+                    A análise ainda não foi realizada.
+                </p>
+
+                <div id="analysis-strategies"></div>
+
+            </div>
+
+        </section>
+
+        <footer class="modal-actions">
+
+            <button
+                type="button"
+                id="analyze-location"
+                class="analyze-button"
+            >
+                Analisar esta região
+                <span>→</span>
+            </button>
+
+            <button
+                type="button"
+                id="close-modal-secondary"
+                class="cancel-button"
+            >
+                Fechar
+            </button>
+
+        </footer>
+
+    </article>
+
+</div>
 
 
         <!-- MENSAGENS DO SISTEMA -->
@@ -494,6 +547,8 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
     <script src="assets/js/access-mode.js"></script>
+
+    <script src="assets/js/api.js"></script>
 
     <!-- JavaScript da AcreView -->
     <script src="assets/js/explore.js"></script>

@@ -90,6 +90,22 @@ const propertyPointsCount = document.getElementById(
     "property-points-count"
 );
 
+// =====================================
+// AGRICULTURAL ANALYSIS — DOM
+// =====================================
+
+const analysisPriority = document.getElementById("analysis-priority");
+const analysisPanel = document.getElementById("analysis-panel");
+const analysisStatus = document.getElementById("analysis-status");
+const analysisEnvironment = document.getElementById("analysis-environment");
+const analysisEngineMessage = document.getElementById("analysis-engine-message");
+const analysisStrategies = document.getElementById("analysis-strategies");
+const analyzeLocationButton = document.getElementById("analyze-location");
+
+// Coordenadas exatas da localização selecionada
+let selectedLatitude = null;
+let selectedLongitude = null;
+
 function resetToolbarPosition() {
     propertyCard.style.left = "";
     propertyCard.style.top = "";
@@ -421,8 +437,11 @@ async function identifyLocation(latitude, longitude) {
 
 function selectLocation(latitude, longitude, zoom = 10) {
 
+    selectedLatitude = Number(latitude);
+    selectedLongitude = Number(longitude);
+
     map.flyTo(
-        [latitude, longitude],
+        [selectedLatitude, selectedLongitude],
         zoom,
         {
             animate: true,
@@ -430,10 +449,9 @@ function selectLocation(latitude, longitude, zoom = 10) {
         }
     );
 
-    updateMarker(latitude, longitude);
+    updateMarker(selectedLatitude, selectedLongitude);
 
-    identifyLocation(latitude, longitude);
-
+    identifyLocation(selectedLatitude, selectedLongitude);
 }
 
 
@@ -1350,3 +1368,361 @@ window.addEventListener("storage", function (event) {
     loadSavedProperties();
 
 });
+
+// =====================================
+// ACREVIEW — AGRICULTURAL ANALYSIS
+// FastAPI + NASA Data + C++ Engine
+// =====================================
+
+function setAnalysisStatus(message, state = "loading") {
+
+    if (!analysisStatus) return;
+
+    analysisStatus.textContent = message;
+    analysisStatus.dataset.state = state;
+}
+
+
+// =====================================
+// ENVIRONMENTAL DATA
+// =====================================
+
+function createEnvironmentCard(title, value, description) {
+
+    const card = document.createElement("div");
+    card.className = "environment-card";
+
+    const heading = document.createElement("h4");
+    heading.textContent = title;
+
+    const valueElement = document.createElement("strong");
+    valueElement.textContent = value;
+
+    const descriptionElement = document.createElement("p");
+    descriptionElement.textContent = description;
+
+    card.append(heading, valueElement, descriptionElement);
+
+    return card;
+}
+
+
+function renderEnvironmentalData(environmentalData) {
+
+    analysisEnvironment.replaceChildren();
+
+    if (!environmentalData) {
+
+        analysisEnvironment.textContent =
+            "Não foram recebidos dados ambientais.";
+
+        return;
+    }
+
+    const smap = environmentalData.smap;
+    const gpm = environmentalData.gpm;
+
+    let cardsDisplayed = 0;
+
+    // Humidade do solo — NASA SMAP
+    if (smap?.status === "ok") {
+
+        const latest = smap.data?.latest || {};
+
+        const moisture =
+            latest.root_zone_soil_moisture ??
+            latest.surface_soil_moisture;
+
+        if (moisture !== null && moisture !== undefined) {
+
+            analysisEnvironment.appendChild(
+                createEnvironmentCard(
+                    "Humidade do solo",
+                    `${Number(moisture).toFixed(3)} m³/m³`,
+                    "Estimativa baseada nos dados NASA SMAP."
+                )
+            );
+
+            cardsDisplayed++;
+        }
+    }
+
+    // Precipitação — NASA GPM
+    if (gpm?.status === "ok") {
+
+        const rainfall =
+            gpm.data?.summary?.total_last_30_days_mm;
+
+        if (rainfall !== null && rainfall !== undefined) {
+
+            analysisEnvironment.appendChild(
+                createEnvironmentCard(
+                    "Precipitação",
+                    `${Number(rainfall).toFixed(1)} mm`,
+                    "Precipitação acumulada nos últimos 30 dias, segundo NASA GPM."
+                )
+            );
+
+            cardsDisplayed++;
+        }
+    }
+
+    if (cardsDisplayed === 0) {
+
+        const message = document.createElement("p");
+
+        message.textContent =
+            "Ainda não existem dados ambientais suficientes para apresentar indicadores nesta localização.";
+
+        analysisEnvironment.appendChild(message);
+    }
+}
+
+
+// =====================================
+// RECOMMENDATION STRATEGIES
+// =====================================
+
+function renderStrategies(strategies) {
+
+    analysisStrategies.replaceChildren();
+
+    if (!Array.isArray(strategies) || strategies.length === 0) {
+
+        const message = document.createElement("p");
+
+        message.textContent =
+            "O motor de recomendações ainda não dispõe de dados suficientes para sugerir estratégias agrícolas.";
+
+        analysisStrategies.appendChild(message);
+
+        return;
+    }
+
+    strategies.forEach(strategy => {
+
+        const card = document.createElement("article");
+        card.className = "strategy-card";
+
+        const title = document.createElement("h4");
+        title.textContent = strategy.name || "Estratégia agrícola";
+
+        card.appendChild(title);
+
+        if (strategy.description) {
+
+            const description = document.createElement("p");
+            description.textContent = strategy.description;
+
+            card.appendChild(description);
+        }
+
+        if (Array.isArray(strategy.benefits) && strategy.benefits.length > 0) {
+
+            const benefitsTitle = document.createElement("h5");
+            benefitsTitle.textContent = "Benefícios";
+
+            const benefitsList = document.createElement("ul");
+
+            strategy.benefits.forEach(benefit => {
+
+                const item = document.createElement("li");
+                item.textContent = benefit;
+
+                benefitsList.appendChild(item);
+            });
+
+            card.append(benefitsTitle, benefitsList);
+        }
+
+        if (Array.isArray(strategy.risks) && strategy.risks.length > 0) {
+
+            const risksTitle = document.createElement("h5");
+            risksTitle.textContent = "Riscos e considerações";
+
+            const risksList = document.createElement("ul");
+
+            strategy.risks.forEach(risk => {
+
+                const item = document.createElement("li");
+                item.textContent = risk;
+
+                risksList.appendChild(item);
+            });
+
+            card.append(risksTitle, risksList);
+        }
+
+        analysisStrategies.appendChild(card);
+    });
+}
+
+
+// =====================================
+// ANALYZE SELECTED LOCATION
+// =====================================
+
+async function analyzeSelectedLocation() {
+
+    if (
+        selectedLatitude === null ||
+        selectedLongitude === null
+    ) {
+
+        showMessage(
+            "Seleciona primeiro uma localização no mapa."
+        );
+
+        return;
+    }
+
+    const priority = analysisPriority?.value;
+
+    if (!priority) {
+
+        showMessage(
+            "Seleciona uma prioridade agrícola antes de continuar."
+        );
+
+        analysisPriority?.focus();
+
+        return;
+    }
+
+    if (
+        !window.AcreViewAPI ||
+        typeof window.AcreViewAPI.analyzeFarm !== "function"
+    ) {
+
+        showMessage(
+            "O serviço de análise não está disponível."
+        );
+
+        console.error(
+            "AcreViewAPI.analyzeFarm() não foi encontrado."
+        );
+
+        return;
+    }
+
+    // Preparar interface
+    analysisPanel.hidden = false;
+    analysisPanel.classList.add("visible");
+
+    analysisEnvironment.replaceChildren();
+    analysisStrategies.replaceChildren();
+
+    analysisEngineMessage.textContent = "";
+
+    setAnalysisStatus(
+        "A recolher dados ambientais e a analisar a localização...",
+        "loading"
+    );
+
+    analyzeLocationButton.disabled = true;
+    analyzeLocationButton.classList.add("is-loading");
+
+    try {
+
+        const result = await window.AcreViewAPI.analyzeFarm({
+
+            latitude: selectedLatitude,
+            longitude: selectedLongitude,
+            priority: priority
+
+        });
+
+        // Dados ambientais
+        renderEnvironmentalData(result.environmental_data);
+
+        // Estado do motor de recomendações
+        const engine = result.recommendation_engine;
+
+        if (engine) {
+
+            analysisEngineMessage.textContent =
+                engine.message || "Estado do motor de recomendações indisponível.";
+
+        }
+
+        // Estratégias agrícolas
+        if (engine?.status === "success") {
+
+            renderStrategies(result.recommended_strategies);
+
+        } else {
+
+            renderStrategies([]);
+
+        }
+
+        // Avaliar disponibilidade das fontes
+        const environmentalData = result.environmental_data || {};
+
+        const availableSources = Object.values(environmentalData)
+            .filter(source => source?.status === "ok")
+            .length;
+
+        if (engine?.status === "success") {
+
+            setAnalysisStatus(
+                "Análise concluída. Foram geradas estratégias agrícolas.",
+                "success"
+            );
+
+        } else if (availableSources > 0) {
+
+            setAnalysisStatus(
+                "Análise parcial. Existem dados ambientais, mas ainda não são suficientes para gerar recomendações.",
+                "partial"
+            );
+
+        } else {
+
+            setAnalysisStatus(
+                "Não foi possível obter dados ambientais suficientes.",
+                "unavailable"
+            );
+
+        }
+
+    } catch (error) {
+
+        console.error(
+            "Erro na análise agrícola:",
+            error
+        );
+
+        setAnalysisStatus(
+            "Ocorreu um erro ao realizar a análise. Tenta novamente.",
+            "error"
+        );
+
+        analysisEngineMessage.textContent =
+            error.message || "Não foi possível comunicar com o servidor.";
+
+        showMessage(
+            "Não foi possível concluir a análise."
+        );
+
+    } finally {
+
+        analyzeLocationButton.disabled = false;
+        analyzeLocationButton.classList.remove("is-loading");
+
+    }
+}
+
+
+// =====================================
+// ANALYSIS BUTTON
+// =====================================
+
+if (analyzeLocationButton) {
+
+    analyzeLocationButton.addEventListener(
+        "click",
+        analyzeSelectedLocation
+    );
+
+}

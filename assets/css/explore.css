@@ -1797,3 +1797,351 @@ a {
     }
 
 }
+
+/* =====================================
+   ACREVIEW — AGRICULTURAL ANALYSIS
+===================================== */
+
+/* Permitir scroll quando os resultados forem extensos */
+
+.location-card {
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(74, 222, 128, 0.3) transparent;
+}
+
+.location-card::-webkit-scrollbar {
+    width: 5px;
+}
+
+.location-card::-webkit-scrollbar-thumb {
+    background: rgba(74, 222, 128, 0.3);
+    border-radius: 10px;
+}
+
+
+/* =====================================
+   PRIORITY SELECTION
+===================================== */
+
+.analysis-priority {
+    margin-top: 28px;
+    padding: 20px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: rgba(34, 197, 94, 0.045);
+}
+
+.analysis-priority h3 {
+    margin-top: 13px;
+    color: var(--text);
+    font-size: 17px;
+}
+
+.analysis-priority p {
+    margin-top: 9px;
+    color: var(--muted);
+    font-size: 11px;
+    line-height: 1.7;
+}
+
+.analysis-priority label {
+    display: block;
+    margin-top: 18px;
+    margin-bottom: 9px;
+    color: #cbd5d1;
+    font-size: 11px;
+}
+
+#analysis-priority {
+    width: 100%;
+    padding: 13px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    outline: none;
+    background: #08130e;
+    color: var(--text);
+    font-size: 12px;
+    cursor: pointer;
+    transition: border 0.3s ease;
+}
+
+#analysis-priority:focus {
+    border-color: var(--primary);
+}
+
+#analysis-priority option {
+    background: #09140f;
+    color: white;
+}
+
+
+/* =====================================
+   ANALYSIS PANEL
+===================================== */
+
+.analysis-panel {
+    margin-top: 25px;
+    padding: 20px;
+    border: 1px solid var(--border);
+    border-radius: 13px;
+    background: rgba(3, 15, 9, 0.75);
+    animation: analysis-appear 0.4s ease;
+}
+
+.analysis-panel[hidden] {
+    display: none !important;
+}
+
+.analysis-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+}
+
+#analysis-status {
+    padding: 6px 10px;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    background: rgba(34, 197, 94, 0.08);
+    color: var(--primary-light);
+    font-size: 9px;
+    font-weight: 700;
+}
+
+
+/* =====================================
+   ENVIRONMENTAL INDICATORS
+===================================== */
+
+#analysis-environment {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 17px;
+}
+
+.environment-card {
+    min-width: 0;
+    padding: 13px;
+    border: 1px solid rgba(74, 222, 128, 0.12);
+    border-radius: 9px;
+    background: rgba(255, 255, 255, 0.025);
+}
+
+.environment-card span {
+    display: block;
+    color: var(--muted);
+    font-size: 9px;
+    line-height: 1.5;
+}
+
+.environment-card strong {
+    display: block;
+    margin-top: 9px;
+    color: #d1fae5;
+    font-size: 17px;
+    overflow-wrap: anywhere;
+}
+
+.environment-card small {
+    display: block;
+    margin-top: 6px;
+    color: #718579;
+    font-size: 9px;
+    line-height: 1.5;
+}
+
+
+/* =====================================
+   RECOMMENDATION ENGINE
+===================================== */
+
+.recommendation-section {
+    margin-top: 23px;
+    padding-top: 19px;
+    border-top: 1px solid var(--border);
+}
+
+.recommendation-section h3 {
+    color: var(--text);
+    font-size: 15px;
+}
+
+#analysis-engine-message {
+    margin-top: 9px;
+    color: var(--muted);
+    font-size: 11px;
+    line-height: 1.7;
+}
+
+
+/* =====================================
+   STRATEGY CARDS
+===================================== */
+
+#analysis-strategies {
+    display: flex;
+    flex-direction: column;
+    gap: 11px;
+    margin-top: 15px;
+}
+
+.strategy-card {
+    position: relative;
+    padding: 15px;
+    border: 1px solid rgba(74, 222, 128, 0.18);
+    border-radius: 10px;
+    background:
+        linear-gradient(
+            135deg,
+            rgba(34, 197, 94, 0.09),
+            rgba(255, 255, 255, 0.015)
+        );
+    transition:
+        border-color 0.3s ease,
+        transform 0.3s ease,
+        background 0.3s ease;
+}
+
+.strategy-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--primary);
+    background: rgba(34, 197, 94, 0.09);
+}
+
+.strategy-card h4 {
+    color: var(--primary-light);
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.strategy-card p {
+    margin-top: 9px;
+    color: #a7b9ad;
+    font-size: 11px;
+    line-height: 1.7;
+}
+
+.strategy-card ul {
+    margin-top: 12px;
+    padding-left: 17px;
+    color: #cbd5d1;
+    font-size: 10px;
+    line-height: 1.8;
+}
+
+.strategy-card li::marker {
+    color: var(--primary-light);
+}
+
+
+/* =====================================
+   ANALYSIS STATES
+===================================== */
+
+#analysis-status[data-state="loading"] {
+    color: #facc15;
+    border-color: rgba(250, 204, 21, 0.25);
+    background: rgba(250, 204, 21, 0.08);
+}
+
+#analysis-status[data-state="success"] {
+    color: var(--primary-light);
+}
+
+#analysis-status[data-state="partial"] {
+    color: #fbbf24;
+    border-color: rgba(251, 191, 36, 0.25);
+    background: rgba(251, 191, 36, 0.08);
+}
+
+#analysis-status[data-state="unavailable"],
+#analysis-status[data-state="error"] {
+    color: #f87171;
+    border-color: rgba(248, 113, 113, 0.25);
+    background: rgba(248, 113, 113, 0.08);
+}
+
+
+/* =====================================
+   ANALYSIS LOADING
+===================================== */
+
+.analyze-button:disabled {
+    opacity: 0.6;
+    cursor: wait;
+    transform: none;
+    box-shadow: none;
+}
+
+.analyze-button.is-loading span {
+    display: inline-block;
+    animation: analysis-spin 1s linear infinite;
+}
+
+@keyframes analysis-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes analysis-appear {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* =====================================
+   ANALYSIS RESPONSIVE
+===================================== */
+
+@media (max-width: 500px) {
+
+    .location-modal {
+        padding: 12px;
+        align-items: center;
+    }
+
+    .location-card {
+        max-height: calc(100vh - 24px);
+        padding: 21px 16px;
+        border-radius: 15px;
+    }
+
+    .analysis-priority,
+    .analysis-panel {
+        padding: 15px;
+    }
+
+    #analysis-environment {
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+    }
+
+    .environment-card {
+        padding: 11px;
+    }
+
+    .environment-card strong {
+        font-size: 15px;
+    }
+
+    .analysis-panel-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+}
